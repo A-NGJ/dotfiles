@@ -1,27 +1,25 @@
-require('lualine').setup {
-  options = {
-    icons_enabled = true,
-    component_separators = '|',
-    section_separators = '',
-  },
-  sections = {
-    lualine_x = {
-      {
-        require("noice").api.statusline.mode.get,
-        cond = require("noice").api.statusline.mode.has,
-        color = { fg = "#ff9e64" },
-      },
-      {
-        require("noice").api.status.command.get,
-        cond = require("noice").api.status.command.has,
-        color = { fg = "#ff9e64" },
-      },
-    },
-    lualine_a = {
-      {
-        'buffers',
-      }
-    }
-  }
+return {
+	'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+        require('lualine').setup {
+          -- sections = {
+          --   lualine_c = { 
+          --     {
+          --       'diagnostics', 
+          --       sources = { 'nvim_lsp' }, -- Display LSP diagnostics
+          --       sections = { 'error', 'warn', 'info', 'hint' }, -- Diagnostic types to show
+          --       diagnostics_color = { -- Customize colors (optional)
+          --         error = 'DiagnosticError',
+          --         warn  = 'DiagnosticWarn',
+          --         info  = 'DiagnosticInfo',
+          --         hint  = 'DiagnosticHint',
+          --       },
+          --     }
+          --   },
+          --   -- ... other sections ...
+          -- },
+          -- ... other lualine options ...
+        }
+    end
 }
-
