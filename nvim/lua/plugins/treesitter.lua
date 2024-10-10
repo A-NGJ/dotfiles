@@ -8,7 +8,7 @@ return {
                 auto_install = true,
                 ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "python", "go", "terraform" },
                 highlight = { enable = true },
-                -- indent = { enable = true },
+                indent = { enable = true },
             })
             local keymap_opts = { noremap = true, silent = true }
             -- vim.keymap.set('n', 'fc', 'zc', keymap_opts, { desc = "[F]old [C]lose" })

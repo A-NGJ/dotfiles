@@ -32,8 +32,8 @@ vim.o.smartcase = true
 vim.o.linebreak = true -- 'lbr' equivalent
 
 -- Auto Indent:
-vim.o.autoindent = true
-vim.o.smartindent = true
+-- vim.o.autoindent = true
+-- vim.o.smartindent = true
 
 -- Command Line:
 vim.o.showcmd = true
@@ -74,18 +74,28 @@ require("lspconfig").terraformls.setup {
     capabilities = capabilities
 }
 
+require("lspconfig").yamlls.setup {
+    on_attach = on_attach,
+    capabilities = capabilities
+}
+
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldlevel = 99
 
 vim.api.nvim_create_autocmd("FileType", {
-  group = vim.api.nvim_create_augroup("FixTerraformCommentString", { clear = true }),
-  callback = function(ev)
-    vim.bo[ev.buf].commentstring = "# %s"
-  end,
-  pattern = { "terraform", "hcl" },
+    group = vim.api.nvim_create_augroup("FixTerraformCommentString", { clear = true }),
+    callback = function(ev)
+        vim.bo[ev.buf].commentstring = "# %s"
+    end,
+    pattern = { "terraform", "hcl" },
 })
 
+vim.filetype.add {
+    extension = {
+        sql = "sql",
+    },
+}
 
-
-
+-- Add the commentstring for SQL files
+vim.bo.commentstring = "-- %s"
