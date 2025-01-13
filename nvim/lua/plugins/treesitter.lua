@@ -6,9 +6,11 @@ return {
             local config = require("nvim-treesitter.configs")
             config.setup({
                 auto_install = true,
-                ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "python", "go", "terraform" },
+                ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "python", "go", "terraform", "typescript" },
                 highlight = { enable = true },
                 indent = { enable = true },
+                enable = true,
+                enable_autocmd = false,
             })
             local keymap_opts = { noremap = true, silent = true }
             -- vim.keymap.set('n', 'fc', 'zc', keymap_opts, { desc = "[F]old [C]lose" })
