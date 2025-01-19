@@ -118,6 +118,7 @@ export KEYTIMEOUT=80
 export XDG_CONFIG_HOME="$HOME/.config"
 export FZF_DEFAULT_COMMAND="rg --files --follow --hidden --no-ignore --glob '!.git/*' --glob '!*/.venv/*'"
 export FZF_DEFAULT_OPTS="--preview='bat --color=always --style=header,grid --line-range :500 {}'"
+export LANG=en_US.UTF-8
 
 eval "$(fzf --zsh)"
 source ~/fzf-git.sh/fzf-git.sh

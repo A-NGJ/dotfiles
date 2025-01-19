@@ -1,6 +1,7 @@
 require('config.lazy')
-require('plugins.neogit')
-require('plugins.nvimtree')
+-- require('mini.ai').setup()
+-- require('mini.surround').setup()
+-- require('plugins.mini')
 
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
