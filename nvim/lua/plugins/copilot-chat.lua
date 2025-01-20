@@ -6,6 +6,7 @@ return {
     },
     opts = {
         model = "claude-3.5-sonnet",
+        chat_autocomplete = false,
 
         contexts = {
             file = {
