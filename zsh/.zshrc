@@ -80,7 +80,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git docker aws poetry)
+plugins=(git docker aws poetry zsh-syntax-highlighting)
 SHOW_AWS_PROMPT=false
 
 source $ZSH/oh-my-zsh.sh
@@ -131,3 +131,4 @@ export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
 
 # Created by `pipx` on 2025-02-10 19:31:19
 export PATH="$PATH:/Users/aleksandernagaj/.local/bin"
+export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"

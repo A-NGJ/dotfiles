@@ -6,6 +6,7 @@ return {
     },
     opts = {
         model = "claude-3.5-sonnet",
+        chat_autocomplete = false,
 
         contexts = {
             file = {
@@ -47,6 +48,8 @@ return {
     build = "make tiktoken",
     event = "VeryLazy",
     keys = {
+        { "<leader>ccc", "<cmd>CopilotChat<cr>", desc = "CopilotChat - Chat" },
+        { "<leader>ccm", "<cmd>CopilotChatCommit<cr>", desc = "CopilotChat - Commit" },
         { "<leader>cce", "<cmd>CopilotChatExplain<cr>", desc = "CopilotChat - Explain code" },
         { "<leader>cct", "<cmd>CopilotChatTests<cr>",   desc = "CopilotChat - Generate tests" },
         {
