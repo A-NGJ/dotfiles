@@ -7,7 +7,12 @@ return {
         -- refer to the configuration section below
     },
     config = function()
-        require("todo-comments").setup()
+        require("todo-comments").setup {
+            keywords = {
+                BOOKMARK = { icon = "", color = "#8aadf4" },
+            }
+
+        }
         vim.keymap.set("n", "<leader>tn", function()
             require("todo-comments").jump_next()
         end, { desc = "Next todo comment" })

@@ -54,8 +54,10 @@ local on_attach = function(_, bufnr)
     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = '[R]e[N]ame' })
     vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = '[C]ode [A]ction' })
 
-    vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = '[G]o [D]efinition' })
-    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = '[G]o [I]mplementation' })
+    -- vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = '[G]o [D]efinition' })
+    vim.keymap.set("n", "gd", require("telescope.builtin").lsp_definitions, { desc = '[G]o [D]efinition' })
+    -- vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = '[G]o [I]mplementation' })
+    vim.keymap.set("n", "gi", require("telescope.builtin").lsp_implementations, { desc = '[G]o [I]mplementation' })
     vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, { desc = '[G]o [R]eferences' })
     vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = 'Hover' })
 end
@@ -72,8 +74,14 @@ require("lspconfig").pyright.setup {
 }
 require("lspconfig").terraformls.setup {
     on_attach = on_attach,
-    capabilities = capabilities
+    capabilities = capabilities,
 }
+
+require('lspconfig').mypy.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+}
+
 
 require("lspconfig").yamlls.setup {
     on_attach = on_attach,
@@ -130,9 +138,9 @@ vim.bo.commentstring = "-- %s"
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "typescript", "typescriptreact", "terraform" },
     callback = function()
-        vim.opt_local.shiftwidth = 2 -- Number of spaces for auto-indent
-        vim.opt_local.tabstop = 2  -- Number of spaces a tab counts for
-        vim.opt_local.softtabstop = 2 -- Number of spaces for a tab while editing
+        vim.opt_local.shiftwidth = 2   -- Number of spaces for auto-indent
+        vim.opt_local.tabstop = 2      -- Number of spaces a tab counts for
+        vim.opt_local.softtabstop = 2  -- Number of spaces for a tab while editing
         vim.opt_local.expandtab = true -- Use spaces instead of tabs
     end,
 })

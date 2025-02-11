@@ -14,9 +14,10 @@ return {
                 null_ls.builtins.formatting.isort.with({
                     extra_args = {
                         "--multi-line", "3",
-                        "--include-trailing-comma"
+                        "--trailing-comma"
                     },
                 }),
+                -- null_ls.builtins.diagnostics.mypy
             },
             timeout = 2000
         })

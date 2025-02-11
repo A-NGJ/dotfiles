@@ -80,7 +80,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git docker aws poetry)
+plugins=(git docker aws poetry zsh-syntax-highlighting)
 SHOW_AWS_PROMPT=false
 
 source $ZSH/oh-my-zsh.sh
