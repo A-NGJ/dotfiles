@@ -132,3 +132,6 @@ export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
 # Created by `pipx` on 2025-02-10 19:31:19
 export PATH="$PATH:/Users/aleksandernagaj/.local/bin"
 export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
+
+# key bindings
+bindkey '^O' clear-screen

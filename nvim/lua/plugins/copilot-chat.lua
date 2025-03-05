@@ -5,8 +5,15 @@ return {
         "github/copilot.vim",
     },
     opts = {
-        model = "claude-3.5-sonnet",
+        model = "claude-3.7-sonnet",
         chat_autocomplete = false,
+
+        mappings = {
+            reset = {
+                normal = '<c-o>',
+                insert = '<c-o>',
+            }
+        },
 
         contexts = {
             file = {

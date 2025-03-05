@@ -13,12 +13,14 @@ return {
             }
 
         }
-        vim.keymap.set("n", "<leader>tn", function()
+        vim.keymap.set("n", "<leader>tdn", function()
             require("todo-comments").jump_next()
         end, { desc = "Next todo comment" })
 
-        vim.keymap.set("n", "<leader>tp", function()
+        vim.keymap.set("n", "<leader>tdp", function()
             require("todo-comments").jump_prev()
         end, { desc = "Previous todo comment" })
+
+        vim.keymap.set("n", "<leader>bb", ":TodoTelescope keywords=BOOKMARK<CR>", { desc = "List bookmarks" })
     end
 }

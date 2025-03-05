@@ -11,6 +11,7 @@ return {
         require("neo-tree").setup({
             vim.api.nvim_set_keymap("n", "<c-n>", ":Neotree toggle<enter>", { noremap = false }),
             vim.api.nvim_set_keymap("n", "<leader>tf", ":Neotree focus<enter>", { noremap = false }),
+            vim.api.nvim_set_keymap("n", "<leader>tr", ":Neotree reveal<enter>", { noremap = false }),
             -- on_attach = my_on_attach,
             -- vim.keymap.set("n", "<leader>tff", "<cmd>nvimtreefindfile<cr>", { desc = "[t]ree [f]ind [f]ile" })
             -- vim.keymap.set("n", "<leader>ec", "<cmd>nvimtreecollapse<cr>", { desc = "collapse file explorer" })
