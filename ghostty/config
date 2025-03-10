@@ -1,3 +1,7 @@
 theme = catppuccin-macchiato.conf
 font-size = 14
 cursor-style = block
+shell-integration-features = no-cursor
+
+keybind = global:cmd+grave_accent=toggle_quick_terminal
+

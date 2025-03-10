@@ -12,6 +12,9 @@ return {
             reset = {
                 normal = '<c-o>',
                 insert = '<c-o>',
+            },
+            complete = {
+                insert = '<c-space>'
             }
         },
 
