@@ -23,6 +23,9 @@ end
 return {
     {
         'nvim-telescope/telescope.nvim',
+        dependencies = {
+            'nvim-telescope/telescope-ui-select.nvim'
+        },
         config = function()
             require('telescope').load_extension('harpoon')
             require('telescope').load_extension('git_worktree')
@@ -54,8 +57,15 @@ return {
                             ["<C-d>"] = require('telescope.actions').move_selection_previous,
                         },
                     },
+                    extensions = {
+                        ["ui-select"] = {
+                            require("telescope.themes").get_dropdown
+                        }
+                    }
                 },
             }
+
+            require("telescope").load_extension("ui-select")
 
             -- Enable telescope fzf native, if installed
             pcall(require('telescope').load_extension, 'fzf')

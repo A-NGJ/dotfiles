@@ -11,6 +11,15 @@ return {
                 indent = { enable = true },
                 enable = true,
                 enable_autocmd = false,
+                fold = {
+                    enable = true,
+                    -- custom_folding_ranges = {
+                    --     python = {
+                    --         ["class"] = {start = "class_definition", end = "block"},
+                    --         ["function"] = {start = "function_definition", end = "block"},
+                    --     },
+                    -- }
+                },
 
                 lookahead = true,
                 textobjects = {
