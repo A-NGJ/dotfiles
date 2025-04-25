@@ -9,7 +9,7 @@ return {
         model = "claude-3.7-sonnet",
         chat_autocomplete = false,
         sticky = {
-            "/NO_CODE"
+            -- "/NO_CODE"
         },
         mappings = {
             reset = {
