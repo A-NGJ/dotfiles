@@ -121,7 +121,7 @@ export FZF_DEFAULT_OPTS="--preview='bat --color=always --style=header,grid --lin
 export LANG=en_US.UTF-8
 
 eval "$(fzf --zsh)"
-source ~/fzf-git.sh/fzf-git.sh
+source ~/fzf-git/fzf-git.sh
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
