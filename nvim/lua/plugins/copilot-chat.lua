@@ -10,6 +10,8 @@ return {
         chat_autocomplete = false,
         sticky = {
             -- "/NO_CODE"
+            "/UNIQUE_CODE",
+            "#buffers:visible"
         },
         mappings = {
             reset = {
@@ -35,6 +37,9 @@ return {
                 - Refer to the documentation if applicable
                 ]]
             },
+            UNIQUE_CODE = {
+                system_prompt = "Add an empty comment to the end of each line of code."
+            }
         },
 
         -- contexts = {
