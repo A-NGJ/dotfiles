@@ -6,11 +6,11 @@ return {
         "github/copilot.vim",
     },
     opts = {
-        model = "claude-3.7-sonnet",
+        model = "gpt-4o",
         chat_autocomplete = false,
         sticky = {
             -- "/NO_CODE"
-            "/UNIQUE_CODE",
+            "/SYSTEM_PROMPT",
             "#buffers:visible"
         },
         mappings = {
@@ -24,7 +24,7 @@ return {
         },
         prompts = {
             NO_CODE = {
-                system_prompt = [[ 
+                system_prompt = [[
                 You are a programming instructor focused on clear, practical explanations.
 
                 Do not code anything, just explain to me. You are allowed to use code snippets in the explanation, but do not
@@ -37,8 +37,16 @@ return {
                 - Refer to the documentation if applicable
                 ]]
             },
-            UNIQUE_CODE = {
-                system_prompt = "Add an empty comment to the end of each line of code."
+            SYSTEM_PROMPT = {
+                system_prompt = [[
+                    When I ask you a question reformulate the question so that you can provide better results. 
+                    Then, generate three additional questions that would help you give a more accurate answer. 
+                    Make assumptions to these questions and combine the answers to produce the final answers to my original question. 
+                    State the assumptions you are making before answering the question.
+                    I want you to give me a TLDR for long responses
+
+                    Prevent excessive use of emojis. only when it makes sense
+                ]]
             }
         },
 
@@ -82,8 +90,8 @@ return {
     build = "make tiktoken",
     event = "VeryLazy",
     keys = {
-        { "<leader>ccc", "<cmd>CopilotChat<cr>", desc = "CopilotChat - Chat" },
-        { "<leader>ccm", "<cmd>CopilotChatCommit<cr>", desc = "CopilotChat - Commit" },
+        { "<leader>ccc", "<cmd>CopilotChat<cr>",        desc = "CopilotChat - Chat" },
+        { "<leader>ccm", "<cmd>CopilotChatCommit<cr>",  desc = "CopilotChat - Commit" },
         { "<leader>cce", "<cmd>CopilotChatExplain<cr>", desc = "CopilotChat - Explain code" },
         { "<leader>cct", "<cmd>CopilotChatTests<cr>",   desc = "CopilotChat - Generate tests" },
         {

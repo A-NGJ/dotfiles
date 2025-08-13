@@ -1,3 +1,4 @@
+
 return {
     {
         "williamboman/mason.nvim",
@@ -17,10 +18,6 @@ return {
     --             ensure_installed = {"lua_ls", "pyright", "terraformls"}
     --         })
     --
-    --         require("mason-lspconfig").setup_handlers({
-    --             automatic_enable = true,
-    --             -- Add any server-specific configurations here if needed
-    --         })
     --     end
     -- }
 }

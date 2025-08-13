@@ -2,6 +2,7 @@ require('config.lazy')
 -- require('mini.ai').setup()
 -- require('mini.surround').setup()
 -- require('plugins.mini')
+vim.o.statusline = "%f"
 
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
@@ -9,7 +10,6 @@ vim.o.expandtab = true
 
 -- Insert mode tab behavior (needs a mapping):
 vim.api.nvim_set_keymap("i", "<S-Tab>", "<C-d>", { noremap = true })
-
 vim.api.nvim_set_keymap("n", "<CR>", ":nohlsearch<CR><CR>", { noremap = true })
 
 -- Line Numbers:
@@ -55,10 +55,10 @@ local on_attach = function(_, bufnr)
     vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = '[C]ode [A]ction' })
 
     -- vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = '[G]o [D]efinition' })
-    vim.keymap.set("n", "gd", require("telescope.builtin").lsp_definitions, { desc = '[G]o [D]efinition' })
+    vim.keymap.set("n", "<leader>gd", require("telescope.builtin").lsp_definitions, { desc = '[G]o [D]efinition' })
     -- vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = '[G]o [I]mplementation' })
-    vim.keymap.set("n", "gi", require("telescope.builtin").lsp_implementations, { desc = '[G]o [I]mplementation' })
-    vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, { desc = '[G]o [R]eferences' })
+    vim.keymap.set("n", "<leader>gi", require("telescope.builtin").lsp_implementations, { desc = '[G]o [I]mplementation' })
+    vim.keymap.set("n", "<leader>gr", require("telescope.builtin").lsp_references, { desc = '[G]o [R]eferences' })
     vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = 'Hover' })
 end
 
@@ -68,10 +68,28 @@ require("lspconfig").lua_ls.setup {
     on_attach = on_attach,
     capabilities = capabilities
 }
+
 require("lspconfig").pyright.setup {
     on_attach = on_attach,
     capabilities = capabilities,
+    settings = {
+        pyright = {
+            disableOrganizeImports = true, -- Using Ruff
+            reportGeneralTypeIssue = false,
+        },
+    },
 }
+
+require("lspconfig").ruff_lsp.setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+    settings = {
+        ruff = {
+            lineLength = 120, -- Set the line length to 120 characters
+        },
+    },
+}
+
 require("lspconfig").terraformls.setup {
     on_attach = on_attach,
     capabilities = capabilities,
@@ -145,3 +163,17 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "toml", "yaml" },
+    callback = function()
+        vim.opt_local.shiftwidth = 2   -- Number of spaces for auto-indent
+        vim.opt_local.tabstop = 2      -- Number of spaces a tab counts for
+        vim.opt_local.softtabstop = 2  -- Number of spaces for a tab while editing
+        vim.opt_local.expandtab = true -- Use spaces instead of tabs
+    end,
+})
+
+vim.api.nvim_set_keymap("n", "<C-W><Up>", ":resize +4<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-W><Down>", ":resize -4<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-W><Left>", ":vertical resize -4<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<C-W><Right>", ":vertical resize +4<CR>", { noremap = true, silent = true })

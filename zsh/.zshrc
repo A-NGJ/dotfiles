@@ -4,7 +4,7 @@ export CLICOLOR=1
 export PROMPT='%F{75}%n@%m %F{81}%~%f $ '
 autoload -Uz compinit && compinit
 export PATH="/opt/homebrew/opt/gradle@7/bin:$PATH"
-export AWS_DEFAULT_PROFILE=find-dev
+export AWS_DEFAULT_PROFILE=default
 # export AWS_PROFILE=nl-playground-developer
 export JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION=1
 export GOPATH=$HOME/go
@@ -135,3 +135,8 @@ export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
 
 # key bindings
 bindkey '^O' clear-screen
+
+# Created by `pipx` on 2025-05-27 12:26:03
+export PATH="$PATH:/Users/alen/.local/bin"
+export NODE_EXTRA_CA_CERTS="/Users/alen/certs/zscaler_root.pem"
+# export CURL_CA_BUNDLE="/Users/alen/certs/zscaler_root.pem"

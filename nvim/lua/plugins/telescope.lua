@@ -5,19 +5,19 @@ local M = {}
 local is_inside_work_tree = {}
 
 M.project_files = function()
-  local opts = {} -- define here if you want to define something
+    local opts = {} -- define here if you want to define something
 
-  local cwd = vim.fn.getcwd()
-  if is_inside_work_tree[cwd] == nil then
-    vim.fn.system("git rev-parse --is-inside-work-tree")
-    is_inside_work_tree[cwd] = vim.v.shell_error == 0
-  end
+    local cwd = vim.fn.getcwd()
+    if is_inside_work_tree[cwd] == nil then
+        vim.fn.system("git rev-parse --is-inside-work-tree")
+        is_inside_work_tree[cwd] = vim.v.shell_error == 0
+    end
 
-  if is_inside_work_tree[cwd] then
-    require("telescope.builtin").git_files(opts)
-  else
-    require("telescope.builtin").find_files(opts)
-  end
+    if is_inside_work_tree[cwd] then
+        require("telescope.builtin").git_files(opts)
+    else
+        require("telescope.builtin").find_files(opts)
+    end
 end
 
 return {
@@ -34,9 +34,18 @@ return {
             -- See `:help telescope` and `:help telescope.setup()`
             require('telescope').setup {
                 defaults = {
+                    vimgrep_arguments = {
+                        'rg',
+                        '--color=never',
+                        '--no-heading',
+                        '--with-filename',
+                        '--line-number',
+                        '--column',
+                        '--pcre2' -- Enables advanced regex (needed for lookaheads)
+                    },
                     layout_strategy = "horizontal",
                     layout_config = {
-                        preview_width = 0.65,
+                        -- preview_width = 0.65,
                         horizontal = {
                             size = {
                                 width = "95%",
@@ -87,10 +96,11 @@ return {
             vim.keymap.set('n', '<leader>sb', require('telescope.builtin').buffers,
                 { desc = '[ ] Find existing buffers' })
             vim.keymap.set('n', '<leader>sS', require('telescope.builtin').git_status, { desc = '' })
-            vim.keymap.set('n', '<leader>sr', require('telescope.builtin').lsp_references, { desc = '[S]earch [R]eferences' })
+            vim.keymap.set('n', '<leader>sr', require('telescope.builtin').lsp_references,
+                { desc = '[S]earch [R]eferences' })
             vim.keymap.set('n', '<c-e>', ":Telescope harpoon marks<CR>", { desc = 'Harpoon [M]arks' })
             -- vim.keymap.set("n", "<Leader>s", "<CMD>lua require('telescope').extensions.git_worktree.git_worktrees()<CR>",
-                -- silent)
+            -- silent)
             vim.keymap.set("n", "<Leader>sR",
                 "<CMD>lua require('telescope').extensions.git_worktree.create_git_worktree()<CR>", silent)
             vim.keymap.set("n", "<Leader>sn", "<CMD>lua require('telescope').extensions.notify.notify()<CR>", silent)
