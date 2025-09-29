@@ -47,6 +47,9 @@ vim.o.timeoutlen = 3000
 
 vim.keymap.set("i", "jk", "<Esc>", { noremap = true })
 
+-- LSP formatting
+vim.keymap.set("n", "<leader>ff", vim.lsp.buf.format, { noremap = true, silent = true, desc = "[F]ormat [F]ile" })
+
 -- Yank to clipboard
 vim.o.clipboard = "unnamedplus"
 
@@ -64,12 +67,16 @@ end
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-require("lspconfig").lua_ls.setup {
+vim.lsp.config.lua_ls = {
+    cmd = { 'lua-language-server' },
+    root_patterns = { '.luarc.json', '.luarc.jsonc', '.luacheckrc', '.stylua.toml', 'stylua.toml', 'selene.toml', 'selene.yml', '.git' },
     on_attach = on_attach,
     capabilities = capabilities
 }
 
-require("lspconfig").pyright.setup {
+vim.lsp.config.pyright = {
+    cmd = { 'pyright-langserver', '--stdio' },
+    root_patterns = { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', 'pyrightconfig.json', '.git' },
     on_attach = on_attach,
     capabilities = capabilities,
     settings = {
@@ -77,10 +84,18 @@ require("lspconfig").pyright.setup {
             disableOrganizeImports = true, -- Using Ruff
             reportGeneralTypeIssue = false,
         },
+        python = {
+            analysis = {
+                ignore = { '*' }, -- Ignore all files for analysis,
+                typeCheckingMode = "off", -- Disable type checking
+            }
+        }
     },
 }
 
-require("lspconfig").ruff_lsp.setup {
+vim.lsp.config.ruff = {
+    cmd = { 'ruff', 'server' },
+    root_patterns = { 'pyproject.toml', 'ruff.toml', '.ruff.toml', '.git' },
     on_attach = on_attach,
     capabilities = capabilities,
     settings = {
@@ -90,23 +105,25 @@ require("lspconfig").ruff_lsp.setup {
     },
 }
 
-require("lspconfig").terraformls.setup {
+vim.lsp.config.terraformls = {
+    cmd = { 'terraform-ls', 'serve' },
+    root_patterns = { '.terraform', '*.tf', '.git' },
     on_attach = on_attach,
     capabilities = capabilities,
 }
 
-require('lspconfig').mypy.setup {
-    on_attach = on_attach,
-    capabilities = capabilities,
-}
 
 
-require("lspconfig").yamlls.setup {
+vim.lsp.config.yamlls = {
+    cmd = { 'yaml-language-server', '--stdio' },
+    root_patterns = { '.git' },
     on_attach = on_attach,
     capabilities = capabilities
 }
 
-require("lspconfig").tsserver.setup {
+vim.lsp.config.ts_ls = {
+    cmd = { 'typescript-language-server', '--stdio' },
+    root_patterns = { 'tsconfig.json', 'package.json', 'jsconfig.json', '.git' },
     on_attach = on_attach,
     capabilities = capabilities,
     filetypes = { "typescript", "typescriptreact", "typescript.tsx" },
@@ -122,6 +139,34 @@ require("lspconfig").tsserver.setup {
         }
     },
 }
+
+-- Enable LSP servers automatically
+vim.api.nvim_create_autocmd("FileType", {
+    callback = function(args)
+        local bufnr = args.buf
+        local filetype = vim.bo[bufnr].filetype
+
+        -- Map filetypes to LSP server names
+        local servers = {
+            lua = "lua_ls",
+            python = "pyright",
+            terraform = "terraformls",
+            yaml = "yamlls",
+            typescript = "ts_ls",
+            typescriptreact = "ts_ls",
+        }
+
+        local server_name = servers[filetype]
+        if server_name then
+            vim.lsp.enable(server_name, { bufnr = bufnr })
+        end
+
+        -- Also enable ruff for Python files
+        if filetype == "python" then
+            vim.lsp.enable("ruff", { bufnr = bufnr })
+        end
+    end,
+})
 
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
@@ -177,3 +222,7 @@ vim.api.nvim_set_keymap("n", "<C-W><Up>", ":resize +4<CR>", { noremap = true, si
 vim.api.nvim_set_keymap("n", "<C-W><Down>", ":resize -4<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<C-W><Left>", ":vertical resize -4<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<C-W><Right>", ":vertical resize +4<CR>", { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap("n", "<leader>cp", ":let @+ = expand('%:p')<CR>", { noremap = true, silent = true })
+vim.api.nvim_set_keymap("n", "<leader>cr", ":let @+ = expand('%')<CR>", { noremap = true, silent = true })
+

@@ -140,3 +140,5 @@ bindkey '^O' clear-screen
 export PATH="$PATH:/Users/alen/.local/bin"
 export NODE_EXTRA_CA_CERTS="/Users/alen/certs/zscaler_root.pem"
 # export CURL_CA_BUNDLE="/Users/alen/certs/zscaler_root.pem"
+#
+export AWS_DEFAULT_REGION="eu-central-1"

@@ -6,3 +6,6 @@ export PATH="$PATH:/Users/awnj/.local/bin"
 
 # Created by `pipx` on 2025-02-10 19:31:19
 export PATH="$PATH:/Users/aleksandernagaj/.local/bin"
+
+# Created by `pipx` on 2025-05-27 12:26:03
+export PATH="$PATH:/Users/alen/.local/bin"
