@@ -149,7 +149,6 @@ vim.api.nvim_create_autocmd("FileType", {
         -- Map filetypes to LSP server names
         local servers = {
             lua = "lua_ls",
-            python = "pyright",
             terraform = "terraformls",
             yaml = "yamlls",
             typescript = "ts_ls",
@@ -161,8 +160,9 @@ vim.api.nvim_create_autocmd("FileType", {
             vim.lsp.enable(server_name, { bufnr = bufnr })
         end
 
-        -- Also enable ruff for Python files
+        -- Enable pyright and ruff only for Python files
         if filetype == "python" then
+            vim.lsp.enable("pyright", { bufnr = bufnr })
             vim.lsp.enable("ruff", { bufnr = bufnr })
         end
     end,
@@ -225,4 +225,36 @@ vim.api.nvim_set_keymap("n", "<C-W><Right>", ":vertical resize +4<CR>", { norema
 
 vim.api.nvim_set_keymap("n", "<leader>cp", ":let @+ = expand('%:p')<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<leader>cr", ":let @+ = expand('%')<CR>", { noremap = true, silent = true })
+
+-- Custom LspInfo command using built-in vim.lsp functions
+vim.api.nvim_create_user_command('LspInfo', function()
+    local clients = vim.lsp.get_clients({ bufnr = 0 })
+
+    if #clients == 0 then
+        print("No LSP clients attached to current buffer")
+        return
+    end
+
+    print("LSP clients attached to current buffer:")
+    print("=======================================")
+
+    for _, client in ipairs(clients) do
+        local status = client.is_stopped() and "stopped" or "running"
+        print(string.format("• %s (id: %d, status: %s)", client.name, client.id, status))
+
+        if client.config.root_dir then
+            print(string.format("  Root: %s", client.config.root_dir))
+        end
+
+        if client.config.filetypes then
+            print(string.format("  Filetypes: %s", table.concat(client.config.filetypes, ", ")))
+        end
+
+        print("")
+    end
+
+    -- Also show global LSP info
+    local all_clients = vim.lsp.get_clients()
+    print(string.format("Total LSP clients running: %d", #all_clients))
+end, { desc = 'Show LSP client information' })
 

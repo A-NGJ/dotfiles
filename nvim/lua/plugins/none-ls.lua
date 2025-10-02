@@ -18,6 +18,7 @@ return {
                         "--line-length", "120",
                     },
                 }),
+                null_ls.builtins.diagnostics.markdownlint,
                 null_ls.builtins.diagnostics.mypy.with({
                     extra_args = function()
                         local args = {
