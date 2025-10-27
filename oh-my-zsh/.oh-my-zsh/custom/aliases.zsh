@@ -20,8 +20,8 @@ alias cat=bat
 alias vim=nvim
 
 # Eza
-alias ls="eza --icons"
-alias l="eza -lh --icons --git -a"
+alias ls="eza --icons auto"
+alias ll="eza -lh --icons --git -a"
 alias lt="eza --tree --level=2 --long --icons --git"
 alias ltree="eza --tree --level=2  --icons --git"
 
@@ -33,3 +33,17 @@ alias inv='nvim $(fzf -m)'
 # Zscaler
 alias zuload="sudo launchctl unload /Library/LaunchDaemons/com.zscaler.service.plist && sudo launchctl unload /Library/LaunchDaemons/com.zscaler.tunnel.plist"
 alias zload="sudo launchctl load /Library/LaunchDaemons/com.zscaler.service.plist && sudo launchctl load /Library/LaunchDaemons/com.zscaler.tunnel.plist"
+
+# Git
+# Fuzzy checkout branch
+alias gitcheckout="git branch | fzf | xargs git checkout"
+
+tempe () {
+  cd "$(mktemp -d)"
+  chmod -R 0700 .
+  if [[ $# -eq 1 ]]; then
+    \mkdir -p "$1"
+    cd "$1"
+    chmod -R 0700 .
+  fi
+}

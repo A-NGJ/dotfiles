@@ -54,15 +54,18 @@ vim.keymap.set("n", "<leader>ff", vim.lsp.buf.format, { noremap = true, silent =
 vim.o.clipboard = "unnamedplus"
 
 local on_attach = function(_, bufnr)
-    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = '[R]e[N]ame' })
-    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = '[C]ode [A]ction' })
+    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { desc = '[R]e[N]ame', buffer = bufnr })
+    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = '[C]ode [A]ction', buffer = bufnr })
 
-    -- vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = '[G]o [D]efinition' })
-    vim.keymap.set("n", "<leader>gd", require("telescope.builtin").lsp_definitions, { desc = '[G]o [D]efinition' })
-    -- vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = '[G]o [I]mplementation' })
-    vim.keymap.set("n", "<leader>gi", require("telescope.builtin").lsp_implementations, { desc = '[G]o [I]mplementation' })
-    vim.keymap.set("n", "<leader>gr", require("telescope.builtin").lsp_references, { desc = '[G]o [R]eferences' })
-    vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = 'Hover' })
+    -- Native LSP go-to-definition (works without Telescope)
+    vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = '[G]o [D]efinition', buffer = bufnr })
+    -- Telescope version for split views
+    vim.keymap.set("n", "<leader>gd", require("telescope.builtin").lsp_definitions, { desc = '[G]o [D]efinition (Telescope)', buffer = bufnr })
+    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = '[G]o [I]mplementation', buffer = bufnr })
+    vim.keymap.set("n", "<leader>gi", require("telescope.builtin").lsp_implementations, { desc = '[G]o [I]mplementation (Telescope)', buffer = bufnr })
+    vim.keymap.set("n", "gr", vim.lsp.buf.references, { desc = '[G]o [R]eferences', buffer = bufnr })
+    vim.keymap.set("n", "<leader>gr", require("telescope.builtin").lsp_references, { desc = '[G]o [R]eferences (Telescope)', buffer = bufnr })
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = 'Hover', buffer = bufnr })
 end
 
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -77,22 +80,18 @@ vim.lsp.config.lua_ls = {
 
 vim.lsp.config.pyright = {
     cmd = { 'pyright-langserver', '--stdio' },
-    root_patterns = { 'pyproject.toml', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', 'pyrightconfig.json', '.git' },
+    root_patterns = { 'pyproject.toml', 'pyrightconfig.json', 'setup.py', 'setup.cfg', 'requirements.txt', 'Pipfile', '.git' },
     filetypes = { 'python' },
     on_attach = on_attach,
     capabilities = capabilities,
     settings = {
-        pyright = {
-            disableOrganizeImports = true, -- Using Ruff
-            reportGeneralTypeIssue = false,
-        },
         python = {
             analysis = {
-                ignore = { '*' }, -- Ignore all files for analysis,
-                typeCheckingMode = "off", -- Disable type checking
+                typeCheckingMode = "off",
+                reportMissingImports = "warning"
             }
         }
-    },
+    }
 }
 
 vim.lsp.config.ruff = {
@@ -110,7 +109,7 @@ vim.lsp.config.ruff = {
 
 vim.lsp.config.terraformls = {
     cmd = { 'terraform-ls', 'serve' },
-    root_patterns = { '.terraform', '*.tf', '.git' },
+    root_patterns = { '.terraform', '.git' },
     filetypes = { 'terraform', 'hcl' },
     on_attach = on_attach,
     capabilities = capabilities,
@@ -232,34 +231,34 @@ vim.api.nvim_set_keymap("n", "<leader>cp", ":let @+ = expand('%:p')<CR>", { nore
 vim.api.nvim_set_keymap("n", "<leader>cr", ":let @+ = expand('%')<CR>", { noremap = true, silent = true })
 
 -- Custom LspInfo command using built-in vim.lsp functions
-vim.api.nvim_create_user_command('LspInfo', function()
-    local clients = vim.lsp.get_clients({ bufnr = 0 })
-
-    if #clients == 0 then
-        print("No LSP clients attached to current buffer")
-        return
-    end
-
-    print("LSP clients attached to current buffer:")
-    print("=======================================")
-
-    for _, client in ipairs(clients) do
-        local status = client.is_stopped() and "stopped" or "running"
-        print(string.format("• %s (id: %d, status: %s)", client.name, client.id, status))
-
-        if client.config.root_dir then
-            print(string.format("  Root: %s", client.config.root_dir))
-        end
-
-        if client.config.filetypes then
-            print(string.format("  Filetypes: %s", table.concat(client.config.filetypes, ", ")))
-        end
-
-        print("")
-    end
-
-    -- Also show global LSP info
-    local all_clients = vim.lsp.get_clients()
-    print(string.format("Total LSP clients running: %d", #all_clients))
-end, { desc = 'Show LSP client information' })
-
+-- vim.api.nvim_create_user_command('LspInfo', function()
+--     local clients = vim.lsp.get_clients({ bufnr = 0 })
+--
+--     if #clients == 0 then
+--         print("No LSP clients attached to current buffer")
+--         return
+--     end
+--
+--     print("LSP clients attached to current buffer:")
+--     print("=======================================")
+--
+--     for _, client in ipairs(clients) do
+--         local status = client.is_stopped() and "stopped" or "running"
+--         print(string.format("• %s (id: %d, status: %s)", client.name, client.id, status))
+--
+--         if client.config.root_dir then
+--             print(string.format("  Root: %s", client.config.root_dir))
+--         end
+--
+--         if client.config.filetypes then
+--             print(string.format("  Filetypes: %s", table.concat(client.config.filetypes, ", ")))
+--         end
+--
+--         print("")
+--     end
+--
+--     -- Also show global LSP info
+--     local all_clients = vim.lsp.get_clients()
+--     print(string.format("Total LSP clients running: %d", #all_clients))
+-- end, { desc = 'Show LSP client information' })
+--
