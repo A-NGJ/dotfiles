@@ -5,12 +5,6 @@ export PROMPT='%F{75}%n@%m %F{81}%~%f $ '
 autoload -Uz compinit && compinit
 export PATH="/opt/homebrew/opt/gradle@7/bin:$PATH"
 export AWS_DEFAULT_PROFILE=default
-# export AWS_PROFILE=nl-playground-developer
-export JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION=1
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
-export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
-export PATH="/Applications/SnowSQL.app/Contents/MacOS/:$PATH"
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -125,20 +119,11 @@ source ~/fzf-git/fzf-git.sh
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-# Created by `pipx` on 2024-09-26 14:43:24
-export PATH="$PATH:/Users/awnj/.local/bin"
-export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
-
-# Created by `pipx` on 2025-02-10 19:31:19
-export PATH="$PATH:/Users/aleksandernagaj/.local/bin"
-export PATH="$HOME/.local/share/nvim/mason/bin:$PATH"
-
 # key bindings
 bindkey '^O' clear-screen
 
-# Created by `pipx` on 2025-05-27 12:26:03
-export PATH="$PATH:/Users/alen/.local/bin"
 export NODE_EXTRA_CA_CERTS="/Users/alen/certs/zscaler_root.pem"
 # export CURL_CA_BUNDLE="/Users/alen/certs/zscaler_root.pem"
 #
 export AWS_DEFAULT_REGION="eu-central-1"
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
