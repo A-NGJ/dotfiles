@@ -1,7 +1,0 @@
-{
-  "env": {
-    "DISABLE_TELEMETRY": "1"
-  },
-  "includeCoAuthoredBy": false,
-  "alwaysThinkingEnabled": false
-}
