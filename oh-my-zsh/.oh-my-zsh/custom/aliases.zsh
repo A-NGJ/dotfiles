@@ -38,6 +38,8 @@ alias zload="sudo launchctl load /Library/LaunchDaemons/com.zscaler.service.plis
 # Fuzzy checkout branch
 alias gitcheckout="git branch | fzf | xargs git checkout"
 
+alias awsume="source awsume"
+
 tempe () {
   cd "$(mktemp -d)"
   chmod -R 0700 .
@@ -46,4 +48,9 @@ tempe () {
     cd "$1"
     chmod -R 0700 .
   fi
+}
+
+mkcd () {
+  \mkdir -p "$1"
+  cd "$1"
 }

@@ -1,3 +1,5 @@
+source "$ZDOTDIR/env.zsh"
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 export CLICOLOR=1
@@ -127,3 +129,4 @@ export NODE_EXTRA_CA_CERTS="/Users/alen/certs/zscaler_root.pem"
 #
 export AWS_DEFAULT_REGION="eu-central-1"
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
