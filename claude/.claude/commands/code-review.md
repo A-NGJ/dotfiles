@@ -88,21 +88,21 @@ First, automatically detect whether this is a GitHub or GitLab repository:
     - Pass the path to this file as `$ARGUMENTS` to each specialized agent below
     - DO NOT include the full diff in `$ARGUMENTS`.
 
-## 4. Code Quality Review
+## 3. Code Quality Review
 
 - Use Task tool with subagent_type="code-reviewer"
-- Prompt: "Review code quality and maintainability for: $ARGUMENTS. Check for code smells, readability, documentation, and adherence to best practices. Focus on the code quality, following best practices considering the project context. DO NOT RUN tests.
+- Prompt: "Review code quality and maintainability for: $ARGUMENTS. Check for code smells, readability, documentation, and adherence to best practices. Focus on the code quality, following best practices considering the project context. DO NOT RUN tests."
 - Focus: Clean code principles, SOLID, DRY, naming conventions
 
-## 2. Security Audit
+## 4. Security Audit
 
 - Use Task tool with subagent_type="security-auditor"
-- Prompt: "Perform security audit on: $ARGUMENTS. Check for vulnerabilities, OWASP compliance, authentication issues, and data protection.
+- Prompt: "Perform security audit on: $ARGUMENTS. Check for vulnerabilities, OWASP compliance, authentication issues, and data protection."
 - Focus: Injection risks, authentication, authorization, data encryption
 
-## 3. Test Coverage Assessment
+## 5. Test Coverage Assessment
 
-- Use Task tool with subagent_type="test-automator"
+- Use Task tool with subagent_type="code-reviewer"
 - Prompt: "Evaluate test coverage and quality for: $ARGUMENTS. Assess unit tests, integration tests, and identify gaps in test coverage."
 - Focus: Coverage metrics, test quality, edge cases, test maintainability
 

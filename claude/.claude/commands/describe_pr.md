@@ -22,8 +22,23 @@ First, automatically detect whether this is a GitHub or GitLab repository:
 
 1. **Read the PR description template:**
    - First, check if `.claude/thoughts/shared/pr_description.md` exists
-   - If it doesn't exist, inform the user that their `humanlayer thoughts` setup is incomplete and they need to create a PR description template at `.claude/thoughts/shared/pr_description.md`
-   - Read the template carefully to understand all sections and requirements
+   - If it exists, read the template carefully to understand all sections and requirements
+   - If it doesn't exist, use this default template:
+     ```
+     <Short description>
+
+     ## Key changes
+     - **<Change 1>**: <Description>
+
+     ## Breaking changes
+     - **<Breaking change>**: <Description> (or "None")
+
+     ## Configuration changes
+     - **<Config change>**: <Description> (or "None")
+
+     ## Testing
+     - **<Test performed>**: <Description>
+     ```
 
 
 2. **Identify the PR/MR to describe:**
