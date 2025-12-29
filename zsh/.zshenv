@@ -5,11 +5,6 @@ export XDG_STATE_HOME="$HOME/.local/state"
 
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 
-NETLIGHT_CODEPILOT_API_KEY="sk-UMfomVnHUN4tyE2rbIWCww"
-NETLIGHT_CODEPILOT_BASE_URL="https://llm-proxy.edgez.live/"
-
-export NETLIGHT_CODEPILOT_API_KEY="${NETLIGHT_CODEPILOT_API_KEY}"
-export ANTHROPIC_AUTH_TOKEN="${NETLIGHT_CODEPILOT_API_KEY}"
-export ANTHROPIC_BASE_URL="${NETLIGHT_CODEPILOT_BASE_URL}"
-export OPENAI_BASE_URL="${NETLIGHT_CODEPILOT_BASE_URL}"
-export OPENAI_API_KEY="${NETLIGHT_CODEPILOT_API_KEY}"
+# Source local environment variables (secrets, API keys, etc.)
+# This file should NOT be committed to git - add to .gitignore
+[ -f "$ZDOTDIR/.zshenv.local" ] && source "$ZDOTDIR/.zshenv.local"

@@ -6,3 +6,6 @@ fzf
 .zsh_history
 .zsh_sessions
 .zcompdump*
+
+# Local environment files with secrets
+**/.zshenv.local
