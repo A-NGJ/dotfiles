@@ -49,6 +49,7 @@ First, automatically detect whether this is a GitHub or GitLab repository:
      - **GitHub**: `gh pr list --limit 10 --json number,title,headRefName,author`
      - **GitLab**: `glab mr list --per-page 10`
    - Ask the user which PR/MR they want to describe
+   - If there is no PR, generate description for changes to local main: `git diff main...HEAD`
 
 3. **Check for existing description:**
    - Check if `thoughts/shared/prs/{number}_description.md` already exists
@@ -102,13 +103,6 @@ First, automatically detect whether this is a GitHub or GitLab repository:
    - Write the completed description to `.claude/thoughts/shared/prs/{number}_description.md`
    - Show the user the generated description
    - Wait for user input/approval before proceeding
-
-9. **Update the PR/MR:**
-   - Update the description directly:
-     - **GitHub**: `gh pr edit {number} --body-file thoughts/shared/prs/{number}_description.md`
-     - **GitLab**: `glab mr update {number} --description "$(cat thoughts/shared/prs/{number}_description.md)"`
-   - Confirm the update was successful
-   - If any verification steps remain unchecked, remind the user to complete them before merging
 
 ## Important notes:
 - This command works across different repositories - always read the local template
