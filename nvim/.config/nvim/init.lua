@@ -1,7 +1,4 @@
 require('config.lazy')
--- require('mini.ai').setup()
--- require('mini.surround').setup()
--- require('plugins.mini')
 vim.o.statusline = "%f"
 
 vim.o.tabstop = 4
@@ -34,7 +31,7 @@ vim.o.linebreak = true -- 'lbr' equivalent
 
 -- Auto Indent:
 vim.o.autoindent = true
-vim.o.smartindent = false -- Conflict with treesitter indent
+vim.o.smartindent = true -- Conflict with treesitter indent
 
 -- Command Line:
 vim.o.showcmd = true
@@ -60,11 +57,14 @@ local on_attach = function(_, bufnr)
     -- Native LSP go-to-definition (works without Telescope)
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = '[G]o [D]efinition', buffer = bufnr })
     -- Telescope version for split views
-    vim.keymap.set("n", "<leader>gd", require("telescope.builtin").lsp_definitions, { desc = '[G]o [D]efinition (Telescope)', buffer = bufnr })
+    vim.keymap.set("n", "<leader>gd", require("telescope.builtin").lsp_definitions,
+        { desc = '[G]o [D]efinition (Telescope)', buffer = bufnr })
     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = '[G]o [I]mplementation', buffer = bufnr })
-    vim.keymap.set("n", "<leader>gi", require("telescope.builtin").lsp_implementations, { desc = '[G]o [I]mplementation (Telescope)', buffer = bufnr })
+    vim.keymap.set("n", "<leader>gi", require("telescope.builtin").lsp_implementations,
+        { desc = '[G]o [I]mplementation (Telescope)', buffer = bufnr })
     vim.keymap.set("n", "gr", vim.lsp.buf.references, { desc = '[G]o [R]eferences', buffer = bufnr })
-    vim.keymap.set("n", "<leader>gr", require("telescope.builtin").lsp_references, { desc = '[G]o [R]eferences (Telescope)', buffer = bufnr })
+    vim.keymap.set("n", "<leader>gr", require("telescope.builtin").lsp_references,
+        { desc = '[G]o [R]eferences (Telescope)', buffer = bufnr })
     vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = 'Hover', buffer = bufnr })
 end
 
@@ -107,6 +107,14 @@ vim.lsp.config.ruff = {
     },
 }
 
+vim.lsp.config.ty = {
+    cmd = { 'ty', 'server' },
+    root_patterns = { 'pyproject.toml', 'ty.toml', '.git' },
+    filetypes = { 'python' },
+    on_attach = on_attach,
+    capabilities = capabilities,
+}
+
 vim.lsp.config.terraformls = {
     cmd = { 'terraform-ls', 'serve' },
     root_patterns = { '.terraform', '.git' },
@@ -114,8 +122,6 @@ vim.lsp.config.terraformls = {
     on_attach = on_attach,
     capabilities = capabilities,
 }
-
-
 
 vim.lsp.config.yamlls = {
     cmd = { 'yaml-language-server', '--stdio' },
@@ -167,19 +173,18 @@ vim.api.nvim_create_autocmd("FileType", {
             typescriptreact = "ts_ls",
             go = "gopls",
             gomod = "gopls",
-            python = "ty",
         }
 
-        local server_name = servers[filetype]
-        if server_name then
-            vim.lsp.enable(server_name, { bufnr = bufnr })
+        -- Python: use ty (type checker) + ruff (linter)
+        if filetype == "python" then
+            vim.lsp.enable("ty", { bufnr = bufnr })
+            vim.lsp.enable("ruff", { bufnr = bufnr })
+        else
+            local server_name = servers[filetype]
+            if server_name then
+                vim.lsp.enable(server_name, { bufnr = bufnr })
+            end
         end
-
-        -- Enable pyright and ruff only for Python files
-        -- if filetype == "python" then
-        --     vim.lsp.enable("pyright", { bufnr = bufnr })
-        --     vim.lsp.enable("ruff", { bufnr = bufnr })
-        -- end
     end,
 })
 
@@ -195,13 +200,6 @@ vim.api.nvim_create_autocmd("FileType", {
     pattern = { "terraform", "hcl" },
 })
 
--- vim.api.nvim_create_autocmd("FileType", {
---     group = vim.api.nvim_create_augroup("FixTypeScriptCommentString", { clear = true }),
---     callback = function(ev)
---         vim.bo[ev.buf].commentstring = "/* %s */"
---     end,
---     pattern = { "typescript", "typescriptreact", "typescript.tsx" },
--- })
 
 vim.filetype.add {
     extension = {
