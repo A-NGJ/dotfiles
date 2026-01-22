@@ -8,7 +8,7 @@ return {
                 auto_install = true,
                 ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline", "python", "go", "terraform", "typescript" },
                 highlight = { enable = true },
-                indent = { enable = true },
+                indent = { enable = false },
                 enable = true,
                 enable_autocmd = false,
                 fold = {
