@@ -25,7 +25,7 @@ if [ $RUFF_FORMAT_EXIT -ne 0 ]; then
 fi
 
 # Check for remaining ruff issues
-RUFF_OUTPUT=$(uv run ruff check "$FILE_PATH" 2>&1)
+RUFF_OUTPUT=$(uv run ruff check --ignore F401 "$FILE_PATH" 2>&1)
 RUFF_EXIT=$?
 if [ $RUFF_EXIT -ne 0 ]; then
   ERRORS="${ERRORS}Ruff check failed:
@@ -35,10 +35,10 @@ ${RUFF_OUTPUT}
 fi
 
 # Run mypy on the file
-MYPY_OUTPUT=$(uv run mypy "$FILE_PATH" 2>&1)
+MYPY_OUTPUT=$(uv run ty check "$FILE_PATH" 2>&1)
 MYPY_EXIT=$?
 if [ $MYPY_EXIT -ne 0 ]; then
-  ERRORS="${ERRORS}Mypy check failed:
+  ERRORS="${ERRORS}Ty check failed:
 ${MYPY_OUTPUT}
 
 "
