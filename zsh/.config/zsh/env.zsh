@@ -9,3 +9,5 @@ prepend "$HOME/.local/bin"
 prepend '/home/linuxbrew/.linuxbrew/bin'
 unset prepend
 export PATH
+
+[ -L ~/.local/bin/ty ] || ln -s ~/.local/share/nvim/mason/bin/ty ~/.local/bin/ty
