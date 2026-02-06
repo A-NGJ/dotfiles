@@ -1,0 +1,29 @@
+gui:
+  nerdFontsVersion: "3"
+  theme:
+    activeBorderColor:
+      - "#f5a97f" # Peach (MatchParen)
+      - bold
+    inactiveBorderColor:
+      - "#8aadf4" # Blue (FloatBorder)
+    optionsTextColor:
+      - "#8aadf4" # Blue (Function)
+    selectedLineBgColor:
+      - "#494d64" # Surface1 (Visual)
+    cherryPickedCommitBgColor:
+      - "#f0c6c6" # Flamingo (Identifier)
+    cherryPickedCommitFgColor:
+      - "#8aadf4" # Blue (Function)
+    unstagedChangesColor:
+      - "#ed8796" # Red (DiagnosticError)
+    defaultFgColor:
+      - "#cad3f5" # Text (Normal)
+    searchingActiveBorderColor:
+      - "#f5a97f" # Peach (MatchParen)
+      - bold
+os:
+  editPreset: nvim-remote
+git:
+  pagers:
+    - colorArg: always
+      pager: delta --dark --paging=never
