@@ -239,10 +239,10 @@ vim.api.nvim_set_keymap("n", "<C-W><Right>", ":vertical resize +4<CR>", { norema
 vim.api.nvim_set_keymap("n", "<leader>cp", ":let @+ = expand('%:p')<CR>", { noremap = true, silent = true })
 vim.api.nvim_set_keymap("n", "<leader>cr", ":let @+ = expand('%')<CR>", { noremap = true, silent = true })
 
--- Lazygit
-vim.keymap.set(
-    "n",
-    "<leader>lg",
-    ":LazyGit<CR>",
-    { noremap = true, silent = true, desc = "[L]azy[G]it" }
-)
+-- -- Lazygit
+-- vim.keymap.set(
+--     "n",
+--     "<leader>lg",
+--     ":LazyGit<CR>",
+--     { noremap = true, silent = true, desc = "[L]azy[G]it" }
+-- )
