@@ -11,7 +11,6 @@ TEMPLATE_DIR="${HOME}/dotfiles/bin/bin/templates"
 FORCE=false
 ALL=false
 UPDATE=false
-MINIMAL=false
 NO_CLAUDE_MD=false
 AGENTS_ONLY=false
 COMMANDS_ONLY=false
@@ -34,28 +33,30 @@ USAGE:
 OPTIONS:
     -h, --help          Show this help message
     -f, --force         Overwrite existing .claude directory
-    -a, --all           Copy all configs (non-interactive)
+    -a, --all           Also copy agents, commands, and hooks from dotfiles
     -u, --update        Update/refresh configs from dotfiles
-    -m, --minimal       Only create directory structure + CLAUDE.md
     --no-claude-md      Skip CLAUDE.md creation
-    --agents-only       Only copy agents
-    --commands-only     Only copy commands
+    --agents-only       Only copy agents (use with --all)
+    --commands-only     Only copy commands (use with --all)
 
 ARGUMENTS:
     TARGET_DIR          Target directory (default: current directory)
 
 EXAMPLES:
-    # Initialize current directory with all configs
+    # Initialize current directory (creates .claude/ + CLAUDE.md)
+    claude-init
+
+    # Initialize with all configs from dotfiles
     claude-init --all
 
     # Initialize specific directory
+    claude-init ~/projects/my-app
+
+    # Initialize with all configs in specific directory
     claude-init --all ~/projects/my-app
 
     # Update existing configs from dotfiles
     claude-init --update
-
-    # Only create structure and CLAUDE.md
-    claude-init --minimal
 
 NOTES:
     - Source configs are read from: ~/dotfiles/claude/.claude/
@@ -235,10 +236,6 @@ main() {
                 UPDATE=true
                 shift
                 ;;
-            -m|--minimal)
-                MINIMAL=true
-                shift
-                ;;
             --no-claude-md)
                 NO_CLAUDE_MD=true
                 shift
@@ -303,25 +300,24 @@ main() {
     mkdir -p "${claude_dir}/thoughts/shared/plans"
     mkdir -p "${claude_dir}/thoughts/shared/research"
     mkdir -p "${claude_dir}/thoughts/shared/decisions"
+    mkdir -p "${claude_dir}/thoughts/shared/designs"
+    mkdir -p "${claude_dir}/thoughts/shared/structures"
     mkdir -p "${claude_dir}/thoughts/local/scratch"
     log_success "   Created .claude/{agents,commands,hooks,thoughts}/"
 
-    # Handle minimal mode
-    if [[ "$MINIMAL" == true ]]; then
-        if [[ "$NO_CLAUDE_MD" != true ]]; then
-            log_info "Creating CLAUDE.md..."
-            generate_claude_md "$TARGET_DIR"
-        fi
-        ensure_gitignore_entry "$TARGET_DIR" ".claude/settings.local.json"
-        ensure_gitignore_entry "$TARGET_DIR" ".claude/thoughts/local/"
-        echo ""
-        log_success "Minimal initialization complete!"
-        exit 0
+    # Generate CLAUDE.md
+    if [[ "$NO_CLAUDE_MD" != true ]]; then
+        log_info "Creating CLAUDE.md..."
+        generate_claude_md "$TARGET_DIR"
     fi
 
-    # Copy configs (non-interactive --all mode)
+    # Update gitignore
+    ensure_gitignore_entry "$TARGET_DIR" ".claude/settings.local.json"
+    ensure_gitignore_entry "$TARGET_DIR" ".claude/thoughts/local/"
+
+    # Copy configs from dotfiles (only with --all)
     if [[ "$ALL" == true ]]; then
-        log_info "Copying configurations..."
+        log_info "Copying configurations from dotfiles..."
 
         if [[ "$COMMANDS_ONLY" != true ]]; then
             copy_directory "${DOTFILES_CLAUDE}/agents" "${claude_dir}/agents" "agents"
@@ -335,82 +331,20 @@ main() {
         if [[ -d "${DOTFILES_CLAUDE}/hooks" ]]; then
             copy_directory "${DOTFILES_CLAUDE}/hooks" "${claude_dir}/hooks" "hooks"
         fi
-
-        # Generate CLAUDE.md
-        if [[ "$NO_CLAUDE_MD" != true ]]; then
-            log_info "Creating CLAUDE.md..."
-            generate_claude_md "$TARGET_DIR"
-        fi
-
-        # Update gitignore
-        ensure_gitignore_entry "$TARGET_DIR" ".claude/settings.local.json"
-        ensure_gitignore_entry "$TARGET_DIR" ".claude/thoughts/local/"
-
-        echo ""
-        log_success "Initialization complete!"
-        echo ""
-        echo "Next steps:"
-        echo "  1. Edit CLAUDE.md to add project-specific info"
-        echo "  2. Customize agents/commands as needed"
-        echo "  3. Run Claude Code in your project"
-        exit 0
     fi
-
-    # Interactive mode
-    log_info "Select what to copy:"
-    echo ""
-
-    # Agents selection
-    echo -n "Copy agents? [Y/n] "
-    read -r copy_agents
-    copy_agents=${copy_agents:-Y}
-
-    # Commands selection
-    echo -n "Copy commands? [Y/n] "
-    read -r copy_commands
-    copy_commands=${copy_commands:-Y}
-
-    # Hooks selection
-    echo -n "Copy hooks? [Y/n] "
-    read -r copy_hooks
-    copy_hooks=${copy_hooks:-Y}
-
-    # CLAUDE.md selection
-    echo -n "Create CLAUDE.md? [Y/n] "
-    read -r create_claude_md
-    create_claude_md=${create_claude_md:-Y}
-
-    echo ""
-    log_info "Copying configurations..."
-
-    if [[ "$copy_agents" =~ ^[Yy]$ ]]; then
-        copy_directory "${DOTFILES_CLAUDE}/agents" "${claude_dir}/agents" "agents"
-    fi
-
-    if [[ "$copy_commands" =~ ^[Yy]$ ]]; then
-        copy_directory "${DOTFILES_CLAUDE}/commands" "${claude_dir}/commands" "commands"
-    fi
-
-    if [[ "$copy_hooks" =~ ^[Yy]$ ]] && [[ -d "${DOTFILES_CLAUDE}/hooks" ]]; then
-        copy_directory "${DOTFILES_CLAUDE}/hooks" "${claude_dir}/hooks" "hooks"
-    fi
-
-    if [[ "$create_claude_md" =~ ^[Yy]$ ]]; then
-        log_info "Creating CLAUDE.md..."
-        generate_claude_md "$TARGET_DIR"
-    fi
-
-    # Update gitignore
-    ensure_gitignore_entry "$TARGET_DIR" ".claude/settings.local.json"
-    ensure_gitignore_entry "$TARGET_DIR" ".claude/thoughts/local/"
 
     echo ""
     log_success "Initialization complete!"
     echo ""
     echo "Next steps:"
     echo "  1. Edit CLAUDE.md to add project-specific info"
-    echo "  2. Customize agents/commands as needed"
-    echo "  3. Run Claude Code in your project"
+    if [[ "$ALL" != true ]]; then
+        echo "  2. Run with --all to also copy agents/commands/hooks from dotfiles"
+        echo "  3. Run Claude Code in your project"
+    else
+        echo "  2. Customize agents/commands as needed"
+        echo "  3. Run Claude Code in your project"
+    fi
 }
 
 main "$@"
