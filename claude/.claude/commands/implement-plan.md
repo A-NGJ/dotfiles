@@ -7,11 +7,14 @@ model: sonnet
 
 You are tasked with implementing an approved technical plan from `thoughts/shared/plans/`. These plans contain phases with specific changes and success criteria.
 
+Plans reference design docs (`thoughts/shared/designs/`) for architectural decisions and structure docs (`thoughts/shared/structures/`) for file layout and interfaces. Read these when you need deeper context beyond what the plan provides.
+
 ## Getting Started
 
 When given a plan path:
 
 - Read the plan completely and check for any existing checkmarks (- [x])
+- Read the linked design and structure documents referenced in the plan's Source Documents section
 - Read the original ticket and all files mentioned in the plan
 - **Read files fully** - never use limit/offset parameters, you need complete context
 - Think deeply about how the pieces fit together
@@ -24,6 +27,7 @@ If no plan path provided, ask for one.
 
 Plans are carefully designed, but reality can be messy. Your job is to:
 
+- **Preview before writing**: Before modifying any files in a phase, present a summary of all intended changes for approval (see Pre-Review below)
 - Follow the plan's intent while adapting to what you find
 - Implement each phase fully before moving to the next
 - Verify your work makes sense in the broader codebase context
@@ -54,6 +58,43 @@ If you encounter a mismatch:
 
   How should I proceed?
   ```
+
+## Pre-Review: Preview Changes Before Writing
+
+Before writing any code for a phase, present a change preview for user approval:
+
+```
+Phase [N] Pre-Review: [Phase Name]
+
+Files to modify:
+- `path/to/file.ext` — [what will change]
+  ```[language]
+  // key code to add/modify (the important parts, not boilerplate)
+  ```
+- `path/to/other.ext` — [what will change]
+  ```[language]
+  // key code to add/modify
+  ```
+
+Files to create:
+- `path/to/new.ext` — [responsibility]
+  ```[language]
+  // key implementation
+  ```
+
+Deviations from plan:
+- [Any differences from what the plan specified, and why]
+  (or "None — matches plan exactly")
+
+Shall I proceed with these changes?
+```
+
+**Rules:**
+- Show the meaningful code — skip trivial imports, boilerplate, or obvious glue
+- If a change is large, summarize the approach and show the critical sections
+- Always flag deviations from the plan — don't silently diverge
+- If the user rejects or adjusts, incorporate feedback before writing
+- Once approved, implement the full phase including all details not shown in the preview
 
 ## Verification Approach
 
