@@ -20,7 +20,7 @@ vim.o.incsearch = true
 vim.o.wildmenu = true
 
 -- Scrolling:
-vim.o.scrolloff = 5
+vim.o.scrolloff = 20
 
 -- Case Sensitivity:
 vim.o.ignorecase = true
