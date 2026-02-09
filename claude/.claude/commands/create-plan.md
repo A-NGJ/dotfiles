@@ -5,168 +5,148 @@ model: opus
 
 # Implementation Plan
 
-You are tasked with creating detailed implementation plans through an interactive, iterative process. You should be skeptical, thorough, and work collaboratively with the user to produce high-quality technical specifications.
+Create detailed, phased implementation plans that define the order of work, success criteria, and verification steps. This stage takes approved design and structure documents and turns them into an actionable execution guide.
+
+**This stage does NOT own**: codebase research (→ `/research-codebase`), architectural decisions (→ `/create-design`), or file/module layout (→ `/create-structure`).
+
+**This stage OWNS**: phasing, task ordering, dependency sequencing, implementation code snippets, success criteria, verification steps, and commit strategy.
 
 ## Initial Response
 
 When this command is invoked:
 
 1. **Check if parameters were provided**:
-   - If a file path or ticket reference was provided as a parameter, skip the default message
-   - Immediately read any provided files FULLY
-   - Begin the research process
+   - If a file path to a structure or design document was provided, skip the default message
+   - Immediately read the provided files FULLY
+   - Begin the validation process
 
 2. **If no parameters provided**, respond with:
 ```
-I'll help you create a detailed implementation plan. Let me start by understanding what we're building.
+I'll help you create a detailed implementation plan.
 
 Please provide:
-1. The task/ticket description (or reference to a ticket file)
-2. Any relevant context, constraints, or specific requirements
-3. Links to related research or previous implementations
+1. The structure document from `.claude/thoughts/shared/structures/`
+2. The design document from `.claude/thoughts/shared/designs/` (if not linked in structure doc)
+3. Any additional constraints on phasing or ordering
 
-I'll analyze this information and work with you to create a comprehensive plan.
-
-Tip: You can also invoke this command with a ticket file directly: `/create_plan thoughts/allison/tickets/eng_1234.md`
-For deeper analysis, try: `/create_plan think deeply about thoughts/allison/tickets/eng_1234.md`
+Tip: `/create-plan thoughts/shared/structures/2025-01-08-feature-name.md`
 ```
 
 Then wait for the user's input.
 
 ## Process Steps
 
-### Step 1: Context Gathering & Initial Analysis
+### Step 1: Read Inputs & Validate
 
-1. **Read all mentioned files immediately and FULLY**:
-   - Ticket files (e.g., `thoughts/allison/tickets/eng_1234.md`)
-   - Research documents
-   - Related implementation plans
-   - Any JSON/data files mentioned
+1. **Read all provided documents immediately and FULLY**:
+   - Structure documents (primary input)
+   - Design documents (linked from structure doc or provided separately)
+   - Research documents (linked from design doc)
+   - Original ticket files (if referenced)
    - **IMPORTANT**: Use the Read tool WITHOUT limit/offset parameters to read entire files
    - **CRITICAL**: DO NOT spawn sub-tasks before reading these files yourself in the main context
    - **NEVER** read files partially - if a file is mentioned, read it completely
 
-2. **Spawn initial research tasks to gather context**:
-   Before asking the user any questions, use specialized agents to research in parallel:
+2. **Spot-check critical files from the structure doc**:
+   - Read 3-5 of the most important files listed in the structure doc
+   - Verify the codebase still matches what the structure doc describes
+   - Check that integration points are where the structure doc says they are
+   - If anything has drifted significantly, flag it immediately
 
-   - Use the **codebase-locator** agent to find all files related to the ticket/task
-   - Use the **codebase-analyzer** agent to understand how the current implementation works
-   - If relevant, use the **thoughts-locator** agent to find any existing thoughts documents about this feature
-   - If a Linear ticket is mentioned, use the **linear-ticket-reader** agent to get full details
-
-   These agents will:
-   - Find relevant source files, configs, and tests
-   - Identify the specific directories to focus on
-   - Trace data flow and key functions
-   - Return detailed explanations with file:line references
-
-3. **Read all files identified by research tasks**:
-   - After research tasks complete, read ALL files they identified as relevant
-   - Read them FULLY into the main context
-   - This ensures you have complete understanding before proceeding
-
-4. **Analyze and verify understanding**:
-   - Cross-reference the ticket requirements with actual code
-   - Identify any discrepancies or misunderstandings
-   - Note assumptions that need verification
-   - Determine true scope based on codebase reality
-
-5. **Present informed understanding and focused questions**:
+3. **Present validation results**:
    ```
-   Based on the ticket and my research of the codebase, I understand we need to [accurate summary].
+   I've read the full pipeline docs:
+   - Research: [path] — [topic summary]
+   - Design: [path] — [key decisions: A, B, C]
+   - Structure: [path] — [N modified files, M new files, key interfaces]
 
-   I've found that:
-   - [Current implementation detail with file:line reference]
-   - [Relevant pattern or constraint discovered]
-   - [Potential complexity or edge case identified]
+   Validation against current codebase:
+   - [file:line] — confirmed, matches structure doc
+   - [file:line] — confirmed, matches structure doc
+   - [file:line] — DRIFT DETECTED: [explanation of what changed]
 
-   Questions that my research couldn't answer:
-   - [Specific technical question that requires human judgment]
-   - [Business logic clarification]
-   - [Design preference that affects implementation]
+   Questions before I define phases:
+   - [Phasing question, e.g., "Should we parallelize the API and UI work?"]
+   - [Constraint question, e.g., "Any deployment ordering requirements?"]
    ```
 
-   Only ask questions that you genuinely cannot answer through code investigation.
+   Only ask questions about phasing and ordering — design and structure decisions are already made.
 
-### Step 2: Research & Discovery
+### Step 2: Phase Definition
 
 After getting initial clarifications:
 
-1. **If the user corrects any misunderstanding**:
-   - DO NOT just accept the correction
-   - Spawn new research tasks to verify the correct information
-   - Read the specific files/directories they mention
-   - Only proceed once you've verified the facts yourself
+1. **If the user flags any drift issues**:
+   - Read the specific files they mention to understand the current state
+   - Adjust phasing accordingly
+   - Do NOT redesign or restructure — flag back to those stages if changes are needed
 
-2. **Create a research todo list** using TodoWrite to track exploration tasks
+2. **Create a planning todo list** using TodoWrite to track phase definition tasks
 
-3. **Spawn parallel sub-tasks for comprehensive research**:
-   - Create multiple Task agents to research different aspects concurrently
-   - Use the right agent for each type of research:
+3. **Break the structure doc's file changes into ordered phases**:
+   - Group related changes that must ship together for correctness
+   - Respect dependency order (data model → business logic → API → UI)
+   - Each phase should leave the codebase in a working, testable state
+   - Keep phases small enough to verify independently but large enough to be meaningful
+   - Include test changes in the same phase as the code they test
 
-   **For deeper investigation:**
-   - **codebase-locator** - To find more specific files (e.g., "find all files that handle [specific component]")
-   - **codebase-analyzer** - To understand implementation details (e.g., "analyze how [system] works")
-   - **codebase-pattern-finder** - To find similar features we can model after
-
-   **For historical context:**
-   - **thoughts-locator** - To find any research, plans, or decisions about this area
-   - **thoughts-analyzer** - To extract key insights from the most relevant documents
-
-   Each agent knows how to:
-   - Find the right files and code patterns
-   - Identify conventions and patterns to follow
-   - Look for integration points and dependencies
-   - Return specific file:line references
-   - Find tests and examples
-
-3. **Wait for ALL sub-tasks to complete** before proceeding
-
-4. **Present findings and design options**:
+4. **Present proposed phases for buy-in**:
    ```
-   Based on my research, here's what I found:
+   Here's my proposed phasing:
 
-   **Current State:**
-   - [Key discovery about existing code]
-   - [Pattern or convention to follow]
+   ## Phase 1: [Descriptive Name]
+   [What this phase accomplishes]
+   Files: [list from structure doc]
+   Depends on: nothing (foundation)
 
-   **Design Options:**
-   1. [Option A] - [pros/cons]
-   2. [Option B] - [pros/cons]
+   ## Phase 2: [Descriptive Name]
+   [What this phase accomplishes]
+   Files: [list from structure doc]
+   Depends on: Phase 1
 
-   **Open Questions:**
-   - [Technical uncertainty]
-   - [Design decision needed]
-
-   Which approach aligns best with your vision?
-   ```
-
-### Step 3: Plan Structure Development
-
-#### Implementation Approach
-
-Once aligned on approach:
-
-1. **Create initial plan outline**:
-   ```
-   Here's my proposed plan structure:
-
-   ## Overview
-   [1-2 sentence summary]
-
-   ## Implementation Phases:
-   1. [Phase name] - [what it accomplishes]
-   2. [Phase name] - [what it accomplishes]
-   3. [Phase name] - [what it accomplishes]
+   ## Phase 3: [Descriptive Name]
+   [What this phase accomplishes]
+   Files: [list from structure doc]
+   Depends on: Phase 1, Phase 2
 
    Does this phasing make sense? Should I adjust the order or granularity?
    ```
 
-2. **Get feedback on structure** before writing details
+5. **Get feedback on phases** before writing detailed success criteria
+
+### Step 3: Success Criteria Development
+
+Once phases are approved:
+
+1. **Define success criteria for each phase**, separated into:
+   - **Automated Verification**: Commands that can be run (tests, linting, type checking, build)
+   - **Manual Verification**: Human testing steps (UI, edge cases, integration behavior)
+
+2. **Define commit strategy per phase**:
+   - Number of commits (one per logical unit of change)
+   - Draft commit messages
+   - Which files go in each commit
+
+3. **Present criteria for review**:
+   ```
+   Phase 1 success criteria:
+
+   Automated:
+   - [ ] [Specific command]: `make test-unit`
+   - [ ] [Specific command]: `npm run typecheck`
+
+   Manual:
+   - [ ] [Specific human verification step]
+   - [ ] [Specific edge case to test]
+
+   Commits:
+   1. "[message]" — [files]
+   2. "[message]" — [files]
+   ```
 
 ### Step 4: Detailed Plan Writing
 
-After structure approval:
+After criteria approval:
 
 1. **Write the plan** to `.claude/thoughts/shared/plans/YYYY-MM-DD-ENG-XXXX-description.md`
    - Format: `YYYY-MM-DD-ENG-XXXX-description.md` where:
@@ -176,6 +156,7 @@ After structure approval:
    - Examples:
      - With ticket: `2025-01-08-ENG-1478-parent-child-tracking.md`
      - Without ticket: `2025-01-08-improve-error-handling.md`
+
 2. **Use this template structure**:
 
 ````markdown
@@ -183,74 +164,70 @@ After structure approval:
 
 ## Overview
 
-[Brief description of what we're implementing and why]
+[Brief description of what we're implementing — reference the design doc for full context]
 
-## Current State Analysis
+## Source Documents
 
-[What exists now, what's missing, key constraints discovered]
-
-## Desired End State
-
-[A Specification of the desired end state after this plan is complete, and how to verify it]
-
-### Key Discoveries:
-- [Important finding with file:line reference]
-- [Pattern to follow]
-- [Constraint to work within]
-
-## What We're NOT Doing
-
-[Explicitly list out-of-scope items to prevent scope creep]
-
-## Implementation Approach
-
-[High-level strategy and reasoning]
+- **Research**: `[path]` — [1-line summary]
+- **Design**: `[path]` — [key decisions]
+- **Structure**: `[path]` — [scope summary]
+- **Ticket**: `[path]` (if applicable)
 
 ## Phase 1: [Descriptive Name]
 
 ### Overview
-[What this phase accomplishes]
+[What this phase accomplishes and why it comes first]
 
-### Changes Required:
+### Tasks:
 
 #### 1. [Component/File Group]
-**File**: `path/to/file.ext`
-**Changes**: [Summary of changes]
+**File**: `path/to/file.ext` (see structure doc for interface details)
+**Changes**: [Summary of what to do]
 
 ```[language]
-// Specific code to add/modify
+// Key code to add/modify (only when specificity helps the implementer)
 ```
+
+#### 2. [Component/File Group tests]
+**File**: `path/to/test_file.ext`
+**Changes**: [Summary of test additions]
 
 ### Success Criteria:
 
 #### Automated Verification:
-- [ ] Migration applies cleanly: `make migrate`
-- [ ] Unit tests pass: `make test-component`
+- [ ] Tests pass: `make test`
 - [ ] Type checking passes: `npm run typecheck`
 - [ ] Linting passes: `make lint`
-- [ ] Integration tests pass: `make test-integration`
 
 #### Manual Verification:
-- [ ] Feature works as expected when tested via UI
-- [ ] Performance is acceptable under load
-- [ ] Edge case handling verified manually
-- [ ] No regressions in related features
+- [ ] [Specific manual verification step]
+- [ ] [Edge case to verify]
 
-**Implementation Note**: After completing this phase and all automated verification passes, pause here for manual confirmation from the human that the manual testing was successful before proceeding to the next phase.
+**Note**: Pause for manual confirmation before proceeding to next phase.
 
 ---
 
 ## Phase 2: [Descriptive Name]
 
-[Similar structure with both automated and manual success criteria...]
+### Overview
+[What this phase accomplishes]
+[Dependencies on prior phases]
+
+### Tasks:
+[Same task structure as Phase 1...]
+
+### Success Criteria:
+[Same criteria structure as Phase 1...]
+
+**Note**: Pause for manual confirmation before proceeding to next phase.
 
 ---
 
 ## Testing Strategy
 
 ### Unit Tests:
-- [What to test]
-- [Key edge cases]
+- [What to test, key edge cases]
+- References to test tasks in each phase
 
 ### Integration Tests:
 - [End-to-end scenarios]
@@ -260,18 +237,16 @@ After structure approval:
 2. [Another verification step]
 3. [Edge case to test manually]
 
-## Performance Considerations
+## Migration Notes (if applicable)
 
-[Any performance implications or optimizations needed]
-
-## Migration Notes
-
-[If applicable, how to handle existing data/systems]
+[Ordering concerns, backward compatibility, rollback strategy]
 
 ## References
 
-- Original ticket: `.claude/thoughts/allison/tickets/eng_XXXX.md`
-- Related research: `.claude/thoughts/shared/research/[relevant].md`
+- Research: `[path to research doc]`
+- Design: `[path to design doc]`
+- Structure: `[path to structure doc]`
+- Original ticket: `[path to ticket]`
 - Similar implementation: `[file:line]`
 ````
 
@@ -279,61 +254,54 @@ After structure approval:
 
 1. **Present the draft plan location**:
    ```
-   I've created the initial implementation plan at:
+   I've created the implementation plan at:
    `thoughts/shared/plans/YYYY-MM-DD-ENG-XXXX-description.md`
 
-   Please review it and let me know:
-   - Are the phases properly scoped?
+   Please review:
+   - Are the phases properly scoped and ordered?
    - Are the success criteria specific enough?
-   - Any technical details that need adjustment?
-   - Missing edge cases or considerations?
+   - Is the commit strategy reasonable?
+   - Missing edge cases or verification steps?
    ```
 
 2. **Iterate based on feedback** - be ready to:
-   - Add missing phases
-   - Adjust technical approach
-   - Clarify success criteria (both automated and manual)
-   - Add/remove scope items
+   - Reorder phases
+   - Split or merge phases
+   - Adjust success criteria (both automated and manual)
+   - Refine commit strategy
 
-4. **Continue refining** until the user is satisfied
+3. **Continue refining** until the user is satisfied
 
 ## Important Guidelines
 
-1. **Be Skeptical**:
-   - Question vague requirements
-   - Identify potential issues early
-   - Ask "why" and "what about"
-   - Don't assume - verify with code
+1. **Trust Prior Stages**:
+   - Don't redo research — the research doc has the findings
+   - Don't revisit design decisions — the design doc has the rationale
+   - Don't redefine file structure — the structure doc has the layout
+   - Only flag back to those stages if you discover they're outdated
 
 2. **Be Interactive**:
    - Don't write the full plan in one shot
-   - Get buy-in at each major step
+   - Get buy-in on phases first, then criteria, then write
    - Allow course corrections
-   - Work collaboratively
 
 3. **Be Thorough**:
-   - Read all context files COMPLETELY before planning
-   - Research actual code patterns using parallel sub-tasks
-   - Include specific file paths and line numbers
+   - Read all source documents COMPLETELY before planning
+   - Spot-check the codebase to validate structure doc accuracy
    - Write measurable success criteria with clear automated vs manual distinction
+   - Include specific file paths from the structure doc
 
 4. **Be Practical**:
    - Focus on incremental, testable changes
-   - Consider migration and rollback
-   - Think about edge cases
-   - Include "what we're NOT doing"
+   - Each phase must leave the codebase in a working state
+   - Consider migration ordering and rollback
+   - Think about what happens if we stop after any given phase
 
-5. **Track Progress**:
-   - Use TodoWrite to track planning tasks
-   - Update todos as you complete research
-   - Mark planning tasks complete when done
-
-6. **No Open Questions in Final Plan**:
-   - If you encounter open questions during planning, STOP
-   - Research or ask for clarification immediately
+5. **No Open Questions in Final Plan**:
+   - If you encounter ambiguity, check the design/structure docs first
+   - If those don't answer it, ask the user
    - Do NOT write the plan with unresolved questions
-   - The implementation plan must be complete and actionable
-   - Every decision must be made before finalizing the plan
+   - Every phasing decision must be made before finalizing
 
 ## Success Criteria Guidelines
 
@@ -366,74 +334,4 @@ After structure approval:
 - [ ] Performance is acceptable with 1000+ items
 - [ ] Error messages are user-friendly
 - [ ] Feature works correctly on mobile devices
-```
-
-## Common Patterns
-
-### For Database Changes:
-- Start with schema/migration
-- Add store methods
-- Update business logic
-- Expose via API
-- Update clients
-
-### For New Features:
-- Research existing patterns first
-- Start with data model
-- Build backend logic
-- Add API endpoints
-- Implement UI last
-
-### For Refactoring:
-- Document current behavior
-- Plan incremental changes
-- Maintain backwards compatibility
-- Include migration strategy
-
-## Sub-task Spawning Best Practices
-
-When spawning research sub-tasks:
-
-1. **Spawn multiple tasks in parallel** for efficiency
-2. **Each task should be focused** on a specific area
-3. **Provide detailed instructions** including:
-   - Exactly what to search for
-   - Which directories to focus on
-   - What information to extract
-   - Expected output format
-4. **Be EXTREMELY specific about directories**:
-   - Include the full path context in your prompts
-5. **Specify read-only tools** to use
-6. **Request specific file:line references** in responses
-7. **Wait for all tasks to complete** before synthesizing
-8. **Verify sub-task results**:
-   - If a sub-task returns unexpected results, spawn follow-up tasks
-   - Cross-check findings against the actual codebase
-   - Don't accept results that seem incorrect
-
-Example of spawning multiple tasks:
-```python
-# Spawn these tasks concurrently:
-tasks = [
-    Task("Research database schema", db_research_prompt),
-    Task("Find API patterns", api_research_prompt),
-    Task("Investigate UI components", ui_research_prompt),
-    Task("Check test patterns", test_research_prompt)
-]
-```
-
-## Example Interaction Flow
-
-```
-User: /implementation_plan
-Assistant: I'll help you create a detailed implementation plan...
-
-User: We need to add parent-child tracking for Claude sub-tasks. See thoughts/allison/tickets/eng_1478.md
-Assistant: Let me read that ticket file completely first...
-
-[Reads file fully]
-
-Based on the ticket, I understand we need to track parent-child relationships for Claude sub-task events in the hld daemon. Before I start planning, I have some questions...
-
-[Interactive process continues...]
 ```

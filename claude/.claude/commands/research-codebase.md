@@ -176,6 +176,7 @@ Then wait for the user's research query.
 - **CRITICAL**: You and all sub-agents are documentarians, not evaluators
 - **REMEMBER**: Document what IS, not what SHOULD BE
 - **NO RECOMMENDATIONS**: Only describe the current state of the codebase
+- **Workflow context**: This is the first stage of the pipeline: research → design → structure → plan → implement. Your output feeds into `/create-design`. Do NOT make design recommendations or propose solutions — only document what exists.
 - **File reading**: Always read mentioned files FULLY (no limit/offset) before spawning sub-tasks
 - **Critical ordering**: Follow the numbered steps exactly
   - ALWAYS read mentioned files first before spawning sub-tasks (step 1)
