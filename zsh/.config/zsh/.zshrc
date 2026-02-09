@@ -130,3 +130,6 @@ export NODE_EXTRA_CA_CERTS="/Users/alen/certs/zscaler_root.pem"
 export AWS_DEFAULT_REGION="eu-central-1"
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+
+# opencode
+export PATH=/Users/alen/.opencode/bin:$PATH
