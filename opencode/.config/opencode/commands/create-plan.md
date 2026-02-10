@@ -1,76 +1,188 @@
 ---
-description: Create phased implementation plans with success criteria from approved design and structure docs
+description: Create implementation plans — works standalone for simple tasks or with prior design/structure docs for complex ones
 agent: build
 ---
 
 # Implementation Plan
 
-Create phased implementation plans that define the order of work, success criteria, and verification steps. This stage takes approved design and structure documents and turns them into an actionable, phase-by-phase execution guide.
+Create implementation plans with phased tasks, success criteria, and verification steps.
 
-**This stage does NOT own**: codebase research (-> `/research-codebase`), architectural decisions (-> `/create-design`), or file/module layout (-> `/create-structure`).
+**Two modes — auto-detected from input:**
 
-**This stage OWNS**: phasing, task ordering, dependency sequencing, implementation code snippets, success criteria, verification steps, and commit strategy.
+- **Standalone mode**: For simple/short tasks. You describe what needs to be done, the plan does its own lightweight research and produces a plan directly. No prior `/research-codebase`, `/create-design`, or `/create-structure` needed.
+- **Pipeline mode**: For complex tasks with existing docs. You provide a design or structure document from the full pipeline (research -> design -> structure -> plan -> implement).
 
 ## Initial Response
 
-If a design or structure document path was provided, read it fully and begin. Otherwise respond:
+When this command is invoked:
+
+1. **Check what was provided:**
+   - If a path to a structure or design document was provided → **Pipeline mode**
+   - If a plain task description or ticket reference was provided → **Standalone mode**
+   - If nothing was provided, respond:
+   ```
+   I'll help you create an implementation plan.
+
+   You can use this in two ways:
+
+   **Simple task** (standalone):
+   `/create-plan Add a retry mechanism to the webhook handler`
+   `/create-plan thoughts/shared/tickets/eng-1234.md`
+
+   **Complex task** (with prior docs from the pipeline):
+   `/create-plan thoughts/shared/structures/2025-01-08-feature-name.md`
+   `/create-plan thoughts/shared/designs/2025-01-08-feature-name.md`
+   ```
+
+---
+
+## Standalone Mode
+
+For tasks that don't need a full research -> design -> structure pipeline. Typically: bug fixes, small features, refactors, config changes, adding tests, etc.
+
+### Step 1: Understand the Task
+
+1. **Read any provided files fully** (tickets, referenced files, etc.)
+2. **Do lightweight codebase research** — spawn parallel sub-tasks:
+   - Sub-task: "Load the `locate-codebase` skill, then find files related to [task]"
+   - Sub-task: "Load the `find-patterns` skill, then find how similar things are done in the codebase for [task]"
+   - Sub-task (@codebase-analyzer): Understand the specific code that needs to change
+3. **Read the key files** identified by research
+4. **Present your understanding:**
+   ```
+   Here's what I found:
+
+   Relevant files:
+   - `path/to/file.ext:line` — [what it does, what needs to change]
+   - `path/to/other.ext:line` — [what it does, what needs to change]
+
+   Existing patterns:
+   - [How similar things are handled in the codebase]
+
+   My approach:
+   - [1-3 sentences on what the plan will do]
+
+   Questions before I write the plan:
+   - [Only if genuinely ambiguous — skip if clear enough]
+   ```
+
+### Step 2: Write the Plan
+
+After understanding is confirmed (or immediately if no questions):
+
+1. **Break the work into phases** (often just 1-2 for simple tasks)
+2. **Write the plan** to `.claude/thoughts/shared/plans/YYYY-MM-DD-description.md`
+3. Use the **Standalone plan template** below
+
+### Standalone Plan Template
+
+````markdown
+# [Task Name] Implementation Plan
+
+## Overview
+[1-2 sentence summary of what we're implementing and why]
+
+## Context
+- **Task**: [Original task description or ticket reference]
+- **Key files**: [Most important files involved]
+
+## Phase 1: [Descriptive Name]
+
+### Overview
+[What this phase accomplishes]
+
+### Tasks:
+
+#### 1. [Component/File Group]
+**File**: `path/to/file.ext`
+**Changes**: [Summary of what to do]
+
+```[language]
+// Key code to add/modify
 ```
-I'll help you create a phased implementation plan.
 
-Please provide:
-1. The structure document from `.claude/thoughts/shared/structures/`
-2. The design document from `.claude/thoughts/shared/designs/` (if not linked in structure doc)
+#### 2. [Tests]
+**File**: `path/to/test_file.ext`
+**Changes**: [Summary of test additions]
 
-Tip: `/create-plan thoughts/shared/structures/2025-01-08-authentication-flow.md`
-```
+### Success Criteria:
 
-## Process Steps
+#### Automated Verification:
+- [ ] Tests pass: `[test command]`
+- [ ] Type checking: `[typecheck command]`
+- [ ] Linting: `[lint command]`
+
+#### Manual Verification:
+- [ ] [Specific thing to verify]
+
+**Note**: Pause for manual confirmation before proceeding to next phase.
+
+---
+
+## Phase 2: [Descriptive Name] (if needed)
+[Same structure as Phase 1]
+
+## References
+- [file:line references to key code]
+````
+
+---
+
+## Pipeline Mode
+
+For complex tasks that already went through `/research-codebase`, `/create-design`, and/or `/create-structure`.
 
 ### Step 1: Read Inputs & Validate
 
-1. **Read the structure document fully** (no limit/offset)
-2. **Read the linked design document fully**
-3. **Read the linked research document** if available
-4. **Spot-check key files** from the structure doc to confirm they still match reality:
-   - Read 2-3 of the most critical files listed in the structure doc
-   - If anything has drifted, flag it before proceeding
-5. **Present readiness:**
+1. **Read all provided documents immediately and FULLY**:
+   - Structure documents (primary input)
+   - Design documents (linked from structure doc or provided separately)
+   - Research documents (linked from design doc)
+   - Original ticket files (if referenced)
+   - **IMPORTANT**: Read entire files — no limit/offset
+   - **CRITICAL**: Read these yourself before spawning sub-tasks
+
+2. **Spot-check critical files from the structure doc**:
+   - Read 3-5 of the most important files listed
+   - Verify the codebase still matches what the docs describe
+   - If anything has drifted significantly, flag it immediately
+
+3. **Present validation results**:
    ```
-   I've read the design and structure docs:
-   - Design: [path] — [1-line summary of approach]
-   - Structure: [path] — [N modified files, M new files]
+   I've read the pipeline docs:
+   - Research: [path] — [topic summary]
+   - Design: [path] — [key decisions: A, B, C]
+   - Structure: [path] — [N modified files, M new files, key interfaces]
 
-   Validation:
-   - [Confirmed: key files match structure doc] or [Drift detected: explanation]
+   Validation against current codebase:
+   - [file:line] — confirmed, matches docs
+   - [file:line] — DRIFT DETECTED: [explanation]
 
-   Ready to define phases. Any constraints on ordering or phase size?
+   Questions before I define phases:
+   - [Phasing/ordering questions only — design decisions are already made]
    ```
 
 ### Step 2: Phase Definition
 
-1. **Create a todo list** using TodoWrite to track planning decisions
+1. **Create a planning todo list** using TodoWrite
 2. **Break the structure doc's file changes into ordered phases:**
    - Group related changes that must ship together
-   - Respect dependency order (foundations before consumers)
-   - Keep phases small enough to verify independently
-   - Each phase should leave the codebase in a working state
+   - Respect dependency order (data model -> business logic -> API -> UI)
+   - Each phase should leave the codebase in a working, testable state
+   - Include test changes in the same phase as the code they test
 3. **Present proposed phases for buy-in:**
    ```
    Proposed phases:
 
    ## Phase 1: [Name] — [what it accomplishes]
-   - [File/component changes in this phase]
-   - Depends on: nothing (foundation)
+   Files: [list from structure doc]
+   Depends on: nothing (foundation)
 
    ## Phase 2: [Name] — [what it accomplishes]
-   - [File/component changes in this phase]
-   - Depends on: Phase 1
+   Files: [list from structure doc]
+   Depends on: Phase 1
 
-   ## Phase 3: [Name] — [what it accomplishes]
-   - [File/component changes in this phase]
-   - Depends on: Phase 1, 2
-
-   Does this phasing make sense? Should I adjust the order or granularity?
+   Does this phasing make sense?
    ```
 
 ### Step 3: Success Criteria & Verification
@@ -78,42 +190,30 @@ Tip: `/create-plan thoughts/shared/structures/2025-01-08-authentication-flow.md`
 After phase buy-in:
 
 1. **Define success criteria for each phase:**
-   - Automated checks (tests, linting, type checking, build)
-   - Manual verification steps (UI testing, edge cases, integration)
-2. **Define the commit strategy:**
-   - How many commits per phase
-   - Commit message conventions
-3. **Present for review:**
-   ```
-   Success criteria for Phase 1:
-
-   Automated: [list of commands]
-   Manual: [list of human verification steps]
-   Commit: [number of commits, brief message drafts]
-
-   [Repeat for each phase]
-
-   Are these criteria specific enough?
-   ```
+   - **Automated Verification**: Commands that can be run (tests, linting, type checking, build)
+   - **Manual Verification**: Human testing steps (UI, edge cases, integration)
+2. **Define commit strategy per phase**
+3. **Present for review**
 
 ### Step 4: Write the Plan
 
 Save to `.claude/thoughts/shared/plans/YYYY-MM-DD-ENG-XXXX-description.md`
-- Format: `YYYY-MM-DD-ENG-XXXX-description.md`
-- Without ticket: `2025-01-08-improve-error-handling.md`
 
-**Template:**
+Use the **Pipeline plan template** below.
+
+### Pipeline Plan Template
 
 ````markdown
 # [Feature/Task Name] Implementation Plan
 
 ## Overview
-[1-2 sentence summary of what's being implemented]
+[Brief description — reference the design doc for full context]
 
 ## Source Documents
-- **Design**: `[path to design doc]` — [key decisions summary]
-- **Structure**: `[path to structure doc]` — [file change summary]
-- **Research**: `[path to research doc]` (if applicable)
+- **Research**: `[path]` — [1-line summary]
+- **Design**: `[path]` — [key decisions]
+- **Structure**: `[path]` — [scope summary]
+- **Ticket**: `[path]` (if applicable)
 
 ## Phase 1: [Descriptive Name]
 
@@ -127,17 +227,12 @@ Save to `.claude/thoughts/shared/plans/YYYY-MM-DD-ENG-XXXX-description.md`
 **Changes**: [Summary of what to do]
 
 ```[language]
-// Implementation code to add/modify
-// The structure doc defines the interface; this is the concrete implementation
+// Key code to add/modify
 ```
 
-#### 2. [Component/File Group tests]
+#### 2. [Tests]
 **File**: `path/to/test_file.ext`
 **Changes**: [Summary of test additions]
-
-```[language]
-// Test code to add
-```
 
 ### Success Criteria:
 
@@ -147,8 +242,7 @@ Save to `.claude/thoughts/shared/plans/YYYY-MM-DD-ENG-XXXX-description.md`
 - [ ] Linting: `make lint`
 
 #### Manual Verification:
-- [ ] [Specific thing to verify manually]
-- [ ] [Edge case to test]
+- [ ] [Specific thing to verify]
 
 **Note**: Pause for manual confirmation before proceeding to next phase.
 
@@ -161,15 +255,10 @@ Save to `.claude/thoughts/shared/plans/YYYY-MM-DD-ENG-XXXX-description.md`
 [Dependencies on prior phases]
 
 ### Tasks:
-[Same task structure as Phase 1 — file, changes summary, implementation code]
+[Same structure as Phase 1]
 
 ### Success Criteria:
-
-#### Automated Verification:
-- [ ] [Specific automated check]
-
-#### Manual Verification:
-- [ ] [Specific manual check]
+[Same structure as Phase 1]
 
 **Note**: Pause for manual confirmation before proceeding to next phase.
 
@@ -179,23 +268,23 @@ Save to `.claude/thoughts/shared/plans/YYYY-MM-DD-ENG-XXXX-description.md`
 
 ### Unit Tests:
 - [What to test, key edge cases]
-- References to test tasks in each phase
 
 ### Integration Tests:
 - [End-to-end scenarios]
 
 ### Manual Testing:
 1. [Specific verification step]
-2. [Another verification step]
+2. [Edge case to test]
 
 ## Migration Notes (if applicable)
-[Ordering concerns, backward compatibility steps, rollback strategy]
+[Ordering concerns, backward compatibility, rollback strategy]
 
 ## References
+- Research: `[path to research doc]`
 - Design: `[path to design doc]`
 - Structure: `[path to structure doc]`
-- Research: `[path to research doc]`
 - Original ticket: `[path to ticket]`
+- Similar implementation: `[file:line]`
 ````
 
 ### Step 5: Review & Iterate
@@ -204,10 +293,16 @@ Save to `.claude/thoughts/shared/plans/YYYY-MM-DD-ENG-XXXX-description.md`
 2. Iterate based on feedback
 3. Continue until user is satisfied
 
-## Guidelines
+---
 
-1. **Trust Prior Stages**: Don't redo research, design, or structure work — reference those docs
-2. **Be Interactive**: Get buy-in on phases before writing the full plan
-3. **Be Practical**: Focus on incremental, testable changes that keep the codebase working
-4. **Separate Verification**: Always split success criteria into automated and manual
-5. **No Open Questions**: If you discover ambiguity, resolve it before finalizing — check the design/structure docs first, ask the user only if they don't answer it
+## Guidelines (Both Modes)
+
+1. **Be Interactive**: Get buy-in on approach/phases before writing the full plan
+2. **Be Practical**: Focus on incremental, testable changes that keep the codebase working
+3. **Separate Verification**: Always split success criteria into automated and manual
+4. **No Open Questions**: Resolve ambiguity before finalizing — ask the user if needed
+5. **Right-size the Plan**: Simple tasks get simple plans (1 phase, minimal ceremony). Complex tasks get detailed phasing with full verification
+
+### Pipeline Mode Only
+6. **Trust Prior Stages**: Don't redo research, design, or structure work — reference those docs
+7. **Spot-check Reality**: Verify the codebase still matches the structure doc before planning
