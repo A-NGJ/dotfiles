@@ -41,31 +41,30 @@ Then wait for the user's research query.
    - Consider which directories, files, or architectural patterns are relevant
 
 3. **Spawn parallel sub-agent tasks for comprehensive research:**
-   - Create multiple Task agents to research different aspects concurrently
-   - We now have specialized agents that know how to do specific research tasks:
+   - Create multiple Task sub-agents to research different aspects concurrently
+   - Each sub-agent should load the appropriate skill first, then perform its work
 
    **For codebase research:**
-   - Use @codebase-locator to find WHERE files and components live
-   - Use @codebase-analyzer to understand HOW specific code works (without critiquing it)
-   - Use @codebase-pattern-finder to find examples of existing patterns (without evaluating them)
+   - Sub-task: "Load the `locate-codebase` skill, then find WHERE files and components live for [topic]"
+   - Sub-task (@codebase-analyzer): Understand HOW specific code works (without critiquing it)
+   - Sub-task: "Load the `find-patterns` skill, then find examples of existing patterns for [topic] (without evaluating them)"
 
-   **IMPORTANT**: All agents are documentarians, not critics. They will describe what exists without suggesting improvements or identifying issues.
+   **IMPORTANT**: All sub-agents are documentarians, not critics. They will describe what exists without suggesting improvements or identifying issues.
 
    **For thoughts directory:**
-   - Use @thoughts-locator to discover what documents exist about the topic
-   - Use @thoughts-analyzer to extract key insights from specific documents (only the most relevant ones)
+   - Sub-task: "Load the `locate-thoughts` skill, then discover what documents exist about [topic]"
+   - Sub-task: "Load the `analyze-thoughts` skill, then extract key insights from [specific document paths] (only the most relevant ones)"
 
    **For web research (only if user explicitly asks):**
-   - Use @general for external documentation via WebSearch/WebFetch tools
-   - Instruct agents to return LINKS with their findings, and INCLUDE those links in your final report
+   - Use a general sub-task for external documentation via WebSearch/WebFetch tools
+   - Instruct sub-agents to return LINKS with their findings, and INCLUDE those links in your final report
 
-   The key is to use these agents intelligently:
-   - Start with locator agents to find what exists
-   - Then use analyzer agents on the most promising findings to document how they work
-   - Run multiple agents in parallel when they're searching for different things
-   - Each agent knows its job - just tell it what you're looking for
-   - Don't write detailed prompts about HOW to search - the agents already know
-   - Remind agents they are documenting, not evaluating or improving
+   The key is to use these sub-agents with skills intelligently:
+   - Start with locate skills (locate-codebase, locate-thoughts) to find what exists
+   - Then use analyzer skills (analyze-thoughts) and @codebase-analyzer on the most promising findings
+   - Run multiple sub-agents in parallel when they're searching for different things
+   - Each skill provides the methodology — just tell the sub-agent what you're looking for
+   - Remind sub-agents they are documenting, not evaluating or improving
 
 4. **Wait for all sub-agents to complete and synthesize findings:**
    - IMPORTANT: Wait for ALL sub-agent tasks to complete before proceeding
