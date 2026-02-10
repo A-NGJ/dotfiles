@@ -15,10 +15,10 @@ I'll help you create a solution design.
 
 Please provide:
 1. The task/ticket description (or reference to a ticket file)
-2. Any relevant research documents from `.claude/thoughts/shared/research/`
+2. Any relevant research documents from `.thoughts/research/`
 3. Constraints, non-functional requirements, or preferences
 
-Tip: `/create-design thoughts/shared/research/2025-01-08-authentication-flow.md`
+Tip: `/create-design .thoughts/research/2025-01-08-authentication-flow.md`
 ```
 
 ## Process Steps
@@ -113,7 +113,7 @@ After user selects directions:
 
 ### Step 4: Write the Design Document
 
-Save to `.claude/thoughts/shared/designs/YYYY-MM-DD-ENG-XXXX-description.md`
+Save to `.thoughts/designs/YYYY-MM-DD-ENG-XXXX-description.md`
 - Format: `YYYY-MM-DD-ENG-XXXX-description.md`
 - Without ticket: `2025-01-08-improve-error-handling.md`
 

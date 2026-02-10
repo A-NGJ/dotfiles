@@ -70,21 +70,21 @@ Then wait for the user's research query.
    - IMPORTANT: Wait for ALL sub-agent tasks to complete before proceeding
    - Compile all sub-agent results (both codebase and thoughts findings)
    - Prioritize live codebase findings as primary source of truth
-   - Use .claude/thoughts/ findings as supplementary historical context
+   - Use .thoughts/ findings as supplementary historical context
    - Connect findings across different components
    - Include specific file paths and line numbers for reference
    - Highlight patterns, connections, and architectural decisions
    - Answer the user's specific questions with concrete evidence
 
 5. **Gather metadata for the research document:**
-   - Filename: `.claude/thoughts/shared/research/YYYY-MM-DD-ENG-XXXX-description.md`
-     - Format: `YYYY-MM-DD-ENG-XXXX-description.md` where:
-       - YYYY-MM-DD is today's date
-       - ENG-XXXX is the ticket number (omit if no ticket)
-       - description is a brief kebab-case description of the research topic
-     - Examples:
-       - With ticket: `2025-01-08-ENG-1478-parent-child-tracking.md`
-       - Without ticket: `2025-01-08-authentication-flow.md`
+   - Filename: `.thoughts/research/YYYY-MM-DD-ENG-XXXX-description.md`
+      - Format: `YYYY-MM-DD-ENG-XXXX-description.md` where:
+        - YYYY-MM-DD is today's date
+        - ENG-XXXX is the ticket number (omit if no ticket)
+        - description is a brief kebab-case description of the research topic
+      - Examples:
+        - With ticket: `2025-01-08-ENG-1478-parent-child-tracking.md`
+        - Without ticket: `2025-01-08-authentication-flow.md`
 
 5. **Generate research document:**
    - Use the metadata gathered in step 5
@@ -92,7 +92,7 @@ Then wait for the user's research query.
      ```markdown
      ---
      date: [Current date and time with timezone in ISO format]
-     researcher: [Researcher name from thoughts status]
+      researcher: [Author name]
      git_commit: [Current commit hash]
      branch: [Current branch name]
      repository: [Repository name]
@@ -106,7 +106,7 @@ Then wait for the user's research query.
      # Research: [User's Question/Topic]
 
      **Date**: [Current date and time with timezone from step 4]
-     **Researcher**: [Researcher name from thoughts status]
+      **Researcher**: [Author name]
      **Git Commit**: [Current commit hash from step 4]
      **Branch**: [Current branch name from step 4]
      **Repository**: [Repository name]
@@ -134,13 +134,13 @@ Then wait for the user's research query.
      ## Architecture Documentation
      [Current patterns, conventions, and design implementations found in the codebase]
 
-     ## Historical Context (from thoughts/)
-     [Relevant insights from thoughts/ directory with references]
-     - `.claude/thoughts/something.md` - Historical decision about X
-     - `.claude/thoughts/notes.md` - Past exploration of Y
+      ## Historical Context (from .thoughts/)
+      [Relevant insights from .thoughts/ directory with references]
+      - `.thoughts/research/something.md` - Historical decision about X
+      - `.thoughts/research/other.md` - Past exploration of Y
 
-     ## Related Research
-     [Links to other research documents in .claude/thoughts/shared/research/]
+      ## Related Research
+      [Links to other research documents in .thoughts/research/]
 
      ## Open Questions
      [Any areas that need further investigation]
@@ -162,7 +162,7 @@ Then wait for the user's research query.
 ## Important notes:
 - Always use parallel Task agents to maximize efficiency and minimize context usage
 - Always run fresh codebase research - never rely solely on existing research documents
-- The .claude/thoughts/ directory provides historical context to supplement live findings
+- The .thoughts/ directory provides historical context to supplement live findings
 - Focus on finding concrete file paths and line numbers for developer reference
 - Research documents should be self-contained with all necessary context
 - Each sub-agent prompt should be specific and focused on read-only documentation operations
@@ -171,7 +171,7 @@ Then wait for the user's research query.
 - Link to GitHub when possible for permanent references
 - Keep the main agent focused on synthesis, not deep file reading
 - Have sub-agents document examples and usage patterns as they exist
-- Explore all of thoughts/ directory, not just research subdirectory
+- Explore all of .thoughts/ directory, not just the research subdirectory
 - **CRITICAL**: You and all sub-agents are documentarians, not evaluators
 - **REMEMBER**: Document what IS, not what SHOULD BE
 - **NO RECOMMENDATIONS**: Only describe the current state of the codebase

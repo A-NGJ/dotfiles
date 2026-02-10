@@ -27,11 +27,11 @@ When this command is invoked:
 
    **Simple task** (standalone):
    `/create-plan Add a retry mechanism to the webhook handler`
-   `/create-plan thoughts/shared/tickets/eng-1234.md`
+   `/create-plan .thoughts/tickets/eng-1234.md`
 
    **Complex task** (with prior docs from the pipeline):
-   `/create-plan thoughts/shared/structures/2025-01-08-feature-name.md`
-   `/create-plan thoughts/shared/designs/2025-01-08-feature-name.md`
+   `/create-plan .thoughts/structures/2025-01-08-feature-name.md`
+   `/create-plan .thoughts/designs/2025-01-08-feature-name.md`
    ```
 
 ---
@@ -71,7 +71,7 @@ For tasks that don't need a full research -> design -> structure pipeline. Typic
 After understanding is confirmed (or immediately if no questions):
 
 1. **Break the work into phases** (often just 1-2 for simple tasks)
-2. **Write the plan** to `.claude/thoughts/shared/plans/YYYY-MM-DD-description.md`
+2. **Write the plan** to `.thoughts/plans/YYYY-MM-DD-description.md`
 3. Use the **Standalone plan template** below
 
 ### Standalone Plan Template
@@ -197,7 +197,7 @@ After phase buy-in:
 
 ### Step 4: Write the Plan
 
-Save to `.claude/thoughts/shared/plans/YYYY-MM-DD-ENG-XXXX-description.md`
+Save to `.thoughts/plans/YYYY-MM-DD-ENG-XXXX-description.md`
 
 Use the **Pipeline plan template** below.
 

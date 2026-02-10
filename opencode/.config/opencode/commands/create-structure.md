@@ -18,10 +18,10 @@ If a file path or design document was provided, read it fully and begin analysis
 I'll help you define the structure for your implementation.
 
 Please provide:
-1. The design document from `.claude/thoughts/shared/designs/`
+1. The design document from `.thoughts/designs/`
 2. Any additional context or preferences about code organization
 
-Tip: `/create-structure thoughts/shared/designs/2025-01-08-authentication-flow.md`
+Tip: `/create-structure .thoughts/designs/2025-01-08-authentication-flow.md`
 ```
 
 ## Process Steps
@@ -120,7 +120,7 @@ After structural buy-in:
 
 ### Step 4: Write the Structure Document
 
-Save to `.claude/thoughts/shared/structures/YYYY-MM-DD-ENG-XXXX-description.md`
+Save to `.thoughts/structures/YYYY-MM-DD-ENG-XXXX-description.md`
 - Format: `YYYY-MM-DD-ENG-XXXX-description.md`
 - Without ticket: `2025-01-08-improve-error-handling.md`
 

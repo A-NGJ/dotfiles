@@ -1,14 +1,14 @@
 ---
-description: Implement technical plans from thoughts/shared/plans with verification
+description: Implement technical plans from .thoughts/plans with verification
 agent: build
 ---
 
 # Implement Plan
 
-You are tasked with implementing an approved technical plan from `thoughts/shared/plans/`. These plans contain phases with specific changes and success criteria.
+You are tasked with implementing an approved technical plan from `.thoughts/plans/`. These plans contain phases with specific changes and success criteria.
 
 Plans come in two forms:
-- **Pipeline plans**: Reference design docs (`thoughts/shared/designs/`) and structure docs (`thoughts/shared/structures/`). Read these when you need deeper context.
+- **Pipeline plans**: Reference design docs (`.thoughts/designs/`) and structure docs (`.thoughts/structures/`). Read these when you need deeper context.
 - **Standalone plans**: Self-contained with all context inline (no design/structure docs). These are typically for simpler tasks.
 
 ## Getting Started

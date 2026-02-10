@@ -93,4 +93,4 @@ Improved code readability and maintainability by refactoring the user management
 
 # 4. Save the summary
 
-Save the markdown summary to the `.claude/thoughts/shared/change_summary/` directory with a filename indicating the current branch name, e.g., `change_summary_<branch_name>.md`.
+Save the markdown summary to the `.thoughts/research/` directory with a filename like `YYYY-MM-DD-change-summary-<branch_name>.md`.
