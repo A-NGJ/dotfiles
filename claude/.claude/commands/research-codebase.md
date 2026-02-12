@@ -1,5 +1,5 @@
 ---
-description: Document codebase as-is with thoughts directory for historical context and web research
+description: Document codebase as-is with thoughts directory for historical context
 model: opus
 ---
 
@@ -55,9 +55,11 @@ Then wait for the user's research query.
    - Sub-task: "Load the `locate-thoughts` skill, then discover what documents exist about [topic]"
    - Sub-task: "Load the `analyze-thoughts` skill, then extract key insights from [specific document paths] (only the most relevant ones)"
 
-   **For web research (always run in parallel with codebase research):**
-   - ALWAYS spawn web research sub-agents alongside codebase research sub-agents — do not wait for codebase results first
-   - Spawn 1-3 general-purpose sub-agents depending on the breadth of the topic, each focused on a different angle:
+   **For web research (only when applicable):**
+   - Web research is **optional** — only spawn web research sub-agents when:
+     1. The project is **greenfield** (new project with little or no existing codebase to research)
+     2. The user **explicitly asks** for web research (e.g., "also search the web", "include external docs", "what do the docs say")
+   - When web research IS triggered, spawn 1-3 general-purpose sub-agents in parallel with codebase research, each focused on a different angle:
      - Sub-task: "Search the web for official documentation, APIs, and reference material related to [topic]. Use WebSearch to find relevant pages, then WebFetch to extract key details. Return all source URLs with your findings."
      - Sub-task: "Search the web for community knowledge — blog posts, Stack Overflow answers, GitHub issues/discussions — about [topic]. Focus on real-world usage patterns, common pitfalls, and practical examples. Use WebSearch and WebFetch. Return all source URLs."
      - Sub-task (if topic involves a library/framework/service): "Search the web for the latest changelog, migration guides, and version-specific documentation for [library/service]. Use WebSearch and WebFetch. Return all source URLs."
@@ -66,6 +68,7 @@ Then wait for the user's research query.
      2. All source URLs as markdown links `[Title](url)`
      3. Any code examples or configuration snippets found
    - Web findings supplement codebase findings — they provide external context (docs, known issues, best practices) for the patterns found in the code
+   - When web research is NOT triggered, skip this section entirely and focus on codebase + thoughts research
 
    The key is to use these sub-agents with skills intelligently:
    - Start with locate skills (locate-codebase, locate-thoughts) to find what exists
@@ -75,14 +78,14 @@ Then wait for the user's research query.
    - Remind sub-agents they are documenting, not evaluating or improving
 
 4. **Wait for all sub-agents to complete and synthesize findings:**
-   - IMPORTANT: Wait for ALL sub-agent tasks (codebase, thoughts, AND web research) to complete before proceeding
-   - Compile all sub-agent results from all three sources
+   - IMPORTANT: Wait for ALL spawned sub-agent tasks to complete before proceeding
+   - Compile all sub-agent results
    - Prioritize live codebase findings as primary source of truth
    - Use .thoughts/ findings as supplementary historical context
-   - Use web research findings to provide external context — connect what exists in the codebase to official docs, known patterns, and community knowledge
+   - If web research was performed, use those findings to provide external context — connect what exists in the codebase to official docs, known patterns, and community knowledge
    - Connect findings across different components
    - Include specific file paths and line numbers for reference
-   - Include source URLs from web research as references
+   - If web research was performed, include source URLs as references
    - Highlight patterns, connections, and architectural decisions
    - Answer the user's specific questions with concrete evidence
 
@@ -144,7 +147,7 @@ Then wait for the user's research query.
      ## Architecture Documentation
      [Current patterns, conventions, and design implementations found in the codebase]
 
-     ## Web Research Findings
+     ## Web Research Findings (include only if web research was performed)
      [External context from official docs, community knowledge, and related resources]
 
      ### Official Documentation
@@ -193,9 +196,9 @@ Then wait for the user's research query.
 - Document cross-component connections and how systems interact
 - Include temporal context (when the research was conducted)
 - Link to GitHub when possible for permanent references
-- **Web research is mandatory**: Always spawn web research sub-agents in parallel with codebase research — do not skip or defer them
-- Web research sub-agents must always return source URLs as markdown links
-- Scale the number of web research sub-agents (1-3) based on topic breadth
+- **Web research is conditional**: Only spawn web research sub-agents for greenfield projects (little/no existing codebase) or when the user explicitly requests it
+- When web research IS performed, sub-agents must always return source URLs as markdown links
+- Scale the number of web research sub-agents (1-3) based on topic breadth when applicable
 - Keep the main agent focused on synthesis, not deep file reading
 - Have sub-agents document examples and usage patterns as they exist
 - Explore all of .thoughts/ directory, not just the research subdirectory
