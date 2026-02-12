@@ -18,10 +18,10 @@ If a file path or design document was provided, read it fully and begin analysis
 I'll help you define the structure for your implementation.
 
 Please provide:
-1. The design document from `.claude/thoughts/shared/designs/`
+1. The design document from `.thoughts/designs/`
 2. Any additional context or preferences about code organization
 
-Tip: `/create-structure thoughts/shared/designs/2025-01-08-authentication-flow.md`
+Tip: `/create-structure .thoughts/designs/2025-01-08-authentication-flow.md`
 ```
 
 ## Process Steps
@@ -30,11 +30,11 @@ Tip: `/create-structure thoughts/shared/designs/2025-01-08-authentication-flow.m
 
 1. **Read the design document fully** (no limit/offset) before spawning sub-tasks
 2. **Read any linked research documents** referenced in the design
-3. **Spawn parallel research tasks:**
-   - **codebase-locator**: Find existing files/modules that will be affected
-   - **codebase-analyzer**: Understand current file organization, module patterns, and naming conventions
-   - **codebase-pattern-finder**: Find how similar features are structured in the codebase (directory layout, file naming, export patterns)
-   - **thoughts-locator**: Find any existing structure docs or conventions documentation
+3. **Spawn parallel research sub-tasks** using the Task tool. Each sub-task should load the appropriate skill first, then perform its work:
+   - Sub-task: "Load the `locate-codebase` skill, then find existing files/modules that will be affected by [feature]"
+   - Sub-task (@codebase-analyzer): Understand current file organization, module patterns, and naming conventions
+   - Sub-task: "Load the `find-patterns` skill, then find how similar features are structured in the codebase (directory layout, file naming, export patterns) for [feature]"
+   - Sub-task: "Load the `locate-thoughts` skill, then find any existing structure docs or conventions documentation about [topic]"
 4. **Wait for ALL sub-tasks to complete**
 5. **Read all files identified by research tasks** - especially module entry points, index files, and existing interfaces
 6. **Present structural analysis:**
@@ -92,8 +92,8 @@ After clarifications:
 After structural buy-in:
 
 1. **Spawn parallel sub-tasks** if needed:
-   - **codebase-pattern-finder**: Find existing interface/type patterns to match
-   - **codebase-analyzer**: Understand existing function signatures at integration points
+   - Sub-task: "Load the `find-patterns` skill, then find existing interface/type patterns to match for [component]"
+   - Sub-task (@codebase-analyzer): Understand existing function signatures at integration points
 2. **Define the key interfaces and contracts:**
    ```
    ## Key Interfaces
@@ -120,7 +120,7 @@ After structural buy-in:
 
 ### Step 4: Write the Structure Document
 
-Save to `.claude/thoughts/shared/structures/YYYY-MM-DD-ENG-XXXX-description.md`
+Save to `.thoughts/structures/YYYY-MM-DD-ENG-XXXX-description.md`
 - Format: `YYYY-MM-DD-ENG-XXXX-description.md`
 - Without ticket: `2025-01-08-improve-error-handling.md`
 

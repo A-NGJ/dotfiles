@@ -21,7 +21,7 @@ First, automatically detect whether this is a GitHub or GitLab repository:
 ## Steps to follow:
 
 1. **Read the PR description template:**
-   - First, check if `.claude/thoughts/shared/pr_description.md` exists
+   - First, check if `.thoughts/prs/pr_description.md` exists
    - If it exists, read the template carefully to understand all sections and requirements
    - If it doesn't exist, use this default template:
      ```
@@ -52,7 +52,7 @@ First, automatically detect whether this is a GitHub or GitLab repository:
    - If there is no PR, generate description for changes to local main: `git diff main...HEAD`
 
 3. **Check for existing description:**
-   - Check if `thoughts/shared/prs/{number}_description.md` already exists
+   - Check if `.thoughts/prs/{number}_description.md` already exists
    - If it exists, read it and inform the user you'll be updating it
    - Consider what has changed since the last description was written
 
@@ -100,7 +100,7 @@ First, automatically detect whether this is a GitHub or GitLab repository:
    - Ensure all checklist items are addressed (checked or explained)
 
 8. **Save and sync the description:**
-   - Write the completed description to `.claude/thoughts/shared/prs/{number}_description.md`
+   - Write the completed description to `.thoughts/prs/{number}_description.md`
    - Show the user the generated description
    - Wait for user input/approval before proceeding
 

@@ -1,20 +1,24 @@
 ---
-description: Implement technical plans from thoughts/shared/plans with verification
+description: Implement technical plans from .thoughts/plans with verification
 model: sonnet
 ---
 
 # Implement Plan
 
-You are tasked with implementing an approved technical plan from `thoughts/shared/plans/`. These plans contain phases with specific changes and success criteria.
+You are tasked with implementing an approved technical plan from `.thoughts/plans/`. These plans contain phases with specific changes and success criteria.
 
-Plans reference design docs (`thoughts/shared/designs/`) for architectural decisions and structure docs (`thoughts/shared/structures/`) for file layout and interfaces. Read these when you need deeper context beyond what the plan provides.
+Plans come in two forms:
+- **Pipeline plans**: Reference design docs (`.thoughts/designs/`) and structure docs (`.thoughts/structures/`). Read these when you need deeper context.
+- **Standalone plans**: Self-contained with all context inline (no design/structure docs). These are typically for simpler tasks.
 
 ## Getting Started
 
 When given a plan path:
 
 - Read the plan completely and check for any existing checkmarks (- [x])
-- Read the linked design and structure documents referenced in the plan's Source Documents section
+- Check for a "Source Documents" section:
+  - If it links design/structure docs → **pipeline plan**: read those docs too
+  - If it has a "Context" section instead → **standalone plan**: all context is in the plan itself
 - Read the original ticket and all files mentioned in the plan
 - **Read files fully** - never use limit/offset parameters, you need complete context
 - Think deeply about how the pieces fit together

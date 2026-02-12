@@ -115,11 +115,10 @@ Compile all feedback into a unified report:
 - **Suggestions** (nice to have): Refactoring opportunities, documentation improvements
 - **Positive Feedback** (what's done well): Good practices to maintain and replicate
 
-After compiling feedback, **save the plan** to `.claude/thoughts/code-reviews/YYYY-MM-DD-XXX-code-review-report.md`
+After compiling feedback, **save the report** to `.thoughts/reviews/YYYY-MM-DD-XXX-code-review-report.md`
 
-- Format: `YYYY-MM-DD-ENG-XXXX-description.md` where:
+- Format: `YYYY-MM-DD-XXX-code-review-report.md` where:
 - YYYY-MM-DD is today's date
 - XXX is a branch name or ticket number (if available). Replace all `/` with `-`.
-- description is a brief kebab-case description
 - Examples:
 - `2025-01-08-feature-renaming-parent-child-tracking.md`

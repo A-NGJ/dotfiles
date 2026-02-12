@@ -15,10 +15,10 @@ I'll help you create a solution design.
 
 Please provide:
 1. The task/ticket description (or reference to a ticket file)
-2. Any relevant research documents from `.claude/thoughts/shared/research/`
+2. Any relevant research documents from `.thoughts/research/`
 3. Constraints, non-functional requirements, or preferences
 
-Tip: `/create-design thoughts/shared/research/2025-01-08-authentication-flow.md`
+Tip: `/create-design .thoughts/research/2025-01-08-authentication-flow.md`
 ```
 
 ## Process Steps
@@ -26,11 +26,11 @@ Tip: `/create-design thoughts/shared/research/2025-01-08-authentication-flow.md`
 ### Step 1: Context Gathering
 
 1. **Read all mentioned files fully** (no limit/offset) before spawning sub-tasks
-2. **Spawn parallel research tasks:**
-   - **codebase-locator**: Find components related to the task
-   - **codebase-analyzer**: Understand current architecture and patterns in use
-   - **thoughts-locator**: Find existing research, designs, and plans about this area
-   - **codebase-pattern-finder**: Find how similar problems were solved in the codebase
+2. **Spawn parallel research sub-tasks** using the Task tool. Each sub-task should load the appropriate skill first, then perform its work:
+   - Sub-task: "Load the `locate-codebase` skill, then find components related to [task description]"
+   - Sub-task (@codebase-analyzer): Understand current architecture and patterns in use
+   - Sub-task: "Load the `locate-thoughts` skill, then find existing research, designs, and plans about [topic]"
+   - Sub-task: "Load the `find-patterns` skill, then find how similar problems were solved in the codebase for [topic]"
 3. **Read all files identified by research tasks**
 4. **Present current understanding:**
    ```
@@ -54,10 +54,10 @@ After initial clarifications:
 
 1. **Identify the design dimensions** - what are the key decisions to make?
 2. **Create a research todo list** using TodoWrite
-3. **Spawn parallel sub-tasks** for deeper investigation:
-   - **codebase-pattern-finder**: Find similar patterns in the codebase or adjacent systems
-   - **thoughts-analyzer**: Extract insights from relevant past designs/research
-   - **general-purpose** (if needed): Research external patterns, libraries, or prior art via web
+3. **Spawn parallel sub-tasks** using the Task tool for deeper investigation:
+   - Sub-task: "Load the `find-patterns` skill, then find similar patterns in the codebase or adjacent systems for [topic]"
+   - Sub-task: "Load the `analyze-thoughts` skill, then extract insights from [specific document paths] about [topic]"
+   - Sub-task (if needed): Research external patterns, libraries, or prior art via web
 4. **Wait for ALL sub-tasks to complete** before proceeding
 5. **Present design options with trade-off analysis:**
    ```
@@ -113,7 +113,7 @@ After user selects directions:
 
 ### Step 4: Write the Design Document
 
-Save to `.claude/thoughts/shared/designs/YYYY-MM-DD-ENG-XXXX-description.md`
+Save to `.thoughts/designs/YYYY-MM-DD-ENG-XXXX-description.md`
 - Format: `YYYY-MM-DD-ENG-XXXX-description.md`
 - Without ticket: `2025-01-08-improve-error-handling.md`
 
