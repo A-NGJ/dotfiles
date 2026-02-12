@@ -1,5 +1,5 @@
 ---
-description: Document codebase as-is with thoughts directory for historical context
+description: Document codebase as-is with thoughts directory for historical context and web research
 model: opus
 ---
 
@@ -41,51 +41,60 @@ Then wait for the user's research query.
    - Consider which directories, files, or architectural patterns are relevant
 
 3. **Spawn parallel sub-agent tasks for comprehensive research:**
-   - Create multiple Task agents to research different aspects concurrently
-   - We now have specialized agents that know how to do specific research tasks:
+   - Create multiple Task sub-agents to research different aspects concurrently
+   - Each sub-agent should load the appropriate skill first, then perform its work
 
    **For codebase research:**
-   - Use the **codebase-locator** agent to find WHERE files and components live
-   - Use the **codebase-analyzer** agent to understand HOW specific code works (without critiquing it)
-   - Use the **codebase-pattern-finder** agent to find examples of existing patterns (without evaluating them)
+   - Sub-task: "Load the `locate-codebase` skill, then find WHERE files and components live for [topic]"
+   - Sub-task (@codebase-analyzer): Understand HOW specific code works (without critiquing it)
+   - Sub-task: "Load the `find-patterns` skill, then find examples of existing patterns for [topic] (without evaluating them)"
 
-   **IMPORTANT**: All agents are documentarians, not critics. They will describe what exists without suggesting improvements or identifying issues.
+   **IMPORTANT**: All sub-agents are documentarians, not critics. They will describe what exists without suggesting improvements or identifying issues.
 
    **For thoughts directory:**
-   - Use the thoughts-locator agent to discover what documents exist about the topic
-   - Use the thoughts-analyzer agent to extract key insights from specific documents (only the most relevant ones)
+   - Sub-task: "Load the `locate-thoughts` skill, then discover what documents exist about [topic]"
+   - Sub-task: "Load the `analyze-thoughts` skill, then extract key insights from [specific document paths] (only the most relevant ones)"
 
-   **For web research (only if user explicitly asks):**
-   - Use the **general-purpose** agent with WebSearch/WebFetch tools for external documentation
-   - Instruct agents to return LINKS with their findings, and INCLUDE those links in your final report
+   **For web research (always run in parallel with codebase research):**
+   - ALWAYS spawn web research sub-agents alongside codebase research sub-agents — do not wait for codebase results first
+   - Spawn 1-3 general-purpose sub-agents depending on the breadth of the topic, each focused on a different angle:
+     - Sub-task: "Search the web for official documentation, APIs, and reference material related to [topic]. Use WebSearch to find relevant pages, then WebFetch to extract key details. Return all source URLs with your findings."
+     - Sub-task: "Search the web for community knowledge — blog posts, Stack Overflow answers, GitHub issues/discussions — about [topic]. Focus on real-world usage patterns, common pitfalls, and practical examples. Use WebSearch and WebFetch. Return all source URLs."
+     - Sub-task (if topic involves a library/framework/service): "Search the web for the latest changelog, migration guides, and version-specific documentation for [library/service]. Use WebSearch and WebFetch. Return all source URLs."
+   - Each web research sub-agent MUST return:
+     1. A summary of findings organized by subtopic
+     2. All source URLs as markdown links `[Title](url)`
+     3. Any code examples or configuration snippets found
+   - Web findings supplement codebase findings — they provide external context (docs, known issues, best practices) for the patterns found in the code
 
-   The key is to use these agents intelligently:
-   - Start with locator agents to find what exists
-   - Then use analyzer agents on the most promising findings to document how they work
-   - Run multiple agents in parallel when they're searching for different things
-   - Each agent knows its job - just tell it what you're looking for
-   - Don't write detailed prompts about HOW to search - the agents already know
-   - Remind agents they are documenting, not evaluating or improving
+   The key is to use these sub-agents with skills intelligently:
+   - Start with locate skills (locate-codebase, locate-thoughts) to find what exists
+   - Then use analyzer skills (analyze-thoughts) and @codebase-analyzer on the most promising findings
+   - Run multiple sub-agents in parallel when they're searching for different things
+   - Each skill provides the methodology — just tell the sub-agent what you're looking for
+   - Remind sub-agents they are documenting, not evaluating or improving
 
 4. **Wait for all sub-agents to complete and synthesize findings:**
-   - IMPORTANT: Wait for ALL sub-agent tasks to complete before proceeding
-   - Compile all sub-agent results (both codebase and thoughts findings)
+   - IMPORTANT: Wait for ALL sub-agent tasks (codebase, thoughts, AND web research) to complete before proceeding
+   - Compile all sub-agent results from all three sources
    - Prioritize live codebase findings as primary source of truth
-   - Use .claude/thoughts/ findings as supplementary historical context
+   - Use .thoughts/ findings as supplementary historical context
+   - Use web research findings to provide external context — connect what exists in the codebase to official docs, known patterns, and community knowledge
    - Connect findings across different components
    - Include specific file paths and line numbers for reference
+   - Include source URLs from web research as references
    - Highlight patterns, connections, and architectural decisions
    - Answer the user's specific questions with concrete evidence
 
 5. **Gather metadata for the research document:**
-   - Filename: `.claude/thoughts/shared/research/YYYY-MM-DD-ENG-XXXX-description.md`
-     - Format: `YYYY-MM-DD-ENG-XXXX-description.md` where:
-       - YYYY-MM-DD is today's date
-       - ENG-XXXX is the ticket number (omit if no ticket)
-       - description is a brief kebab-case description of the research topic
-     - Examples:
-       - With ticket: `2025-01-08-ENG-1478-parent-child-tracking.md`
-       - Without ticket: `2025-01-08-authentication-flow.md`
+   - Filename: `.thoughts/research/YYYY-MM-DD-ENG-XXXX-description.md`
+      - Format: `YYYY-MM-DD-ENG-XXXX-description.md` where:
+        - YYYY-MM-DD is today's date
+        - ENG-XXXX is the ticket number (omit if no ticket)
+        - description is a brief kebab-case description of the research topic
+      - Examples:
+        - With ticket: `2025-01-08-ENG-1478-parent-child-tracking.md`
+        - Without ticket: `2025-01-08-authentication-flow.md`
 
 5. **Generate research document:**
    - Use the metadata gathered in step 5
@@ -93,7 +102,7 @@ Then wait for the user's research query.
      ```markdown
      ---
      date: [Current date and time with timezone in ISO format]
-     researcher: [Researcher name from thoughts status]
+      researcher: [Author name]
      git_commit: [Current commit hash]
      branch: [Current branch name]
      repository: [Repository name]
@@ -107,7 +116,7 @@ Then wait for the user's research query.
      # Research: [User's Question/Topic]
 
      **Date**: [Current date and time with timezone from step 4]
-     **Researcher**: [Researcher name from thoughts status]
+      **Researcher**: [Author name]
      **Git Commit**: [Current commit hash from step 4]
      **Branch**: [Current branch name from step 4]
      **Repository**: [Repository name]
@@ -135,13 +144,27 @@ Then wait for the user's research query.
      ## Architecture Documentation
      [Current patterns, conventions, and design implementations found in the codebase]
 
-     ## Historical Context (from thoughts/)
-     [Relevant insights from thoughts/ directory with references]
-     - `.claude/thoughts/something.md` - Historical decision about X
-     - `.claude/thoughts/notes.md` - Past exploration of Y
+     ## Web Research Findings
+     [External context from official docs, community knowledge, and related resources]
 
-     ## Related Research
-     [Links to other research documents in .claude/thoughts/shared/research/]
+     ### Official Documentation
+     - [Doc Title](url) - Key takeaway relevant to the codebase
+     - ...
+
+     ### Community Knowledge
+     - [Article/Discussion Title](url) - Relevant insight
+     - ...
+
+     ### Version / Compatibility Notes
+     [Any relevant version info, changelogs, or migration notes found]
+
+      ## Historical Context (from .thoughts/)
+      [Relevant insights from .thoughts/ directory with references]
+      - `.thoughts/research/something.md` - Historical decision about X
+      - `.thoughts/research/other.md` - Past exploration of Y
+
+      ## Related Research
+      [Links to other research documents in .thoughts/research/]
 
      ## Open Questions
      [Any areas that need further investigation]
@@ -163,16 +186,19 @@ Then wait for the user's research query.
 ## Important notes:
 - Always use parallel Task agents to maximize efficiency and minimize context usage
 - Always run fresh codebase research - never rely solely on existing research documents
-- The .claude/thoughts/ directory provides historical context to supplement live findings
+- The .thoughts/ directory provides historical context to supplement live findings
 - Focus on finding concrete file paths and line numbers for developer reference
 - Research documents should be self-contained with all necessary context
 - Each sub-agent prompt should be specific and focused on read-only documentation operations
 - Document cross-component connections and how systems interact
 - Include temporal context (when the research was conducted)
 - Link to GitHub when possible for permanent references
+- **Web research is mandatory**: Always spawn web research sub-agents in parallel with codebase research — do not skip or defer them
+- Web research sub-agents must always return source URLs as markdown links
+- Scale the number of web research sub-agents (1-3) based on topic breadth
 - Keep the main agent focused on synthesis, not deep file reading
 - Have sub-agents document examples and usage patterns as they exist
-- Explore all of thoughts/ directory, not just research subdirectory
+- Explore all of .thoughts/ directory, not just the research subdirectory
 - **CRITICAL**: You and all sub-agents are documentarians, not evaluators
 - **REMEMBER**: Document what IS, not what SHOULD BE
 - **NO RECOMMENDATIONS**: Only describe the current state of the codebase
