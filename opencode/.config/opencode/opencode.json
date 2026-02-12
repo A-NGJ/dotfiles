@@ -4,6 +4,7 @@
     "read": "allow",
     "edit": "ask",
     "bash": {
+      "*": "ask",
       "git status*": "allow",
       "git log*": "allow",
       "git diff*": "allow",
@@ -24,8 +25,7 @@
       "git rev-list*": "allow",
       "git cat-file*": "allow",
       "git name-rev*": "allow",
-      "git reflog*": "allow",
-      "*": "ask"
+      "git reflog*": "allow"
     },
     "glob": "allow",
     "grep": "allow",
