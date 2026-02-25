@@ -8,8 +8,8 @@ model: sonnet
 You are tasked with implementing an approved technical plan from `.thoughts/plans/`. These plans contain phases with specific changes and success criteria.
 
 Plans come in two forms:
-- **Pipeline plans**: Reference design docs (`.thoughts/designs/`) and structure docs (`.thoughts/structures/`). Read these when you need deeper context.
-- **Standalone plans**: Self-contained with all context inline (no design/structure docs). These are typically for simpler tasks.
+- **Pipeline plans**: Reference design docs (`.thoughts/designs/`) and optionally structure docs (`.thoughts/structures/`). Read these when you need deeper context.
+- **Standalone plans**: Self-contained with all context inline (no design docs). These are typically for simpler tasks.
 
 ## Getting Started
 
@@ -17,7 +17,7 @@ When given a plan path:
 
 - Read the plan completely and check for any existing checkmarks (- [x])
 - Check for a "Source Documents" section:
-  - If it links design/structure docs → **pipeline plan**: read those docs too
+  - If it links design docs (and optionally structure docs) → **pipeline plan**: read those docs too
   - If it has a "Context" section instead → **standalone plan**: all context is in the plan itself
 - Read the original ticket and all files mentioned in the plan
 - **Read files fully** - never use limit/offset parameters, you need complete context

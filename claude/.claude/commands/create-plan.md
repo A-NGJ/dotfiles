@@ -1,5 +1,5 @@
 ---
-description: Create implementation plans — works standalone for simple tasks or with prior design/structure docs for complex ones
+description: Create implementation plans — works standalone for simple tasks or with prior design docs for complex ones
 model: opus
 ---
 
@@ -9,15 +9,15 @@ Create implementation plans with phased tasks, success criteria, and verificatio
 
 **Two modes — auto-detected from input:**
 
-- **Standalone mode**: For simple/short tasks. You describe what needs to be done, the plan does its own lightweight research and produces a plan directly. No prior `/research-codebase`, `/create-design`, or `/create-structure` needed.
-- **Pipeline mode**: For complex tasks with existing docs. You provide a design or structure document from the full pipeline (research -> design -> structure -> plan -> implement).
+- **Standalone mode**: For simple/short tasks. You describe what needs to be done, the plan does its own lightweight research and produces a plan directly. No prior `/research-codebase` or `/create-design` needed.
+- **Pipeline mode**: For complex tasks with existing docs. You provide a design document from the pipeline (research -> design -> plan -> implement). Structure docs from `/create-structure` are also accepted if available.
 
 ## Initial Response
 
 When this command is invoked:
 
 1. **Check what was provided:**
-   - If a path to a structure or design document was provided → **Pipeline mode**
+   - If a path to a design document (or structure document) was provided → **Pipeline mode**
    - If a plain task description or ticket reference was provided → **Standalone mode**
    - If nothing was provided, respond:
    ```
@@ -30,7 +30,6 @@ When this command is invoked:
    `/create-plan .thoughts/tickets/eng-1234.md`
 
    **Complex task** (with prior docs from the pipeline):
-   `/create-plan .thoughts/structures/2025-01-08-feature-name.md`
    `/create-plan .thoughts/designs/2025-01-08-feature-name.md`
    ```
 
@@ -157,22 +156,22 @@ When revising based on feedback:
 
 ## Pipeline Mode
 
-For complex tasks that already went through `/research-codebase`, `/create-design`, and/or `/create-structure`.
+For complex tasks that already went through `/research-codebase` and `/create-design` (and optionally `/create-structure`).
 
 ### Step 1: Read Inputs & Validate
 
 1. **Read project conventions** — check for `CLAUDE.md` in the project root and note the actual commands for running tests, type checking, and linting. These will be used in success criteria instead of generic placeholders.
 
 2. **Read all provided documents immediately and FULLY**:
-   - Structure documents (primary input)
-   - Design documents (linked from structure doc or provided separately)
+   - Design documents (primary input)
+   - Structure documents (if available — provides file layout and interface details)
    - Research documents (linked from design doc)
    - Original ticket files (if referenced)
    - **IMPORTANT**: Read entire files — no limit/offset
    - **CRITICAL**: Read these yourself before spawning sub-tasks
 
-3. **Spot-check critical files from the structure doc**:
-   - Read 3-5 of the most important files listed
+3. **Spot-check critical files from the design doc** (or structure doc if available):
+   - Read 3-5 of the most important files mentioned
    - Verify the codebase still matches what the docs describe
    - If anything has drifted significantly, flag it immediately
 
@@ -181,7 +180,7 @@ For complex tasks that already went through `/research-codebase`, `/create-desig
    I've read the pipeline docs:
    - Research: [path] — [topic summary]
    - Design: [path] — [key decisions: A, B, C]
-   - Structure: [path] — [N modified files, M new files, key interfaces]
+   - Structure: [path] — [N modified files, M new files, key interfaces] (if available)
 
    Validation against current codebase:
    - [file:line] — confirmed, matches docs
@@ -194,21 +193,22 @@ For complex tasks that already went through `/research-codebase`, `/create-desig
 ### Step 2: Phase Definition
 
 1. **Create a planning todo list** using TodoWrite
-2. **Break the structure doc's file changes into ordered phases:**
+2. **Break the design's changes into ordered phases:**
    - Group related changes that must ship together
    - Respect dependency order (data model -> business logic -> API -> UI)
    - Each phase should leave the codebase in a working, testable state
    - Include tests in the same phase as the code they test — do not put tests in a separate phase or bottom section
+   - If a structure doc is available, use its file listings; otherwise, identify files from the design doc's architecture/integration sections
 3. **Present proposed phases for buy-in:**
    ```
    Proposed phases:
 
    ## Phase 1: [Name] — [what it accomplishes]
-   Files: [list from structure doc]
+   Files: [list from design/structure doc]
    Depends on: nothing (foundation)
 
    ## Phase 2: [Name] — [what it accomplishes]
-   Files: [list from structure doc]
+   Files: [list from design/structure doc]
    Depends on: Phase 1
 
    Does this phasing make sense?
@@ -237,7 +237,7 @@ Use the **Pipeline plan template** below.
 
 ## Overview
 [Brief description — reference the design doc for full context]
-**Scope**: [N files modified, M new files — summarised from structure doc]
+**Scope**: [N files modified, M new files — summarised from design/structure doc]
 
 ## Source Documents
 - **Research**: `[path]` — [1-line summary]
@@ -253,7 +253,7 @@ Use the **Pipeline plan template** below.
 ### Tasks:
 
 #### 1. [Component/File Group]
-**File**: `path/to/file.ext` (see structure doc for interface details)
+**File**: `path/to/file.ext` (see design doc for interface details)
 **Changes**: [Summary of what to do]
 
 ```[language]
@@ -308,7 +308,7 @@ Use the **Pipeline plan template** below.
 ## References
 - Research: `[path to research doc]`
 - Design: `[path to design doc]`
-- Structure: `[path to structure doc]`
+- Structure: `[path to structure doc]` (if available)
 - Original ticket: `[path to ticket]`
 - Similar implementation: `[file:line]`
 ````
@@ -345,5 +345,5 @@ When revising based on feedback:
 7. **Tests Belong to Their Phase**: Write tests alongside the code they cover, not in a separate section at the bottom
 
 ### Pipeline Mode Only
-8. **Trust Prior Stages**: Don't redo research, design, or structure work — reference those docs
-9. **Spot-check Reality**: Verify the codebase still matches the structure doc before planning
+8. **Trust Prior Stages**: Don't redo research or design work — reference those docs
+9. **Spot-check Reality**: Verify the codebase still matches the design doc before planning

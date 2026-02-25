@@ -1,15 +1,17 @@
 ---
-description: Define file structure, module boundaries, and interfaces for an approved design
+description: Define file structure, module boundaries, and interfaces — use for greenfield projects or major reorganizations where file layout needs dedicated attention
 model: opus
 ---
 
 # Structure Definition
 
-Map an approved design to concrete codebase structure - files, modules, interfaces, and dependencies. This stage bridges high-level design decisions and the detailed implementation plan.
+Map a design to concrete codebase structure — files, modules, interfaces, and dependencies.
 
-**This stage OWNS**: file layout, module boundaries, public interfaces/contracts, dependency graph, and naming conventions.
+**When to use this command**: For greenfield projects creating many new files, major module reorganizations, or when the file layout itself is complex enough to warrant a dedicated discussion. For most features, the design doc's optional "File Structure" section (via `/create-design`) and the plan's file listings (via `/create-plan`) provide sufficient coverage without a separate structure stage.
 
-**This stage does NOT own**: codebase research (→ `/research-codebase`), architectural decisions (→ `/create-design`), or implementation code and phasing (→ `/create-plan`). Define *what* each file exports — the plan stage defines *how* to implement the internals.
+**This command OWNS**: file layout, module boundaries, public interfaces/contracts, dependency graph, and naming conventions.
+
+**This command does NOT own**: codebase research (→ `/research-codebase`), architectural decisions (→ `/create-design`), or implementation code and phasing (→ `/create-plan`). Define *what* each file exports — the plan stage defines *how* to implement the internals.
 
 ## Initial Response
 
