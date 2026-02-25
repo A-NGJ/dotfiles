@@ -5,47 +5,74 @@ model: sonnet
 
 # Commit Changes
 
-You are tasked with creating git commits for the changes made during this session.
+Create git commits for changes in the working tree. This includes changes from the current session and any pre-existing staged or unstaged modifications.
 
-## Process:
+## Process
 
-1. **Think about what changed:**
-   - Review the conversation history and understand what was accomplished
-   - If staged files are not mentioned in the history, understand what has been changed 
-     by running git commands and include the staged files in the commit
-   - Run `git status` to see current changes
-   - Run `git diff` to understand the modifications
-   - Consider whether changes should be one commit or multiple logical commits
+### 1. Understand the changes
 
-2. **Plan your commit(s):**
-   - Identify which files belong together
-   - Draft clear, descriptive commit messages
-   - Use imperative mood in commit messages
-   - Focus on why the changes were made, not just what
-   - Prefer smaller commits over large, monolithic ones
+Run these commands in parallel to get the full picture:
 
-3. **Present your plan to the user:**
-   - List the files you plan to add for each commit
-   - Show the commit message(s) you'll use. Try to keep them concise yet descriptive. Use commitizen style if possible, e.g.:
-     - feat: add user authentication
-     - fix: resolve issue with data loading
-     - docs: update README with new instructions
-   - Ask: "I plan to create [N] commit(s) with these changes. Shall I proceed?"
+- `git status` — see all tracked, untracked, and staged files (never use `-uall`)
+- `git diff` — unstaged changes
+- `git diff --staged` — already-staged changes
+- `git log --oneline -n 10` — recent commits, so you can match the repo's message style
 
-4. **Execute upon confirmation:**
-   - Use `git add` with specific files (never use `-A` or `.`)
-   - Create commits with your planned messages
-   - Show the result with `git log --oneline -n [number]`
+Review the conversation history to understand the intent behind changes. If there are staged files not discussed in the conversation, inspect them too — the user may have edited files manually.
 
-## Important:
-- **NEVER add co-author information or Claude attribution**
-- Commits should be authored solely by the user
-- Do not include any "Generated with Claude" messages
-- Do not add "Co-Authored-By" lines
-- Write commit messages as if the user wrote them
+### 2. Check for problems
 
-## Remember:
-- You have the full context of what was done in this session
-- Group related changes together
-- Keep commits focused and atomic when possible
-- The user trusts your judgment - they asked you to commit
+Before planning commits, scan the changeset for issues:
+
+- **Sensitive files**: If you see `.env`, credentials, secrets, API keys, or large binaries in the changeset, warn the user and exclude them unless explicitly told otherwise.
+- **Nothing to commit**: If the working tree is clean (no staged, unstaged, or untracked changes), tell the user and stop — don't create an empty commit.
+
+### 3. Plan your commit(s)
+
+- Group related files into logical, focused commits — prefer smaller over monolithic
+- Draft commit messages in imperative mood, focusing on the "why" not the "what"
+- Match the repo's existing commit style based on `git log` output. If there aren't any commit conventions detected, follow commitizen convention:
+  - `feat: add user authentication`
+  - `fix: resolve null pointer in data loader`
+  - `refactor: extract validation into shared module`
+  - `test: add coverage for edge cases in parser`
+  - `docs: update setup instructions`
+  - `chore: remove unused dependencies`
+
+### 4. Present the plan
+
+For each planned commit, show:
+- The files to be staged
+- The commit message
+
+Then ask: "I plan to create [N] commit(s) with these changes. Shall I proceed?"
+
+### 5. Execute
+
+On confirmation:
+
+1. Stage specific files with `git add <file>` (never `-A` or `.`)
+2. Commit using a HEREDOC to handle special characters and multi-line messages safely:
+   ```bash
+   git commit -m "$(cat <<'EOF'
+   feat: add user authentication
+   EOF
+   )"
+   ```
+3. Repeat for each planned commit
+4. Show the result with `git log --oneline -n [number of commits]`
+
+### 6. If a hook blocks the commit
+
+Pre-commit hooks (linting, formatting, type checking) may reject the commit. When this happens:
+
+- Read the error output to understand what failed
+- Fix the issues (run formatters, resolve lint errors, etc.)
+- Re-stage the affected files
+- Create a **new** commit — never use `--amend`, because the failed commit didn't actually happen and amending would modify the previous unrelated commit
+
+## Attribution
+
+- NEVER add co-author information or Claude attribution
+- No "Generated with Claude" or "Co-Authored-By" lines
+- Write messages as if the user wrote them
