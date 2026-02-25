@@ -1,6 +1,14 @@
 {
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
   "statusLine": {
     "type": "command",
     "command": "~/.claude/bin/statusline.sh"
-  }
+  },
+  "enabledPlugins": {
+    "skill-creator@claude-plugins-official": true
+  },
+  "model": "sonnet"
 }

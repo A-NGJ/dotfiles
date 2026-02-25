@@ -36,7 +36,7 @@ Plans are carefully designed, but reality can be messy. Your job is to:
 - Implement each phase fully before moving to the next
 - Verify your work makes sense in the broader codebase context
 - Update checkboxes in the plan as you complete sections
-- Commit changes after each phase
+- Commit changes after each phase (after automated and manual testing have passed)
   - List the files you plan to add for each commit
   - Show the commit message(s) you'll use. Try to keep them concise yet descriptive.
   - Ask: "I plan to create [N] commit(s) with these changes. Shall I proceed?"
@@ -91,7 +91,6 @@ Deviations from plan:
   (or "None — matches plan exactly")
 
 Shall I proceed with these changes?
-```
 
 **Rules:**
 - Show the meaningful code — skip trivial imports, boilerplate, or obvious glue
@@ -120,7 +119,6 @@ After implementing a phase:
   - [List manual verification items from the plan]
 
   Let me know when manual testing is complete so I can proceed to Phase [N+1].
-  ```
 
 If instructed to execute multiple phases consecutively, skip the pause until the last phase. Otherwise, assume you are just doing one phase.
 
