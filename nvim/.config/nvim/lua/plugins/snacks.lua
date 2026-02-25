@@ -44,6 +44,8 @@ return {
         -- words
         { "<leader>ww",  function() Snacks.words.jump(1, true) end,      desc = "Jump to Next Word" },
         -- bufdelete
-        { "<leader>bdo", function() Snacks.bufdelete.other() end }
+        { "<leader>bdo", function() Snacks.bufdelete.other() end },
+        -- diagnostics
+        { "<leader>sd",  function() Snacks.picker.diagnostics() end,     desc = "Diagnostics" },
     },
 }
