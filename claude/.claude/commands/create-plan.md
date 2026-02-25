@@ -42,13 +42,17 @@ For tasks that don't need a full research -> design -> structure pipeline. Typic
 
 ### Step 1: Understand the Task
 
-1. **Read any provided files fully** (tickets, referenced files, etc.)
-2. **Do lightweight codebase research** — spawn parallel sub-tasks:
-   - Sub-task: "Load the `locate-codebase` skill, then find files related to [task]"
-   - Sub-task: "Load the `find-patterns` skill, then find how similar things are done in the codebase for [task]"
-   - Sub-task (@codebase-analyzer): Understand the specific code that needs to change
-3. **Read the key files** identified by research
-4. **Present your understanding:**
+1. **Read project conventions** — check for `CLAUDE.md` in the project root and note the actual commands for running tests, type checking, and linting. These will be used in success criteria instead of generic placeholders.
+2. **Read any provided files fully** (tickets, referenced files, etc.)
+3. **Research proportional to complexity** — scale effort to what the task actually needs:
+   - **Obvious** (specific file/function named, single localized change): read those files directly, no sub-tasks needed
+   - **Moderate** (area known, pattern unclear): spawn 1-2 targeted sub-tasks as needed
+   - **Cross-cutting** (multiple systems, unclear file landscape): spawn all three in parallel:
+     - Sub-task: "Load the `locate-codebase` skill, then find files related to [task]"
+     - Sub-task: "Load the `find-patterns` skill, then find how similar things are done in the codebase for [task]"
+     - Sub-task (@codebase-analyzer): Understand the specific code that needs to change
+4. **Read the key files** identified by research
+5. **If the task is ambiguous or you have questions**, present findings before proceeding:
    ```
    Here's what I found:
 
@@ -63,16 +67,34 @@ For tasks that don't need a full research -> design -> structure pipeline. Typic
    - [1-3 sentences on what the plan will do]
 
    Questions before I write the plan:
-   - [Only if genuinely ambiguous — skip if clear enough]
+   - [specific ambiguity to resolve]
    ```
+   If everything is clear with no open questions, skip this step and write the plan directly.
 
 ### Step 2: Write the Plan
 
-After understanding is confirmed (or immediately if no questions):
+After understanding is confirmed (or immediately if the task is unambiguous):
 
 1. **Break the work into phases** (often just 1-2 for simple tasks)
 2. **Write the plan** to `.thoughts/plans/YYYY-MM-DD-description.md`
 3. Use the **Standalone plan template** below
+
+### Step 3: Review & Iterate
+
+Present the plan with a brief summary:
+```
+Plan saved: `.thoughts/plans/YYYY-MM-DD-description.md`
+
+Phases:
+- Phase 1: [name] — [what it does] ([scope])
+
+Anything you'd like to adjust?
+```
+
+When revising based on feedback:
+- **Scope change** (add/remove tasks): update the Scope line and affected phase tasks
+- **Approach change**: re-research if needed — say so rather than guessing
+- Keep iterating until the user confirms or stops giving feedback
 
 ### Standalone Plan Template
 
@@ -84,6 +106,7 @@ After understanding is confirmed (or immediately if no questions):
 
 ## Context
 - **Task**: [Original task description or ticket reference]
+- **Scope**: [e.g. "2 files modified", "1 new file + 3 modified", "single function"]
 - **Key files**: [Most important files involved]
 
 ## Phase 1: [Descriptive Name]
@@ -103,17 +126,21 @@ After understanding is confirmed (or immediately if no questions):
 
 #### 2. [Tests]
 **File**: `path/to/test_file.ext`
-**Changes**: [Summary of test additions]
+**Changes**: [Unit tests, integration tests, and edge cases for everything introduced in this phase]
 
 ### Success Criteria:
 
 #### Automated Verification:
-- [ ] Tests pass: `[test command]`
-- [ ] Type checking: `[typecheck command]`
-- [ ] Linting: `[lint command]`
+- [ ] Tests pass: `[actual test command from CLAUDE.md]`
+- [ ] Type checking: `[actual typecheck command from CLAUDE.md]`
+- [ ] Linting: `[actual lint command from CLAUDE.md]`
 
 #### Manual Verification:
 - [ ] [Specific thing to verify]
+
+### Commit:
+- [ ] Stage: [files changed in this phase]
+- [ ] Message: `[type]: [what this phase accomplished]`
 
 **Note**: Pause for manual confirmation before proceeding to next phase.
 
@@ -134,7 +161,9 @@ For complex tasks that already went through `/research-codebase`, `/create-desig
 
 ### Step 1: Read Inputs & Validate
 
-1. **Read all provided documents immediately and FULLY**:
+1. **Read project conventions** — check for `CLAUDE.md` in the project root and note the actual commands for running tests, type checking, and linting. These will be used in success criteria instead of generic placeholders.
+
+2. **Read all provided documents immediately and FULLY**:
    - Structure documents (primary input)
    - Design documents (linked from structure doc or provided separately)
    - Research documents (linked from design doc)
@@ -142,12 +171,12 @@ For complex tasks that already went through `/research-codebase`, `/create-desig
    - **IMPORTANT**: Read entire files — no limit/offset
    - **CRITICAL**: Read these yourself before spawning sub-tasks
 
-2. **Spot-check critical files from the structure doc**:
+3. **Spot-check critical files from the structure doc**:
    - Read 3-5 of the most important files listed
    - Verify the codebase still matches what the docs describe
    - If anything has drifted significantly, flag it immediately
 
-3. **Present validation results**:
+4. **Present validation results**:
    ```
    I've read the pipeline docs:
    - Research: [path] — [topic summary]
@@ -169,7 +198,7 @@ For complex tasks that already went through `/research-codebase`, `/create-desig
    - Group related changes that must ship together
    - Respect dependency order (data model -> business logic -> API -> UI)
    - Each phase should leave the codebase in a working, testable state
-   - Include test changes in the same phase as the code they test
+   - Include tests in the same phase as the code they test — do not put tests in a separate phase or bottom section
 3. **Present proposed phases for buy-in:**
    ```
    Proposed phases:
@@ -190,7 +219,7 @@ For complex tasks that already went through `/research-codebase`, `/create-desig
 After phase buy-in:
 
 1. **Define success criteria for each phase:**
-   - **Automated Verification**: Commands that can be run (tests, linting, type checking, build)
+   - **Automated Verification**: Use actual commands from `CLAUDE.md` (tests, linting, type checking, build)
    - **Manual Verification**: Human testing steps (UI, edge cases, integration)
 2. **Define commit strategy per phase**
 3. **Present for review**
@@ -208,6 +237,7 @@ Use the **Pipeline plan template** below.
 
 ## Overview
 [Brief description — reference the design doc for full context]
+**Scope**: [N files modified, M new files — summarised from structure doc]
 
 ## Source Documents
 - **Research**: `[path]` — [1-line summary]
@@ -232,17 +262,21 @@ Use the **Pipeline plan template** below.
 
 #### 2. [Tests]
 **File**: `path/to/test_file.ext`
-**Changes**: [Summary of test additions]
+**Changes**: [Unit tests, integration tests, and edge cases for everything introduced in this phase]
 
 ### Success Criteria:
 
 #### Automated Verification:
-- [ ] Tests pass: `make test`
-- [ ] Type checking: `npm run typecheck`
-- [ ] Linting: `make lint`
+- [ ] Tests pass: `[actual test command from CLAUDE.md]`
+- [ ] Type checking: `[actual typecheck command from CLAUDE.md]`
+- [ ] Linting: `[actual lint command from CLAUDE.md]`
 
 #### Manual Verification:
 - [ ] [Specific thing to verify]
+
+### Commit:
+- [ ] Stage: [files changed in this phase]
+- [ ] Message: `[type]: [what this phase accomplished]`
 
 **Note**: Pause for manual confirmation before proceeding to next phase.
 
@@ -255,26 +289,18 @@ Use the **Pipeline plan template** below.
 [Dependencies on prior phases]
 
 ### Tasks:
-[Same structure as Phase 1]
+[Same structure as Phase 1 — including tests for this phase's changes]
 
 ### Success Criteria:
 [Same structure as Phase 1]
 
+### Commit:
+- [ ] Stage: [files changed in this phase]
+- [ ] Message: `[type]: [what this phase accomplished]`
+
 **Note**: Pause for manual confirmation before proceeding to next phase.
 
 ---
-
-## Testing Strategy
-
-### Unit Tests:
-- [What to test, key edge cases]
-
-### Integration Tests:
-- [End-to-end scenarios]
-
-### Manual Testing:
-1. [Specific verification step]
-2. [Edge case to test]
 
 ## Migration Notes (if applicable)
 [Ordering concerns, backward compatibility, rollback strategy]
@@ -289,9 +315,22 @@ Use the **Pipeline plan template** below.
 
 ### Step 5: Review & Iterate
 
-1. Present the draft plan location
-2. Iterate based on feedback
-3. Continue until user is satisfied
+Present the plan with a brief summary:
+```
+Plan saved: `.thoughts/plans/YYYY-MM-DD-description.md`
+
+Phases:
+- Phase 1: [name] — [what it does] ([N files])
+- Phase 2: [name] — [what it does] ([N files])
+
+Anything you'd like to adjust?
+```
+
+When revising based on feedback:
+- **Phase reordering**: update dependencies and the "why it comes first" rationale
+- **Scope change** (add/remove tasks): update the Scope line and affected phase tasks
+- **Approach change**: re-research if needed — say so rather than guessing
+- Keep iterating until the user confirms or stops giving feedback
 
 ---
 
@@ -302,7 +341,9 @@ Use the **Pipeline plan template** below.
 3. **Separate Verification**: Always split success criteria into automated and manual
 4. **No Open Questions**: Resolve ambiguity before finalizing — ask the user if needed
 5. **Right-size the Plan**: Simple tasks get simple plans (1 phase, minimal ceremony). Complex tasks get detailed phasing with full verification
+6. **Commit After Each Phase**: Every phase ends with a commit step — stage only that phase's files, not everything at once
+7. **Tests Belong to Their Phase**: Write tests alongside the code they cover, not in a separate section at the bottom
 
 ### Pipeline Mode Only
-6. **Trust Prior Stages**: Don't redo research, design, or structure work — reference those docs
-7. **Spot-check Reality**: Verify the codebase still matches the structure doc before planning
+8. **Trust Prior Stages**: Don't redo research, design, or structure work — reference those docs
+9. **Spot-check Reality**: Verify the codebase still matches the structure doc before planning
