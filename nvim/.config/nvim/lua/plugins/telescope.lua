@@ -81,8 +81,8 @@ return {
             -- See `:help telescope.builtin`
             -- vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles,
             --     { desc = '[?] Find recently opened files' })
-            -- vim.keymap.set('n', '<leader>/', require('telescope.builtin').current_buffer_fuzzy_find,
-            --     { desc = '[/] Fuzzily search in current buffer]' })
+            vim.keymap.set('n', '<leader>/', require('telescope.builtin').current_buffer_fuzzy_find,
+                { desc = '[/] Fuzzily search in current buffer]' })
             --
             -- vim.keymap.set('n', '<leader>sf', M.project_files, { desc = '[S]earch [F]iles' })
             -- -- vim.keymap.set('n', '<leader>sf', require('telescope.builtin').git_files, { desc = '[S]earch [F]iles [G]it' })
