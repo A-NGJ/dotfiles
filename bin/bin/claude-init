@@ -196,6 +196,76 @@ generate_claude_md() {
     log_success "   Created CLAUDE.md"
 }
 
+update_claude_md() {
+    local target_dir="$1"
+    local template_file="${TEMPLATE_DIR}/CLAUDE.md.template"
+    local output_file="${target_dir}/CLAUDE.md"
+
+    if [[ ! -f "$template_file" ]]; then
+        log_error "   Template not found: $template_file"
+        return 1
+    fi
+
+    if [[ ! -f "$output_file" ]]; then
+        cp "$template_file" "$output_file"
+        log_success "   Created CLAUDE.md from template"
+        return 0
+    fi
+
+    # Find ## headings in template that are missing from existing file
+    local added=0
+    while IFS= read -r heading; do
+        if ! grep -qxF "$heading" "$output_file"; then
+            # Extract section from template (heading to next ## heading or EOF)
+            local section_file
+            section_file=$(mktemp)
+            awk -v h="$heading" '
+                $0 == h { found=1 }
+                found && /^## / && $0 != h { exit }
+                found { print }
+            ' "$template_file" > "$section_file"
+
+            # Find next template heading that exists in the output file
+            local insert_before=""
+            local past_current=false
+            while IFS= read -r h; do
+                if [[ "$past_current" == true ]] && grep -qxF "$h" "$output_file"; then
+                    insert_before="$h"
+                    break
+                fi
+                [[ "$h" == "$heading" ]] && past_current=true
+            done < <(grep '^## ' "$template_file")
+
+            if [[ -n "$insert_before" ]]; then
+                # Insert section before the anchor heading
+                local tmp_file
+                tmp_file=$(mktemp)
+                awk -v before="$insert_before" -v sfile="$section_file" '
+                    $0 == before {
+                        while ((getline line < sfile) > 0) print line
+                        close(sfile)
+                        print ""
+                    }
+                    { print }
+                ' "$output_file" > "$tmp_file"
+                mv "$tmp_file" "$output_file"
+            else
+                # No anchor found, append to end
+                echo "" >> "$output_file"
+                cat "$section_file" >> "$output_file"
+            fi
+
+            rm -f "$section_file"
+            log_success "   CLAUDE.md: added section \"${heading:3}\""
+            ((added++))
+        fi
+    done < <(grep '^## ' "$template_file")
+
+    if [[ $added -eq 0 ]]; then
+        log_info "   CLAUDE.md: up to date"
+    fi
+}
+
 validate_source() {
     if [[ ! -d "$DOTFILES_CLAUDE" ]]; then
         log_error "Source directory not found: $DOTFILES_CLAUDE"
@@ -287,6 +357,9 @@ main() {
         if [[ "$AGENTS_ONLY" != true ]]; then
             copy_with_update "${DOTFILES_CLAUDE}/commands" "${claude_dir}/commands" "commands"
         fi
+        if [[ "$NO_CLAUDE_MD" != true ]] && [[ "$AGENTS_ONLY" != true ]] && [[ "$COMMANDS_ONLY" != true ]]; then
+            update_claude_md "$TARGET_DIR"
+        fi
 
         log_success "Update complete!"
         exit 0
@@ -304,6 +377,7 @@ main() {
     mkdir -p "${TARGET_DIR}/.thoughts/tickets"
     mkdir -p "${TARGET_DIR}/.thoughts/prs"
     mkdir -p "${TARGET_DIR}/.thoughts/reviews"
+    mkdir -p "${TARGET_DIR}/.thoughts/tickets"
     log_success "   Created .claude/{agents,commands,hooks}/ and .thoughts/"
 
     # Generate CLAUDE.md
