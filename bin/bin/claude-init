@@ -177,6 +177,27 @@ copy_with_update() {
     return 0
 }
 
+generate_pipeline_md() {
+    local target_dir="$1"
+    local template_file="${TEMPLATE_DIR}/PIPELINE.md.template"
+    local output_file="${target_dir}/.thoughts/PIPELINE.md"
+
+    if [[ ! -f "$template_file" ]]; then
+        log_warning "   PIPELINE.md template not found: $template_file"
+        return 0
+    fi
+
+    mkdir -p "${target_dir}/.thoughts"
+
+    if [[ -f "$output_file" ]] && [[ "$FORCE" != true ]]; then
+        log_warning "   .thoughts/PIPELINE.md already exists (use --force to overwrite)"
+        return 0
+    fi
+
+    cp "$template_file" "$output_file"
+    log_success "   Created .thoughts/PIPELINE.md"
+}
+
 generate_claude_md() {
     local target_dir="$1"
     local template_file="${TEMPLATE_DIR}/CLAUDE.md.template"
@@ -360,6 +381,9 @@ main() {
         if [[ "$NO_CLAUDE_MD" != true ]] && [[ "$AGENTS_ONLY" != true ]] && [[ "$COMMANDS_ONLY" != true ]]; then
             update_claude_md "$TARGET_DIR"
         fi
+        if [[ "$AGENTS_ONLY" != true ]] && [[ "$COMMANDS_ONLY" != true ]]; then
+            generate_pipeline_md "$TARGET_DIR"
+        fi
 
         log_success "Update complete!"
         exit 0
@@ -385,6 +409,10 @@ main() {
         log_info "Creating CLAUDE.md..."
         generate_claude_md "$TARGET_DIR"
     fi
+
+    # Generate .thoughts/PIPELINE.md
+    log_info "Creating .thoughts/PIPELINE.md..."
+    generate_pipeline_md "$TARGET_DIR"
 
     # Update gitignore
     ensure_gitignore_entry "$TARGET_DIR" ".claude/settings.local.json"
