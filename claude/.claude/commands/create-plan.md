@@ -10,7 +10,7 @@ Create implementation plans with phased tasks, success criteria, and verificatio
 **Two modes — auto-detected from input:**
 
 - **Standalone mode**: For simple/short tasks. You describe what needs to be done, the plan does its own lightweight research and produces a plan directly. No prior `/research-codebase` or `/create-design` needed.
-- **Pipeline mode**: For complex tasks with existing docs. You provide a design document from the pipeline (research -> design -> plan -> implement). Structure docs from `/create-structure` are also accepted if available.
+- **Pipeline mode**: For complex tasks with existing docs. You provide a design document, structure document, or a **ticket from `/create-tickets`** that links back to the pipeline (research → design → [structure] → tickets → plan → implement).
 
 ## Initial Response
 
@@ -18,7 +18,10 @@ When this command is invoked:
 
 1. **Check what was provided:**
    - If a path to a design document (or structure document) was provided → **Pipeline mode**
-   - If a plain task description or ticket reference was provided → **Standalone mode**
+   - If a path to a ticket file was provided → read its frontmatter:
+     - If the ticket has a `design:` field (it came from `/create-tickets`) → **Pipeline mode** (ticket-originated)
+     - If the ticket has no `design:` field (standalone ticket) → **Standalone mode**
+   - If a plain task description was provided → **Standalone mode**
    - If nothing was provided, respond:
    ```
    I'll help you create an implementation plan.
@@ -27,10 +30,10 @@ When this command is invoked:
 
    **Simple task** (standalone):
    `/create-plan Add a retry mechanism to the webhook handler`
-   `/create-plan .thoughts/tickets/eng-1234.md`
 
-   **Complex task** (with prior docs from the pipeline):
+   **From the pipeline** (with prior docs):
    `/create-plan .thoughts/designs/2025-01-08-feature-name.md`
+   `/create-plan .thoughts/tickets/auth-001-user-signup.md`
    ```
 
 ---
@@ -156,31 +159,45 @@ When revising based on feedback:
 
 ## Pipeline Mode
 
-For complex tasks that already went through `/research-codebase` and `/create-design` (and optionally `/create-structure`).
+For complex tasks that already went through the pipeline. Triggered by design docs, structure docs, or **ticket files from `/create-tickets`** that link back to design docs.
 
 ### Step 1: Read Inputs & Validate
 
 1. **Read project conventions** — check for `CLAUDE.md` in the project root and note the actual commands for running tests, type checking, and linting. These will be used in success criteria instead of generic placeholders.
 
-2. **Read all provided documents immediately and FULLY**:
-   - Design documents (primary input)
-   - Structure documents (if available — provides file layout and interface details)
-   - Research documents (linked from design doc)
-   - Original ticket files (if referenced)
-   - **IMPORTANT**: Read entire files — no limit/offset
-   - **CRITICAL**: Read these yourself before spawning sub-tasks
+2. **Resolve the input document chain.** What you were given determines where to start:
 
-3. **Spot-check critical files from the design doc** (or structure doc if available):
+   **If given a design or structure doc** — standard path:
+   - Read the design doc (primary input)
+   - Read the structure doc (if available)
+   - Read linked research documents
+   - Read referenced ticket files (if any)
+
+   **If given a ticket file** — follow its frontmatter back up the chain:
+   - Read the ticket file first. Extract its frontmatter fields: `ticket:`, `design:`, `structure:`, `depends_on:`
+   - Read the `design:` document — this becomes the primary design context
+   - Read the `structure:` document (if present in frontmatter)
+   - Read research documents linked from the design doc
+   - Read any `depends_on:` tickets to understand prior work and interfaces established by earlier tickets
+   - The ticket's **Scope**, **Design Context**, and **Acceptance Criteria** sections define the boundaries for this plan — the design doc provides broader context, but the ticket scopes what this specific plan covers
+
+   **IMPORTANT**: Read entire files — no limit/offset
+   **CRITICAL**: Read these yourself before spawning sub-tasks
+
+3. **Extract the ticket ID for naming** — if the input is a ticket file, or if any source document references a ticket, note the `ticket:` field value (e.g., `auth-001`). This will be used in the plan filename.
+
+4. **Spot-check critical files from the design doc** (or structure doc if available):
    - Read 3-5 of the most important files mentioned
    - Verify the codebase still matches what the docs describe
    - If anything has drifted significantly, flag it immediately
 
-4. **Present validation results**:
+5. **Present validation results**:
    ```
    I've read the pipeline docs:
+   - Ticket: [path] — [ticket ID]: [title] (if ticket-originated)
    - Research: [path] — [topic summary]
    - Design: [path] — [key decisions: A, B, C]
-   - Structure: [path] — [N modified files, M new files, key interfaces] (if available)
+   - Structure: [path] — [scope summary] (if available)
 
    Validation against current codebase:
    - [file:line] — confirmed, matches docs
@@ -226,7 +243,10 @@ After phase buy-in:
 
 ### Step 4: Write the Plan
 
-Save to `.thoughts/plans/YYYY-MM-DD-ENG-XXXX-description.md`
+**Filename**: `.thoughts/plans/YYYY-MM-DD-<ticket-id>-description.md`
+- Include the ticket ID (e.g., `auth-001`) when one was extracted in Step 1 — whether the input was a ticket file directly or a design doc that references a ticket
+- Without a ticket ID: `2025-01-08-improve-error-handling.md`
+- With a ticket ID: `2025-01-08-auth-001-user-signup.md`
 
 Use the **Pipeline plan template** below.
 
@@ -240,10 +260,10 @@ Use the **Pipeline plan template** below.
 **Scope**: [N files modified, M new files — summarised from design/structure doc]
 
 ## Source Documents
+- **Ticket**: `[path]` — [ticket ID] (if ticket-originated)
 - **Research**: `[path]` — [1-line summary]
 - **Design**: `[path]` — [key decisions]
-- **Structure**: `[path]` — [scope summary]
-- **Ticket**: `[path]` (if applicable)
+- **Structure**: `[path]` — [scope summary] (if available)
 
 ## Phase 1: [Descriptive Name]
 
@@ -306,10 +326,10 @@ Use the **Pipeline plan template** below.
 [Ordering concerns, backward compatibility, rollback strategy]
 
 ## References
+- Ticket: `[path to ticket]` — [ticket ID] (if ticket-originated)
 - Research: `[path to research doc]`
 - Design: `[path to design doc]`
 - Structure: `[path to structure doc]` (if available)
-- Original ticket: `[path to ticket]`
 - Similar implementation: `[file:line]`
 ````
 
@@ -317,7 +337,7 @@ Use the **Pipeline plan template** below.
 
 Present the plan with a brief summary:
 ```
-Plan saved: `.thoughts/plans/YYYY-MM-DD-description.md`
+Plan saved: `.thoughts/plans/YYYY-MM-DD-<ticket-id>-description.md`
 
 Phases:
 - Phase 1: [name] — [what it does] ([N files])
