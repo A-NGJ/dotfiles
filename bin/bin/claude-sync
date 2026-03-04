@@ -1,0 +1,203 @@
+#!/bin/bash
+set -e
+set -u
+set -o pipefail
+
+# Syncs Claude Code pipeline files from dotfiles to a target project directory.
+# Copies only files needed for the development pipeline flow:
+#   Commands:  create-research, create-design, create-structure, create-tickets, create-plan, implement-plan, commit
+#   Skills:    locate-codebase, find-patterns, locate-thoughts, analyze-thoughts
+#   Agents:    codebase-analyzer
+#   Scripts:   claude-init (+ templates)
+# All files are overwritten if already present.
+
+DOTFILES_CLAUDE="${HOME}/dotfiles/claude/.claude"
+TEMPLATE_DIR="${HOME}/dotfiles/bin/bin/templates"
+SCRIPT_DIR="${HOME}/dotfiles/bin/bin"
+
+# Pipeline commands
+COMMANDS=(
+    create-research.md
+    create-design.md
+    create-structure.md
+    create-tickets.md
+    create-plan.md
+    implement-plan.md
+    commit.md
+)
+
+# Skills used by pipeline commands
+SKILLS=(
+    locate-codebase
+    find-patterns
+    locate-thoughts
+    analyze-thoughts
+)
+
+# Agents used by pipeline commands
+AGENTS=(
+    codebase-analyzer.md
+)
+
+# Templates used by claude-init
+TEMPLATES=(
+    CLAUDE.md.template
+    PIPELINE.md.template
+)
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+TARGET_DIR="."
+DRY_RUN=false
+
+show_help() {
+    cat << 'EOF'
+claude-sync - Sync Claude Code pipeline files to a project
+
+USAGE:
+    claude-sync [OPTIONS] [TARGET_DIR]
+
+OPTIONS:
+    -h, --help      Show this help message
+    -n, --dry-run   Show what would be copied without copying
+
+ARGUMENTS:
+    TARGET_DIR      Target directory (default: current directory)
+
+WHAT IT COPIES:
+    .claude/commands/    Pipeline commands (create-*, implement-plan)
+    .claude/skills/      Skills used by commands (locate-*, find-patterns, analyze-thoughts)
+    .claude/agents/      Agents used by commands (codebase-analyzer)
+    bin/claude-init      Initialization script
+    bin/templates/       Templates used by claude-init
+EOF
+    exit 0
+}
+
+log_info()    { echo -e "${BLUE}$1${NC}"; }
+log_success() { echo -e "${GREEN}$1${NC}"; }
+log_warning() { echo -e "${YELLOW}$1${NC}"; }
+log_error()   { echo -e "${RED}$1${NC}"; }
+
+copy_file() {
+    local src="$1"
+    local dest="$2"
+    local label="$3"
+
+    if [[ ! -f "$src" ]]; then
+        log_warning "  skip: $label (not found)"
+        return 0
+    fi
+
+    if [[ "$DRY_RUN" == true ]]; then
+        log_info "  would copy: $label"
+        return 0
+    fi
+
+    mkdir -p "$(dirname "$dest")"
+    cp "$src" "$dest"
+    log_success "  copied: $label"
+}
+
+copy_dir() {
+    local src="$1"
+    local dest="$2"
+    local label="$3"
+
+    if [[ ! -d "$src" ]]; then
+        log_warning "  skip: $label (not found)"
+        return 0
+    fi
+
+    if [[ "$DRY_RUN" == true ]]; then
+        local count
+        count=$(find "$src" -type f | wc -l | tr -d ' ')
+        log_info "  would copy: $label ($count files)"
+        return 0
+    fi
+
+    mkdir -p "$dest"
+    local count=0
+    while IFS= read -r -d '' file; do
+        local rel="${file#"$src"/}"
+        local dest_file="${dest}/${rel}"
+        mkdir -p "$(dirname "$dest_file")"
+        cp "$file" "$dest_file"
+        ((count++))
+    done < <(find "$src" -type f -print0)
+
+    log_success "  copied: $label ($count files)"
+}
+
+main() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help) show_help ;;
+            -n|--dry-run) DRY_RUN=true; shift ;;
+            -*) log_error "Unknown option: $1"; show_help ;;
+            *) TARGET_DIR="$1"; shift ;;
+        esac
+    done
+
+    TARGET_DIR=$(cd "$TARGET_DIR" && pwd)
+    local claude_dir="${TARGET_DIR}/.claude"
+    local bin_dir="${TARGET_DIR}/bin"
+
+    echo ""
+    if [[ "$DRY_RUN" == true ]]; then
+        log_info "DRY RUN — Syncing pipeline files"
+    else
+        log_info "Syncing pipeline files"
+    fi
+    log_info "Target: ${TARGET_DIR}"
+    echo ""
+
+    if [[ ! -d "$DOTFILES_CLAUDE" ]]; then
+        log_error "Source not found: $DOTFILES_CLAUDE"
+        exit 1
+    fi
+
+    # Commands
+    log_info "Commands:"
+    for cmd in "${COMMANDS[@]}"; do
+        copy_file "${DOTFILES_CLAUDE}/commands/${cmd}" "${claude_dir}/commands/${cmd}" "$cmd"
+    done
+
+    # Agents
+    echo ""
+    log_info "Agents:"
+    for agent in "${AGENTS[@]}"; do
+        copy_file "${DOTFILES_CLAUDE}/agents/${agent}" "${claude_dir}/agents/${agent}" "$agent"
+    done
+
+    # Skills (directories)
+    echo ""
+    log_info "Skills:"
+    for skill in "${SKILLS[@]}"; do
+        copy_dir "${DOTFILES_CLAUDE}/skills/${skill}" "${claude_dir}/skills/${skill}" "$skill"
+    done
+
+    # claude-init script + templates
+    echo ""
+    log_info "Scripts:"
+    copy_file "${SCRIPT_DIR}/claude-init" "${bin_dir}/claude-init" "claude-init"
+    if [[ "$DRY_RUN" != true ]]; then
+        chmod +x "${bin_dir}/claude-init" 2>/dev/null || true
+    fi
+
+    echo ""
+    log_info "Templates:"
+    for tmpl in "${TEMPLATES[@]}"; do
+        copy_file "${TEMPLATE_DIR}/${tmpl}" "${bin_dir}/templates/${tmpl}" "$tmpl"
+    done
+
+    echo ""
+    log_success "Sync complete!"
+}
+
+main "$@"
