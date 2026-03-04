@@ -11,7 +11,7 @@ Map a design to concrete codebase structure — files, modules, interfaces, and 
 
 **This command OWNS**: file layout, module boundaries, public interfaces/contracts, dependency graph, and naming conventions.
 
-**This command does NOT own**: codebase research (→ `/research-codebase`), architectural decisions (→ `/create-design`), or implementation code and phasing (→ `/create-plan`). Define *what* each file exports — the plan stage defines *how* to implement the internals.
+**This command does NOT own**: codebase research (→ `/create-research`), architectural decisions (→ `/create-design`), or implementation code and phasing (→ `/create-plan`). Define *what* each file exports — the plan stage defines *how* to implement the internals.
 
 ## Initial Response
 

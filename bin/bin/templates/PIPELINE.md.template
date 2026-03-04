@@ -25,7 +25,7 @@ Research → Design → Structure → Tickets → Plan → Implement
 
 ## Stage 1: Research
 
-**Command**: `/research-codebase`
+**Command**: `/create-research`
 
 **Purpose**: Document the codebase as-is. Understand existing architecture, patterns, and constraints before proposing changes. Pure fact-finding — no suggestions, no critique.
 
@@ -51,7 +51,7 @@ Research → Design → Structure → Tickets → Plan → Implement
 
 **Example**:
 ```
-/research-codebase
+/create-research
 > How does the category caching system work?
 ```
 
@@ -233,7 +233,7 @@ Research → Design → Structure → Tickets → Plan → Implement
 
 | Stage | Command | Input | Output Location |
 |-------|---------|-------|-----------------|
-| Research | `/research-codebase` | Question or topic | `.thoughts/research/` |
+| Research | `/create-research` | Question or topic | `.thoughts/research/` |
 | Design | `/create-design` | Research doc or problem description | `.thoughts/designs/` |
 | Structure | `/create-structure` | Design doc | `.thoughts/structures/` |
 | Tickets | `/create-tickets` | Design doc (+ structure doc) | `.thoughts/tickets/` |

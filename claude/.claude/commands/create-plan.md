@@ -9,7 +9,7 @@ Create implementation plans with phased tasks, success criteria, and verificatio
 
 **Two modes — auto-detected from input:**
 
-- **Standalone mode**: For simple/short tasks. You describe what needs to be done, the plan does its own lightweight research and produces a plan directly. No prior `/research-codebase` or `/create-design` needed.
+- **Standalone mode**: For simple/short tasks. You describe what needs to be done, the plan does its own lightweight research and produces a plan directly. No prior `/create-research` or `/create-design` needed.
 - **Pipeline mode**: For complex tasks with existing docs. You provide a design document, structure document, or a **ticket from `/create-tickets`** that links back to the pipeline (research → design → [structure] → tickets → plan → implement).
 
 ## Initial Response

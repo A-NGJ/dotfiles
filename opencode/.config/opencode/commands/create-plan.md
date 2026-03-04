@@ -9,7 +9,7 @@ Create implementation plans with phased tasks, success criteria, and verificatio
 
 **Two modes — auto-detected from input:**
 
-- **Standalone mode**: For simple/short tasks. You describe what needs to be done, the plan does its own lightweight research and produces a plan directly. No prior `/research-codebase`, `/create-design`, or `/create-structure` needed.
+- **Standalone mode**: For simple/short tasks. You describe what needs to be done, the plan does its own lightweight research and produces a plan directly. No prior `/create-research`, `/create-design`, or `/create-structure` needed.
 - **Pipeline mode**: For complex tasks with existing docs. You provide a design or structure document from the full pipeline (research -> design -> structure -> plan -> implement).
 
 ## Initial Response
@@ -130,7 +130,7 @@ After understanding is confirmed (or immediately if no questions):
 
 ## Pipeline Mode
 
-For complex tasks that already went through `/research-codebase`, `/create-design`, and/or `/create-structure`.
+For complex tasks that already went through `/create-research`, `/create-design`, and/or `/create-structure`.
 
 ### Step 1: Read Inputs & Validate
 

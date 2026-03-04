@@ -9,7 +9,7 @@ Map an approved design to concrete codebase structure - files, modules, interfac
 
 **This stage OWNS**: file layout, module boundaries, public interfaces/contracts, dependency graph, and naming conventions.
 
-**This stage does NOT own**: codebase research (-> `/research-codebase`), architectural decisions (-> `/create-design`), or implementation code and phasing (-> `/create-plan`). Define *what* each file exports — the plan stage defines *how* to implement the internals.
+**This stage does NOT own**: codebase research (-> `/create-research`), architectural decisions (-> `/create-design`), or implementation code and phasing (-> `/create-plan`). Define *what* each file exports — the plan stage defines *how* to implement the internals.
 
 ## Initial Response
 
