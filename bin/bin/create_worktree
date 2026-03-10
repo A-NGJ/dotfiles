@@ -112,8 +112,14 @@ fi
 # Display base branch info
 echo "🔀 Creating from branch: ${BASE_BRANCH}"
 
-# Create worktree (creates branch if it doesn't exist)
-if git show-ref --verify --quiet "refs/heads/${BASE_BRANCH}"; then
+# Verify base branch exists
+if ! git show-ref --verify --quiet "refs/heads/${BASE_BRANCH}"; then
+    echo "❌ Error: Branch '${BASE_BRANCH}' does not exist locally."
+    exit 1
+fi
+
+# Create worktree: reuse branch if it matches base, otherwise create new branch
+if [ "$WORKTREE_NAME" = "$BASE_BRANCH" ]; then
     echo "📋 Using existing branch: ${BASE_BRANCH}"
     git worktree add "$WORKTREE_PATH" "$BASE_BRANCH"
 else
@@ -167,11 +173,11 @@ cd - > /dev/null
 
 echo "✅ Worktree created successfully!"
 echo "📁 Path: ${WORKTREE_PATH}"
-echo "🔀 Branch: ${BASE_BRANCH}"
+echo "🔀 Branch: ${WORKTREE_NAME}"
 echo ""
 echo "To work in this worktree:"
 echo "  cd ${WORKTREE_PATH}"
 echo ""
 echo "To remove this worktree later:"
 echo "  git worktree remove ${WORKTREE_PATH}"
-echo "  git branch -D ${BASE_BRANCH}"
+echo "  git branch -D ${WORKTREE_NAME}"
