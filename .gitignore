@@ -9,3 +9,9 @@ fzf
 
 # Local environment files with secrets
 **/.zshenv.local
+
+# RPI workflow
+.claude/settings.local.json
+
+# RPI workflow
+.thoughts/
