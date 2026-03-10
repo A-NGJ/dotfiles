@@ -11,7 +11,7 @@ fzf
 **/.zshenv.local
 
 # RPI workflow
-.claude/settings.local.json
+.claude/
 
 # RPI workflow
 .thoughts/
