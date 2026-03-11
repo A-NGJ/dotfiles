@@ -12,6 +12,7 @@ fzf
 
 # RPI workflow
 .claude/
+!claude/.claude/settings.json
 
 # RPI workflow
 .thoughts/
