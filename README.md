@@ -21,7 +21,7 @@ xargs brew install < leaves.txt
 
 ## Oh My ZSH setup
 
-Since oh-my-zsh is a git repository, you can clone it and stow it like the rest of the dotfiles. This way, you can keep your custom plugins and themes in sync across machines.
+Since oh-my-zsh is a git repository, you can't clone it and stow it like the rest of the dotfiles. 
 
 ### Install Oh My ZSH:
 ```bash
@@ -36,22 +36,3 @@ Copy `custom` and `themes` folders from the oh-my-zsh repository to your dotfile
 cp -a themes/* ~/.oh-my-zsh/themes/
 cp -a custom/* ~/.oh-my-zsh/custom/
 ```
-
-### Install Plugins
-
-#### ZSH Autosuggestions
-
-[Installation guide](https://github.com/zsh-users/zsh-autosuggestions/blob/master/INSTALL.md#oh-my-zsh)
-
-```bash
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-```
-
-#### ZSH Syntax Highlighting
-
-[Installation guide](https://github.com/zsh-users/zsh-syntax-highlighting/blob/master/INSTALL.md#oh-my-zsh)
-
-```bash
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-```
-
