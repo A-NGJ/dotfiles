@@ -1,4 +1,5 @@
 bat
+curl
 eza
 fzf
 git-delta
@@ -6,10 +7,13 @@ go
 jq
 lazygit
 neovim
+node
+rg
 rust
 stow
 telnet
 tmux
+uv
 vim
 watch
 wget
