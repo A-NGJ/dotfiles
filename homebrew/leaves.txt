@@ -2,6 +2,7 @@ bat
 eza
 fzf
 git-delta
+go
 jq
 lazygit
 neovim

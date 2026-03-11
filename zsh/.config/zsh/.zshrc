@@ -6,7 +6,6 @@ export CLICOLOR=1
 export PROMPT='%F{75}%n@%m %F{81}%~%f $ '
 autoload -Uz compinit && compinit
 export PATH="/opt/homebrew/opt/gradle@7/bin:$PATH"
-export AWS_DEFAULT_PROFILE=default
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -108,27 +107,21 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 #
 
-export PATH="/opt/homebrew/opt/node@20/bin:$PATH"
-export PATH="/usr/local/bin:$PATH"
 export KEYTIMEOUT=80
-export XDG_CONFIG_HOME="$HOME/.config"
 export FZF_DEFAULT_COMMAND="rg --files --follow --hidden --no-ignore --glob '!.git/*' --glob '!*/.venv/*'"
 export FZF_DEFAULT_OPTS="--preview='bat --color=always --style=header,grid --line-range :500 {}'"
 export LANG=en_US.UTF-8
+# Set up fzf key bindings and fuzzy completion
+source <(fzf --zsh)
 
-eval "$(fzf --zsh)"
-source ~/fzf-git/fzf-git.sh
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
 # key bindings
 bindkey '^O' clear-screen
 
 export NODE_EXTRA_CA_CERTS="/Users/alen/certs/zscaler_root.pem"
-# export CURL_CA_BUNDLE="/Users/alen/certs/zscaler_root.pem"
-#
-export AWS_DEFAULT_REGION="eu-central-1"
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 # opencode
