@@ -25,9 +25,9 @@ return {
     },
     keys = {
         -- Top Pickers and Explorer
-        { "<leader>sf",  function() Snacks.picker.smart() end,           desc = "Smart Find Files" },
+        { "<leader>sf",  function() Snacks.picker.smart({ hidden = true }) end, desc = "Smart Find Files" },
         { "<leader>sb",  function() Snacks.picker.buffers() end,         desc = "Buffers" },
-        { "<leader>sg",  function() Snacks.picker.grep() end,            desc = "Grep" },
+        { "<leader>sg",  function() Snacks.picker.grep({ hidden = true }) end, desc = "Grep" },
         { "<leader>sh",  function() Snacks.picker.command_history() end, desc = "Command History" },
         { "<leader>sn",  function() Snacks.picker.notifications() end,   desc = "Notification History" },
         { "<leader>e",   function() Snacks.explorer() end,               desc = "File Explorer" },
