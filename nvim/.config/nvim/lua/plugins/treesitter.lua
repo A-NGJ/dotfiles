@@ -2,6 +2,9 @@ return {
     {
         "nvim-treesitter/nvim-treesitter",
         build = ":TSUpdate",
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter-textobjects",
+        },
         config = function()
             local config = require("nvim-treesitter.configs")
             config.setup({
@@ -75,9 +78,5 @@ return {
             vim.api.nvim_set_keymap("n", "<leader>fc", "zc", { desc = "[F]old [c]lose", noremap = true, silent = true })
             vim.api.nvim_set_keymap("n", "<leader>fo", "zo", { desc = "[F]old [o]pen", noremap = true, silent = true })
         end
-    },
-    {
-        'nvim-treesitter/nvim-treesitter-textobjects',
-        after = 'nvim-treesitter', -- Ensure it loads after nvim-treesitter
     },
 }
