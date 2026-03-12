@@ -2,6 +2,7 @@ bat
 curl
 eza
 fzf
+gh
 git-delta
 go
 jq
