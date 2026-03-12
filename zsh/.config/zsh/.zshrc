@@ -5,7 +5,6 @@ source "$ZDOTDIR/env.zsh"
 export CLICOLOR=1
 export PROMPT='%F{75}%n@%m %F{81}%~%f $ '
 autoload -Uz compinit && compinit
-export PATH="/opt/homebrew/opt/gradle@7/bin:$PATH"
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -120,9 +119,4 @@ source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.z
 # key bindings
 bindkey '^O' clear-screen
 
-export NODE_EXTRA_CA_CERTS="/Users/alen/certs/zscaler_root.pem"
 
-export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
-
-# opencode
-export PATH=/Users/alen/.opencode/bin:$PATH
