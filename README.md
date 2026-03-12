@@ -19,6 +19,16 @@ brew leaves > leaves.txt
 xargs brew install < leaves.txt
 ```
 
+## Tmux setup
+
+After stowing, install TPM and plugins:
+```bash
+stow -t "$HOME" tmux
+git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
+```
+
+Then start tmux and press `prefix + I` to install all plugins.
+
 ## Oh My ZSH setup
 
 Since oh-my-zsh is a git repository, you can't clone it and stow it like the rest of the dotfiles. 
