@@ -5,6 +5,9 @@ export XDG_STATE_HOME="$HOME/.local/state"
 
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 
+export NODE_EXTRA_CA_CERTS="${HOME}/certs/zscaler_root.pem"
+
 # Source local environment variables (secrets, API keys, etc.)
 # This file should NOT be committed to git - add to .gitignore
 [ -f "$ZDOTDIR/.zshenv.local" ] && source "$ZDOTDIR/.zshenv.local"
+
