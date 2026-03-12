@@ -16,7 +16,7 @@ claude/.claude/*
 
 # RPI workflow
 .thoughts/
-./.claude/
+/.claude/
 
 # log files
 *.log
