@@ -10,9 +10,13 @@ fzf
 # Local environment files with secrets
 **/.zshenv.local
 
-# RPI workflow
-.claude/
+# Shared Claude Code settings
 !claude/.claude/settings.json
+claude/.claude/*
 
 # RPI workflow
 .thoughts/
+./.claude/
+
+# log files
+*.log
