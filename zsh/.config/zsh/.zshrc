@@ -120,3 +120,6 @@ source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.z
 bindkey '^O' clear-screen
 
 
+
+# opencode
+export PATH=/Users/alen/.opencode/bin:$PATH
