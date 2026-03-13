@@ -4,7 +4,7 @@ description: Transform meeting transcriptions into structured, actionable summar
 
 # Meeting Transcript Summarizer
 
-Transform the provided meeting transcript into a concise, structured summary. Read the full transcript before writing anything — you need the complete arc of the conversation to judge what's important.
+Transform the provided meeting transcript into a concise, structured summary. Save the summary into a markdown file. Read the full transcript before writing anything — you need the complete arc of the conversation to judge what's important.
 
 ## Understanding the input
 
@@ -16,11 +16,11 @@ Before writing, identify all participants from the transcript. Names appear in g
 
 ## Output format
 
-Save the file to `<input-filename>-summary.md` in the same directory as the input transcript.
+Always save the file to `<input-filename>-summary.md` in the same directory as the input transcript.
 
 ## Output structure
 
-Produce the summary in markdown with these sections in order:
+Produce the summary markdown file with these sections in order:
 
 ### 1. Meeting Header
 
