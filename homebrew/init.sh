@@ -5,3 +5,11 @@
 
 uv tool install ty@latest
 uv tool install ruff@latest
+
+# Set brew auto update
+brew tap domt4/autoupdate
+brew autoupdate start 86400  # update every 24 hours (in seconds)
+# Other commands
+# brew autoupdate stop     # disable it
+# brew autoupdate status   # check current config
+# brew autoupdate delete   # remove the launchd job entirely
