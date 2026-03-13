@@ -14,6 +14,10 @@ Meeting transcripts are messy. They come from automatic speech-to-text and conta
 
 Before writing, identify all participants from the transcript. Names appear in greetings, when people get tagged in ("let me tag in Alan"), or are addressed directly. Build a roster. If a speaker's name is unclear, use a consistent placeholder like "Speaker A". Note each person's apparent role if it becomes clear from context.
 
+## Output format
+
+Save the file to `<input-filename>-summary.md` in the same directory as the input transcript.
+
 ## Output structure
 
 Produce the summary in markdown with these sections in order:
