@@ -16,3 +16,27 @@ fzf
 
 # log files
 *.log
+
+# Claude Code runtime state (under stowed claude/.claude/)
+claude/.claude/.credentials.json
+claude/.claude/.last-cleanup
+claude/.claude/.last-update-result.json
+claude/.claude/daemon-auth-cooldown
+claude/.claude/daemon-auth-status.json
+claude/.claude/mcp-needs-auth-cache.json
+claude/.claude/stats-cache.json
+claude/.claude/history.jsonl
+claude/.claude/settings.json.bak
+claude/.claude/hooks/.rtk-hook.sha256
+claude/.claude/backups/
+claude/.claude/cache/
+claude/.claude/context-mode/
+claude/.claude/daemon/
+claude/.claude/debug/
+claude/.claude/file-history/
+claude/.claude/jobs/
+claude/.claude/paste-cache/
+claude/.claude/plugins/
+claude/.claude/projects/
+claude/.claude/sessions/
+claude/.claude/tasks/
