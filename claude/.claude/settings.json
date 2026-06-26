@@ -1,6 +1,19 @@
 {
   "env": {
-    "DISABLE_TELEMETRY": "1"
+    "DISABLE_TELEMETRY": "1",
+    "CLAUDE_CODE_DISABLE_EXPERIMENTAL_BETAS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "mcp__plugin_context-mode_context-mode__*",
+      "mcp__codegraph__codegraph_search",
+      "mcp__codegraph__codegraph_context",
+      "mcp__codegraph__codegraph_callers",
+      "mcp__codegraph__codegraph_callees",
+      "mcp__codegraph__codegraph_impact",
+      "mcp__codegraph__codegraph_node",
+      "mcp__codegraph__codegraph_status"
+    ]
   },
   "hooks": {
     "PostToolUse": [
@@ -9,11 +22,42 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/check_code_quality_python.sh"
+            "command": "~/.claude/hooks/check_code_quality_go.sh"
           },
           {
             "type": "command",
-            "command": "~/.claude/hooks/check_code_quality_go.sh"
+            "command": "~/.claude/hooks/run_check_sh.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "codegraph mark-dirty",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/awnj/.claude/hooks/context-mode-cache-heal.mjs\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "codegraph sync-if-dirty"
           }
         ]
       }
@@ -25,8 +69,23 @@
   },
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true,
-    "code-review@claude-plugins-official": true
+    "code-review@claude-plugins-official": true,
+    "context-mode@context-mode": true,
+    "rpi@rpi": true
   },
-  "effortLevel": "high",
-  "model": "sonnet"
+  "extraKnownMarketplaces": {
+    "context-mode": {
+      "source": {
+        "source": "github",
+        "repo": "mksglu/context-mode"
+      }
+    },
+    "rpi": {
+      "source": {
+        "source": "github",
+        "repo": "A-NGJ/rpi"
+      }
+    }
+  },
+  "effortLevel": "high"
 }
