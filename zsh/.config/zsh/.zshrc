@@ -119,7 +119,11 @@ source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.z
 # key bindings
 bindkey '^O' clear-screen
 
+# bun completions
+[ -s "/Users/awnj/.bun/_bun" ] && source "/Users/awnj/.bun/_bun"
 
-
-# opencode
-export PATH=/Users/alen/.opencode/bin:$PATH
+# Budget tracker app
+export BUDGET_TRACKER_TRANSACTIONS_FILE="$HOME/Library/Mobile Documents/com~apple~CloudDocs/budget-tracker/transactions.json"
+export BUDGET_TRACKER_CATEGORIES_FILE="$HOME/Library/Mobile Documents/com~apple~CloudDocs/budget-tracker/categories.yaml"
+export BUDGET_TRACKER_CATEGORY_MAPPINGS_FILE="$HOME/Library/Mobile Documents/com~apple~CloudDocs/budget-tracker/category_mappings.yaml"
+export BUDGET_TRACKER_BANKS_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/budget-tracker/banks"

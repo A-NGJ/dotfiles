@@ -8,6 +8,8 @@ prepend "$HOME/bin"
 prepend "$HOME/.local/bin"
 prepend '/home/linuxbrew/.linuxbrew/bin'
 prepend "$(go env GOPATH)/bin"
+prepend "$HOME/.opencode/bin"
+prepend "$HOME/.cargo/bin"
 
 MASON_BIN="$HOME/.local/share/nvim/mason/bin"
 [ -d "$MASON_BIN" ] && prepend "$MASON_BIN"
