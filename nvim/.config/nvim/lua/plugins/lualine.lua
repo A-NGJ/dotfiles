@@ -26,7 +26,7 @@ return {
                 -- ... other lualine options ...
             },
             options = {
-                theme = "catppuccin"
+                theme = "catppuccin-nvim"
             }
         }
     end
