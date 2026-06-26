@@ -1,5 +1,3 @@
-@RTK.md
-
 <!-- CODEGRAPH_START -->
 ## CodeGraph
 
