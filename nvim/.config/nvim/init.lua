@@ -158,6 +158,14 @@ vim.lsp.config.gopls = {
     capabilities = capabilities
 }
 
+vim.lsp.config.sqruff = {
+    cmd = { 'sqruff', 'lsp' },
+    root_patterns = { '.sqruff', '.git' },
+    filetypes = { 'sql' },
+    on_attach = on_attach,
+    capabilities = capabilities,
+}
+
 -- Enable LSP servers automatically
 vim.api.nvim_create_autocmd("FileType", {
     callback = function(args)
@@ -173,6 +181,7 @@ vim.api.nvim_create_autocmd("FileType", {
             typescriptreact = "ts_ls",
             go = "gopls",
             gomod = "gopls",
+            sql = "sqruff",
         }
 
         -- Python: use ty (type checker) + ruff (linter)
