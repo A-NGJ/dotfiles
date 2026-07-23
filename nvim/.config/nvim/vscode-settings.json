@@ -1,0 +1,111 @@
+{
+  // ─── macOS: Key Repeat ───────────────────────────────────────────────────────
+  // macOS suppresses key repeat for held keys (shows accent picker instead).
+  // Run once in terminal, then restart VSCode:
+  //   defaults write com.microsoft.VSCode ApplePressAndHoldEnabled -bool false
+  // To revert: defaults delete com.microsoft.VSCode ApplePressAndHoldEnabled
+
+  // ─── Editor Basics ───────────────────────────────────────────────────────────
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  "editor.lineNumbers": "on",
+  "editor.cursorSurroundingLines": 20,
+  "editor.wordWrap": "on",
+  "editor.autoIndent": "full",
+  "editor.formatOnSave": true,
+
+  // ─── Search ──────────────────────────────────────────────────────────────────
+  "editor.find.smartCase": true,
+
+  // ─── Folding ─────────────────────────────────────────────────────────────────
+  "editor.foldingStrategy": "auto",
+  "editor.foldLevel": 99,
+
+  // ─── Wildmenu equivalent ─────────────────────────────────────────────────────
+  "editor.suggest.showStatusBar": true,
+  "editor.quickSuggestionsDelay": 0,
+
+  // ─── Language-specific overrides ─────────────────────────────────────────────
+  "[typescript]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[typescriptreact]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[terraform]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.defaultFormatter": "hashicorp.terraform"
+  },
+  "[toml]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[yaml]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[sql]": {
+    "editor.defaultFormatter": "sqruff.sqruff"
+  },
+
+  // ─── Vim Extension (vscodevim) ───────────────────────────────────────────────
+  "vim.enable": true,
+  "vim.useSystemClipboard": true,
+  "vim.ignorecase": true,
+  "vim.smartcase": true,
+  "vim.hlsearch": true,
+  "vim.incsearch": true,
+  "vim.timeout": 3000,
+  "vim.leader": " ",
+
+  "vim.insertModeKeyBindings": [
+    // jk → Esc
+    { "before": ["j", "k"], "after": ["<Esc>"] },
+    // Shift-Tab → unindent (C-d)
+    { "before": ["<S-Tab>"], "after": ["<C-d>"] }
+  ],
+
+  "vim.normalModeKeyBindingsNonRecursive": [
+    // Clear search highlight on Enter
+    { "before": ["<CR>"], "commands": ["editor.action.clearSearchHighlight"] },
+
+    // LSP: format file
+    { "before": ["<leader>", "f", "f"], "commands": ["editor.action.formatDocument"] },
+
+    // LSP: rename symbol
+    { "before": ["<leader>", "r", "n"], "commands": ["editor.action.rename"] },
+
+    // LSP: code action
+    { "before": ["<leader>", "c", "a"], "commands": ["editor.action.quickFix"] },
+
+    // LSP: go to definition (native)
+    { "before": ["g", "d"], "commands": ["editor.action.revealDefinition"] },
+    // LSP: go to definition (peek / split equivalent)
+    { "before": ["<leader>", "g", "d"], "commands": ["editor.action.peekDefinition"] },
+
+    // LSP: go to implementation
+    { "before": ["g", "i"], "commands": ["editor.action.goToImplementation"] },
+    { "before": ["<leader>", "g", "i"], "commands": ["editor.action.peekImplementation"] },
+
+    // LSP: go to references
+    { "before": ["g", "r"], "commands": ["editor.action.goToReferences"] },
+    { "before": ["<leader>", "g", "r"], "commands": ["references-view.findReferences"] },
+
+    // LSP: hover docs
+    { "before": ["K"], "commands": ["editor.action.showHover"] },
+
+    // Copy file path (absolute / relative)
+    { "before": ["<leader>", "c", "p"], "commands": ["copyFilePath"] },
+    { "before": ["<leader>", "c", "r"], "commands": ["copyRelativeFilePath"] },
+
+    // Window resize (Ctrl-W + arrow keys)
+    { "before": ["<C-w>", "<Up>"],    "commands": ["workbench.action.increaseViewHeight"] },
+    { "before": ["<C-w>", "<Down>"],  "commands": ["workbench.action.decreaseViewHeight"] },
+    { "before": ["<C-w>", "<Left>"],  "commands": ["workbench.action.decreaseViewWidth"] },
+    { "before": ["<C-w>", "<Right>"], "commands": ["workbench.action.increaseViewWidth"] }
+  ]
+}
