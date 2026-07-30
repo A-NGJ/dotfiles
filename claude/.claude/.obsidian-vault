@@ -1,0 +1,4 @@
+# Global vault path for the obsidian-vault skill.
+# A .obsidian-vault in the working directory or repo root overrides this one.
+# First non-comment line wins. `~` and `$HOME` are expanded; nothing else is.
+$HOME/Documents/Remote vault primary
