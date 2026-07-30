@@ -27,6 +27,7 @@ claude/.claude/mcp-needs-auth-cache.json
 claude/.claude/stats-cache.json
 claude/.claude/history.jsonl
 claude/.claude/settings.json.bak
+claude/.claude/settings.json.orig
 claude/.claude/hooks/.rtk-hook.sha256
 claude/.claude/backups/
 claude/.claude/cache/
@@ -36,6 +37,7 @@ claude/.claude/debug/
 claude/.claude/file-history/
 claude/.claude/jobs/
 claude/.claude/paste-cache/
+claude/.claude/plans/
 claude/.claude/plugins/
 claude/.claude/projects/
 claude/.claude/sessions/
