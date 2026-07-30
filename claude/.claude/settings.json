@@ -5,15 +5,7 @@
   },
   "permissions": {
     "allow": [
-      "mcp__plugin_context-mode_context-mode__*",
-      "mcp__codegraph__codegraph_search",
-      "mcp__codegraph__codegraph_context",
-      "mcp__codegraph__codegraph_callers",
-      "mcp__codegraph__codegraph_callees",
-      "mcp__codegraph__codegraph_impact",
-      "mcp__codegraph__codegraph_node",
-      "mcp__codegraph__codegraph_status",
-      "mcp__codegraph__*"
+      "mcp__plugin_context-mode_context-mode__*"
     ]
   },
   "model": "fable",
@@ -42,16 +34,6 @@
           }
         ]
       }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "codegraph prompt-hook"
-          }
-        ]
-      }
     ]
   },
   "statusLine": {
@@ -59,10 +41,7 @@
     "command": "~/.claude/bin/statusline.sh"
   },
   "enabledPlugins": {
-    "gopls-lsp@claude-plugins-official": true,
-    "context-mode@context-mode": true,
-    "rpi@rpi": true,
-    "claude-mem@thedotmack": true
+    "context-mode@context-mode": false
   },
   "extraKnownMarketplaces": {
     "context-mode": {
