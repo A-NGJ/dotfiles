@@ -6,9 +6,25 @@
   "permissions": {
     "allow": [
       "mcp__plugin_context-mode_context-mode__*"
+    ],
+    "deny": [
+        "EnterPlanMode",
+        "ExitPlanMode",
+        "DesignSync",
+        "NotebookEdit",
+        "CronCreate",
+        "EnterWorktree",
+        "ScheduleWakeup",
+        "ExitWorktree",
+        "EnterWorktree",
+        "CronDelete",
+        "CronList"
     ]
   },
   "model": "fable",
+  "disableClaudeAiConnectors": true,
+  "disableBundledSkills": true,
+  "disableWorkflows": true,
   "hooks": {
     "PostToolUse": [
       {
