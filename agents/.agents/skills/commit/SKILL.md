@@ -5,7 +5,7 @@ description: Atomic commits with conventional `type(scope):` subjects. Use when 
 
 A commit is **atomic**: one reason to revert, so one type and one scope. Work is done when every changed hunk has landed in exactly one commit.
 
-1. **Survey the whole diff** before touching `git commit` — `git status`, then `git diff` and `git diff --staged`. Read the hunks, not just the filenames.
+1. **Survey the whole diff** before touching `git commit` — `git status`, then `git diff` and `git diff --staged`. Read the hunks, not just the filenames: for a deleted or wholly rewritten file, read what was there (`git show HEAD:<path>`), since its contents decide which group it joins. Untracked paths need a decision too — commit, ignore, or ask when the call isn't yours to make (content whose real home is outside the repo, generated session state).
 
 2. **Group the hunks into atomic commits.** Split by reason-to-revert, not by file: a refactor and the feature it enables are two commits even in one file, and a rename touching thirty files is one. Where a file mixes purposes, stage by hunk with `git add -p`. Every hunk is assigned to exactly one commit before you commit anything.
 
