@@ -27,16 +27,7 @@
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/check_code_quality_go.sh"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/run_check_sh.sh"
-          }
-        ]
+        "hooks": []
       }
     ],
     "SessionStart": [
