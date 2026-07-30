@@ -8,7 +8,7 @@ fzf
 .zcompdump*
 
 # Local environment files with secrets
-**/.zshenv.local
+*.local
 
 # RPI workflow
 .thoughts/
