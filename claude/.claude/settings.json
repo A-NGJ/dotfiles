@@ -5,17 +5,18 @@
   },
   "permissions": {
     "deny": [
-        "EnterPlanMode",
-        "ExitPlanMode",
-        "DesignSync",
-        "NotebookEdit",
-        "CronCreate",
-        "EnterWorktree",
-        "ScheduleWakeup",
-        "ExitWorktree",
-        "EnterWorktree",
-        "CronDelete",
-        "CronList"
+      "EnterPlanMode",
+      "ExitPlanMode",
+      "DesignSync",
+      "NotebookEdit",
+      "CronCreate",
+      "EnterWorktree",
+      "ScheduleWakeup",
+      "ExitWorktree",
+      "EnterWorktree",
+      "CronDelete",
+      "CronList",
+      "AskUserQuestion"
     ]
   },
   "model": "opus",
