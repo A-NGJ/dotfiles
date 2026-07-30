@@ -35,18 +35,15 @@ The vault splits in two, and the split decides whether you may write:
   it, cite it, follow its links. Never create, edit, move, or delete anything
   inside it, `index.md` and `log.md` included. If a request would change the
   wiki, say so and propose the equivalent free note instead.
-- **Everything else is writable** — `Daily notes/`, `Netlight/`, `Priv/`,
-  `Howto/`, `Clippings/`, `AI/`, and the vault root. These are the user's own
+- **Everything else is writable** — These are the user's own
   free-form notes. Create and edit here.
 
 ## Naming conventions
 
 Free notes have no imposed scheme — match the folder you're writing into.
-Existing styles include prose titles (`TODO list.md`), Title Case with numbering
-(`1.1 Agentic Loops — …`), and timestamps (`202605011316.md`).
 
 - Filename = the note's title; it's what wikilinks resolve against
-- Most free notes carry **no frontmatter**, but feel free to add it.
+- Add frontmatter.
 - Daily notes live in `Daily notes/` as `YYYY-MM-DD.md`
 - Attachments go in `attachments/` beside the note (`attachmentFolderPath`)
 
@@ -100,11 +97,9 @@ grep -rl "\[\[Note Title" "$VAULT"               # free note
 
 Free zone only.
 
-1. Pick the folder by topic — work in `Work/`, personal in `Priv/`,
-   how-tos in `Howto/`, clipped articles in `Clippings/`. If genuinely unclear,
-   use the vault root and say where you put it
+1. Pick the folder by topic. If none existing is matching, offer to create a new folder.
 2. Name it as its title, matching the folder's existing style
-4. Link it in with `[[wikilinks]]` so it isn't an orphan
+4. Link it in with `[[wikilinks]]`.
 5. Report the title and folder
 
 ### Add to today's daily note
