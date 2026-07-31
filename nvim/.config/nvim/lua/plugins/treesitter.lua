@@ -5,5 +5,10 @@ return {
         dependencies = {
             "nvim-treesitter/nvim-treesitter-textobjects",
         },
+        main = "nvim-treesitter.configs",
+        opts = {
+            highlight = { enable = true },
+            indent = { enable = true },
+        },
     }
 }
