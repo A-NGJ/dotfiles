@@ -31,7 +31,7 @@ vim.o.linebreak = true -- 'lbr' equivalent
 
 -- Auto Indent:
 vim.o.autoindent = true
-vim.o.smartindent = true -- Conflict with treesitter indent
+-- smartindent disabled: conflicts with treesitter indent
 
 -- Command Line:
 vim.o.showcmd = true
@@ -198,7 +198,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldlevel = 99
 
 vim.api.nvim_create_autocmd("FileType", {
