@@ -166,35 +166,20 @@ vim.lsp.config.sqruff = {
     capabilities = capabilities,
 }
 
--- Enable LSP servers automatically
-vim.api.nvim_create_autocmd("FileType", {
-    callback = function(args)
-        local bufnr = args.buf
-        local filetype = vim.bo[bufnr].filetype
-
-        -- Map filetypes to LSP server names
-        local servers = {
-            lua = "lua_ls",
-            terraform = "terraformls",
-            yaml = "yamlls",
-            typescript = "ts_ls",
-            typescriptreact = "ts_ls",
-            go = "gopls",
-            gomod = "gopls",
-            sql = "sqruff",
-        }
-
-        -- Python: use ty (type checker) + ruff (linter)
-        if filetype == "python" then
-            vim.lsp.enable("ty", { bufnr = bufnr })
-            vim.lsp.enable("ruff", { bufnr = bufnr })
-        else
-            local server_name = servers[filetype]
-            if server_name then
-                vim.lsp.enable(server_name, { bufnr = bufnr })
-            end
-        end
-    end,
+-- Enable LSP servers. This must run at startup, not from a FileType autocmd:
+-- vim.lsp.enable() installs its own FileType hook, so calling it from inside
+-- one is too late for the buffer that triggered it. Each config above declares
+-- its own `filetypes`, so routing is handled for us.
+-- Python uses ty (type checker) + ruff (linter).
+vim.lsp.enable({
+    "lua_ls",
+    "terraformls",
+    "yamlls",
+    "ts_ls",
+    "gopls",
+    "sqruff",
+    "ty",
+    "ruff",
 })
 
 vim.opt.foldmethod = "expr"
