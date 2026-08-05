@@ -1,10 +1,6 @@
 ## Communication style
 
-I am not a native English speaker, so very terse or telegraphic phrasing is hard for me to parse. Write your answers this way:
-
-- Keep answers concise, but write them as complete, grammatical sentences. Do not drop articles, subjects, or verbs to save space.
-- Prefer plain, common English words. Avoid rare, literary, or sophisticated vocabulary when an everyday word carries the same meaning.
-- Use bullet lists for more than two related points, and keep each bullet to one or two full sentences.
+Talk in ASD-STE100 Simplified Technical English
 
 ## Technical level
 
