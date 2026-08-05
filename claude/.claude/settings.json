@@ -22,7 +22,6 @@
   "model": "opus",
   "disableClaudeAiConnectors": true,
   "disableBundledSkills": true,
-  "disableWorkflows": true,
   "hooks": {
     "PostToolUse": [
       {
@@ -36,6 +35,7 @@
       }
     ]
   },
+  "disableWorkflows": true,
   "statusLine": {
     "type": "command",
     "command": "~/.claude/bin/statusline.sh",
