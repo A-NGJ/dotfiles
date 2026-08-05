@@ -29,6 +29,33 @@ git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
 
 Then start tmux and press `prefix + I` to install all plugins.
 
+## Agent skills setup
+
+Skills live in the `agents` package (`agents/.agents/skills`), and `claude/.claude/skills`
+holds symlinks to them so Claude Code picks them up.
+
+```bash
+stow -t "$HOME" agents claude
+```
+
+The `skills` CLI writes its symlinks relative to `~/.claude/skills`, but that path is a
+symlink into this repo, so links for newly added skills resolve from the wrong directory
+and end up broken. `skills-relink` (in the `bin` package) repairs them:
+
+```bash
+# Add a skill collection, then repair the new links
+npx skills@latest add mattpocock/skills && skills-relink
+
+# Update installed skills (existing links are left alone)
+npx skills@latest update
+
+# Repair links at any time; --dry-run shows what would change
+skills-relink --dry-run
+```
+
+Note that `skills update` wipes and rewrites each skill directory, so commit your own
+edits to skill files first — that way an update shows up as a reviewable diff.
+
 ## Oh My ZSH setup
 
 Since oh-my-zsh is a git repository, you can't clone it and stow it like the rest of the dotfiles. 
