@@ -1,0 +1,139 @@
+#!/bin/bash
+set -e
+set -u
+set -o pipefail
+
+# Repairs the skill symlinks under dotfiles/claude/.claude/skills.
+#
+# The `skills` CLI (npx skills add/update) writes relative symlinks as if the
+# link lived at ~/.claude/skills. That path is itself a symlink into this repo,
+# so the links it writes resolve from the wrong directory and end up broken.
+#
+# This script rewrites every symlink that points at a skill in the agents
+# package so the path is relative to the real location inside the repo.
+# Run it after every `npx skills add` / `npx skills update`.
+
+DOTFILES="${HOME}/dotfiles"
+SKILLS_DIR="${DOTFILES}/claude/.claude/skills"
+AGENT_SKILLS_DIR="${DOTFILES}/agents/.agents/skills"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+DRY_RUN=false
+
+show_help() {
+    cat << 'EOF'
+skills-relink - Repair Claude skill symlinks after running the skills CLI
+
+USAGE:
+    skills-relink [OPTIONS]
+
+OPTIONS:
+    -h, --help      Show this help message
+    -n, --dry-run   Show what would change without touching anything
+
+WHAT IT DOES:
+    For every symlink in dotfiles/claude/.claude/skills, points it at the
+    matching skill in dotfiles/agents/.agents/skills using a path relative to
+    the link's real location. Real directories are left alone, and links with
+    no matching skill are reported as orphans.
+EOF
+    exit 0
+}
+
+log_info()    { echo -e "${BLUE}$1${NC}"; }
+log_success() { echo -e "${GREEN}$1${NC}"; }
+log_warning() { echo -e "${YELLOW}$1${NC}"; }
+log_error()   { echo -e "${RED}$1${NC}"; }
+
+# Prints the path of $2 relative to directory $1.
+relpath() {
+    local from="${1%/}"
+    local to="${2%/}"
+    local common="$from"
+    local up=""
+
+    while [[ "${to#"$common"/}" == "$to" && "$common" != "/" ]]; do
+        common=$(dirname "$common")
+        up="../$up"
+    done
+
+    echo "${up}${to#"$common"/}"
+}
+
+main() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help) show_help ;;
+            -n|--dry-run) DRY_RUN=true; shift ;;
+            *) log_error "Unknown option: $1"; show_help ;;
+        esac
+    done
+
+    echo ""
+    if [[ "$DRY_RUN" == true ]]; then
+        log_info "DRY RUN — Relinking skills"
+    else
+        log_info "Relinking skills"
+    fi
+    log_info "Links:  ${SKILLS_DIR}"
+    log_info "Skills: ${AGENT_SKILLS_DIR}"
+    echo ""
+
+    for dir in "$SKILLS_DIR" "$AGENT_SKILLS_DIR"; do
+        if [[ ! -d "$dir" ]]; then
+            log_error "Directory not found: $dir"
+            exit 1
+        fi
+    done
+
+    local fixed=0 ok=0 orphaned=0 skipped=0
+
+    for link in "$SKILLS_DIR"/*; do
+        [[ -e "$link" || -L "$link" ]] || continue
+
+        local name
+        name=$(basename "$link")
+
+        if [[ ! -L "$link" ]]; then
+            ((skipped++))
+            continue
+        fi
+
+        local target="${AGENT_SKILLS_DIR}/${name}"
+        if [[ ! -d "$target" ]]; then
+            log_warning "  orphan: $name -> $(readlink "$link")"
+            ((orphaned++))
+            continue
+        fi
+
+        local want
+        want=$(relpath "$SKILLS_DIR" "$target")
+
+        if [[ "$(readlink "$link")" == "$want" ]]; then
+            ((ok++))
+            continue
+        fi
+
+        if [[ "$DRY_RUN" == true ]]; then
+            log_info "  would relink: $name -> $want"
+        else
+            ln -sfn "$want" "$link"
+            log_success "  relinked: $name -> $want"
+        fi
+        ((fixed++))
+    done
+
+    echo ""
+    log_success "Done: ${fixed} relinked, ${ok} already correct, ${skipped} local, ${orphaned} orphaned"
+    if [[ "$orphaned" -gt 0 ]]; then
+        log_warning "Orphans point at skills missing from the agents package — remove them or reinstall the skill."
+    fi
+}
+
+main "$@"
