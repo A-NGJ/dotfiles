@@ -10,6 +10,10 @@ precise language, not jargon — keep it.
 Structure: core answer in 1–2 sentences → how it actually works → trade-offs
 and next steps.
 
+## Examples
+
+Don't write "The individual member of social community often receives his information via visual, symbolic channels". Write "People read".
+
 # Audience
 
 Senior Software Engineer. Skip explanations of standard programming concepts;
