@@ -53,7 +53,7 @@ vim.o.timeoutlen = 3000
 vim.keymap.set("i", "jk", "<Esc>", { noremap = true })
 
 -- LSP formatting
-vim.keymap.set("n", "<leader>ff", vim.lsp.buf.format, { noremap = true, silent = true, desc = "[F]ormat [F]ile" })
+vim.keymap.set("n", "<leader>cf", vim.lsp.buf.format, { noremap = true, silent = true, desc = "[C]ode [F]ormat" })
 
 -- Yank to clipboard
 vim.o.clipboard = "unnamedplus"

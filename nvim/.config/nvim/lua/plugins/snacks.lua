@@ -25,11 +25,11 @@ return {
     },
     keys = {
         -- Top Pickers and Explorer
-        { "<leader>sf",  function() Snacks.picker.smart({ hidden = true }) end, desc = "Smart Find Files" },
-        { "<leader>sb",  function() Snacks.picker.buffers() end,         desc = "Buffers" },
-        { "<leader>sg",  function() Snacks.picker.grep({ hidden = true }) end, desc = "Grep" },
-        { "<leader>sh",  function() Snacks.picker.command_history() end, desc = "Command History" },
-        { "<leader>sn",  function() Snacks.picker.notifications() end,   desc = "Notification History" },
+        { "<leader>ff",  function() Snacks.picker.smart({ hidden = true }) end, desc = "Find Files" },
+        { "<leader>fb",  function() Snacks.picker.buffers() end,         desc = "Find Buffers" },
+        { "<leader>fg",  function() Snacks.picker.grep({ hidden = true }) end, desc = "Find by Grep" },
+        { "<leader>fh",  function() Snacks.picker.command_history() end, desc = "Find Command History" },
+        { "<leader>fn",  function() Snacks.picker.notifications() end,   desc = "Find Notification History" },
         { "<leader>e",   function() Snacks.explorer() end,               desc = "File Explorer" },
         -- git
         { "<leader>lg",  function() Snacks.lazygit() end,                desc = "Lazygit" },
@@ -46,6 +46,6 @@ return {
         -- bufdelete
         { "<leader>bdo", function() Snacks.bufdelete.other() end },
         -- diagnostics
-        { "<leader>sd",  function() Snacks.picker.diagnostics() end,     desc = "Diagnostics" },
+        { "<leader>fd",  function() Snacks.picker.diagnostics() end,     desc = "Find Diagnostics" },
     },
 }
