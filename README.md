@@ -29,6 +29,24 @@ git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
 
 Then start tmux and press `prefix + I` to install all plugins.
 
+## Neovim keymaps
+
+Search and replacement use separate prefixes: `<leader>f` opens find pickers,
+while `<leader>s` is reserved for Spectre.
+
+| Key | Action |
+| --- | --- |
+| `<leader>ff` | Find files |
+| `<leader>fg` | Find by grep |
+| `<leader>fb` | Find buffers |
+| `<leader>fh` | Find command history |
+| `<leader>fn` | Find notification history |
+| `<leader>fd` | Find diagnostics |
+| `<leader>cf` | Format code |
+| `<leader>ss` | Open/close Spectre project search |
+| `<leader>sw` | Open Spectre with the word or selection |
+| `<leader>sf` | Open Spectre for the current file |
+
 ## Agent skills setup
 
 Skills live in the `agents` package (`agents/.agents/skills`), and `claude/.claude/skills`
