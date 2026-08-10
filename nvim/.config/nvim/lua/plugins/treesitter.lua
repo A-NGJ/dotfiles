@@ -42,6 +42,50 @@ return {
                     set_jumps = true,
                 },
             })
+
+            local select = require("nvim-treesitter-textobjects.select")
+            local move = require("nvim-treesitter-textobjects.move")
+
+            -- select: <op>if = inner function, <op>af = around function, etc.
+            -- f = function, c = class, a = argument/parameter, o = loop, i = conditional
+            local selects = {
+                ["if"] = "@function.inner",
+                ["af"] = "@function.outer",
+                ["ic"] = "@class.inner",
+                ["ac"] = "@class.outer",
+                ["ia"] = "@parameter.inner",
+                ["aa"] = "@parameter.outer",
+                ["io"] = "@loop.inner",
+                ["ao"] = "@loop.outer",
+                ["ii"] = "@conditional.inner",
+                ["ai"] = "@conditional.outer",
+            }
+            for keys, capture in pairs(selects) do
+                vim.keymap.set({ "x", "o" }, keys, function()
+                    select.select_textobject(capture, "textobjects")
+                end, { desc = "textobject " .. capture })
+            end
+
+            -- move: ]f / [f jump to next / previous function start, ]F / [F to its end.
+            local moves = {
+                ["@function.outer"] = "f",
+                ["@class.outer"] = "c",
+                ["@parameter.inner"] = "a",
+            }
+            for capture, key in pairs(moves) do
+                vim.keymap.set({ "n", "x", "o" }, "]" .. key, function()
+                    move.goto_next_start(capture, "textobjects")
+                end, { desc = "next start " .. capture })
+                vim.keymap.set({ "n", "x", "o" }, "[" .. key, function()
+                    move.goto_previous_start(capture, "textobjects")
+                end, { desc = "prev start " .. capture })
+                vim.keymap.set({ "n", "x", "o" }, "]" .. key:upper(), function()
+                    move.goto_next_end(capture, "textobjects")
+                end, { desc = "next end " .. capture })
+                vim.keymap.set({ "n", "x", "o" }, "[" .. key:upper(), function()
+                    move.goto_previous_end(capture, "textobjects")
+                end, { desc = "prev end " .. capture })
+            end
         end,
     },
 }
