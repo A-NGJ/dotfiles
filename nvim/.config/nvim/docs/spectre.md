@@ -13,7 +13,7 @@ markdown, config).
 | `<leader>ss` | n | Open/close Spectre, empty search |
 | `<leader>sw` | n | Open with the word under the cursor |
 | `<leader>sw` | v | Open with the visual selection |
-| `<leader>sf` | n | Search **current file only**, word under cursor |
+| `<leader>sF` | n | Search **current file only**, word under cursor |
 
 ## The panel
 
