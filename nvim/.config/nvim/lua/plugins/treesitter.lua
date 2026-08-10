@@ -35,36 +35,16 @@ return {
         dependencies = { "nvim-treesitter/nvim-treesitter" },
         config = function()
             require("nvim-treesitter-textobjects").setup({
-                select = {
-                    lookahead = true,
-                },
                 move = {
                     set_jumps = true,
                 },
             })
 
-            local select = require("nvim-treesitter-textobjects.select")
             local move = require("nvim-treesitter-textobjects.move")
 
-            -- select: <op>if = inner function, <op>af = around function, etc.
-            -- f = function, c = class, a = argument/parameter, o = loop, i = conditional
-            local selects = {
-                ["if"] = "@function.inner",
-                ["af"] = "@function.outer",
-                ["ic"] = "@class.inner",
-                ["ac"] = "@class.outer",
-                ["ia"] = "@parameter.inner",
-                ["aa"] = "@parameter.outer",
-                ["io"] = "@loop.inner",
-                ["ao"] = "@loop.outer",
-                ["ii"] = "@conditional.inner",
-                ["ai"] = "@conditional.outer",
-            }
-            for keys, capture in pairs(selects) do
-                vim.keymap.set({ "x", "o" }, keys, function()
-                    select.select_textobject(capture, "textobjects")
-                end, { desc = "textobject " .. capture })
-            end
+            -- Selecting text objects (function/class/etc.) is handled by mini.ai
+            -- in plugins/mini.lua (capital F/C/o), to avoid clashing with
+            -- mini.ai's i/a prefix maps. This block only wires up *movement*.
 
             -- move: ]f / [f jump to next / previous function start, ]F / [F to its end.
             local moves = {

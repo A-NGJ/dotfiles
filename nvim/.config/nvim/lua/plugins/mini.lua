@@ -3,7 +3,21 @@ return {
     version = false,
     config = function()
         -- Setup mini.nvim modules
-        require('mini.ai').setup()
+        -- Treesitter-backed text objects live on capital keys (F/C/o) so they
+        -- don't clobber mini.ai's built-in lowercase f (function *call*),
+        -- a (argument), quotes, and brackets. Movement between these objects
+        -- (]f/[f etc.) is handled in plugins/treesitter.lua.
+        local ts_spec = require('mini.ai').gen_spec.treesitter
+        require('mini.ai').setup({
+            custom_textobjects = {
+                F = ts_spec({ a = '@function.outer', i = '@function.inner' }),
+                C = ts_spec({ a = '@class.outer', i = '@class.inner' }),
+                o = ts_spec({
+                    a = { '@conditional.outer', '@loop.outer' },
+                    i = { '@conditional.inner', '@loop.inner' },
+                }),
+            },
+        })
         require('mini.surround').setup()
         require('mini.pairs').setup()
         require('mini.files').setup()

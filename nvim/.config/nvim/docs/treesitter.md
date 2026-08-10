@@ -7,25 +7,29 @@ function, class, argument, loop, or conditional is — and finds their boundarie
 for you no matter where the cursor sits inside them.
 
 As usual, `i` = **inner** (contents only) and `a` = **around** (contents plus the
-surrounding syntax). So `dif` wipes a function body; `daf` deletes the whole
+surrounding syntax). So `diF` wipes a function body; `daF` deletes the whole
 function.
 
-Config lives in `lua/plugins/treesitter.lua` (branch `main`).
+Selecting objects is done through **mini.ai** (`lua/plugins/mini.lua`), not
+nvim-treesitter-textobjects — mini.ai owns the `i`/`a` prefixes, so layering a
+second engine on the same keys would clash. Movement between objects lives in
+`lua/plugins/treesitter.lua` (branch `main`).
 
-## Select / operate
+## Select / operate (via mini.ai)
 
-Use in visual (`x`) or operator-pending (`o`) mode, e.g. `vif`, `daf`, `cia`.
+Use in visual (`x`) or operator-pending (`o`) mode, e.g. `viF`, `daF`, `cio`.
+Treesitter objects sit on **capital** keys so they don't shadow mini.ai's
+built-in lowercase objects (`f` = function *call*, `a` = argument, plus quotes,
+brackets, tags — all still available).
 
 | Keys | Text object |
 | --- | --- |
-| `if` / `af` | function inner / around |
-| `ic` / `ac` | class inner / around |
-| `ia` / `aa` | argument (parameter) inner / around |
-| `io` / `ao` | loop inner / around |
-| `ii` / `ai` | conditional (`if` block) inner / around |
+| `iF` / `aF` | function definition inner / around |
+| `iC` / `aC` | class inner / around |
+| `io` / `ao` | conditional (`if`) **or** loop inner / around |
 
-`lookahead` is on: if the cursor is before the object on the line, it jumps
-forward to it rather than failing.
+mini.ai's own defaults still work alongside these: `i"`/`a"`, `i(`/`a(`,
+`if` (function call), `ia` (argument), `it` (tag), etc.
 
 ## Move
 
@@ -46,6 +50,6 @@ Lowercase = start of the object, uppercase = end. Jumps land in the jumplist, so
 
 - Objects resolve against the parser for the current filetype; if no parser is
   installed for that buffer, highlighting and these mappings simply do nothing.
-- The key letters are a personal convention (`f`/`c`/`a`/`o`/`i`), not a plugin
-  default — the `main` branch ships no keymaps. Edit the tables in
-  `treesitter.lua` to taste.
+- Select keys are mini.ai `custom_textobjects` (edit `mini.lua`); movement keys
+  are a personal convention in `treesitter.lua`. Neither is a plugin default —
+  the treesitter `main` branch ships no keymaps.
