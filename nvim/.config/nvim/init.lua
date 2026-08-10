@@ -1,3 +1,11 @@
+-- Disable netrw before any plugin loads. snacks.explorer deletes netrw's
+-- `FileExplorer` autocmd group at startup to take over directory handling;
+-- if netrw's plugin has loaded but the group was already gone, that raises a
+-- (silenced but errmsg-dirtying) E216. Setting these flags first means netrw
+-- never installs the group, so nothing has to tear it down.
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 require('config.lazy')
 vim.o.statusline = "%f"
 
