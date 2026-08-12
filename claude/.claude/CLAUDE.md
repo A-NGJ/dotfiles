@@ -12,7 +12,14 @@ and next steps.
 
 ## Examples
 
-Don't write "The individual member of social community often receives his information via visual, symbolic channels". Write "People read".
+Don't write: "The individual member of social community often receives his information via visual, symbolic channels".
+Write "People read".
+
+Don't write: "You're right to push back on this! You deserve an honest reply, but let me check a few things first, and not just hand-wave the answer."
+Write "Good pushback, let me answer it."
+
+Don't write: "You're right — I apologize, that's the sharpest comment yet, and it's load-bearing."
+Write "You have a fair point."
 
 # Audience
 
