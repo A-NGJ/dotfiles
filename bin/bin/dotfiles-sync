@@ -1,0 +1,58 @@
+#!/bin/bash
+set -u
+
+# Keeps the dotfiles repo up to date by fast-forwarding it from origin.
+# Designed to be called on shell startup: it throttles itself so opening many
+# terminals doesn't hammer the network, runs quietly, and never touches a dirty
+# or diverged working tree (so local edits are safe).
+#
+# Because the config is stowed (symlinks into the repo), a successful pull is
+# picked up by the next new shell automatically — no re-stow needed unless new
+# files were added.
+
+DOTFILES_DIR="${DOTFILES_DIR:-$HOME/dotfiles}"
+STAMP_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles-sync.stamp"
+LOG_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles-sync.log"
+# Minimum seconds between syncs (default 6h).
+INTERVAL="${DOTFILES_SYNC_INTERVAL:-21600}"
+
+FORCE=false
+[[ "${1:-}" == "-f" || "${1:-}" == "--force" ]] && FORCE=true
+
+log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" >>"$LOG_FILE"; }
+
+[[ -d "$DOTFILES_DIR/.git" ]] || exit 0
+
+# Throttle: skip if we synced recently.
+if [[ "$FORCE" != true && -f "$STAMP_FILE" ]]; then
+    last=$(cat "$STAMP_FILE" 2>/dev/null || echo 0)
+    now=$(date +%s)
+    (( now - last < INTERVAL )) && exit 0
+fi
+
+mkdir -p "$(dirname "$STAMP_FILE")"
+date +%s >"$STAMP_FILE"
+
+cd "$DOTFILES_DIR" || exit 0
+
+# Don't touch a dirty tree — local work stays untouched.
+if [[ -n "$(git status --porcelain)" ]]; then
+    log "skip: working tree not clean"
+    exit 0
+fi
+
+branch=$(git symbolic-ref --short -q HEAD) || { log "skip: detached HEAD"; exit 0; }
+
+if ! git fetch --quiet origin "$branch" 2>>"$LOG_FILE"; then
+    log "skip: fetch failed (offline?)"
+    exit 0
+fi
+
+# Fast-forward only; a diverged branch is left alone for manual resolution.
+if git merge-base --is-ancestor HEAD "origin/$branch" 2>/dev/null; then
+    if git merge --ff-only --quiet "origin/$branch" 2>>"$LOG_FILE"; then
+        log "synced $branch to $(git rev-parse --short HEAD)"
+    else
+        log "skip: fast-forward failed"
+    fi
+fi
