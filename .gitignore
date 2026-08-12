@@ -17,6 +17,9 @@ fzf
 # log files
 *.log
 
+# Homebrew runtime state (~/.config/homebrew symlinks here)
+homebrew/trust.json.lock
+
 # Claude Code runtime state (under stowed claude/.claude/)
 claude/.claude/.credentials.json
 claude/.claude/.last-cleanup
