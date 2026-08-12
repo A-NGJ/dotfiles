@@ -21,6 +21,7 @@ fzf
 homebrew/trust.json.lock
 
 # Claude Code runtime state (under stowed claude/.claude/)
+claude/.claude/settings.json
 claude/.claude/.credentials.json
 claude/.claude/.last-cleanup
 claude/.claude/.last-update-result.json
