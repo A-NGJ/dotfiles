@@ -30,9 +30,6 @@ if [[ "$FORCE" != true && -f "$STAMP_FILE" ]]; then
     (( now - last < INTERVAL )) && exit 0
 fi
 
-mkdir -p "$(dirname "$STAMP_FILE")"
-date +%s >"$STAMP_FILE"
-
 cd "$DOTFILES_DIR" || exit 0
 
 # Don't touch a dirty tree — local work stays untouched.
@@ -43,10 +40,15 @@ fi
 
 branch=$(git symbolic-ref --short -q HEAD) || { log "skip: detached HEAD"; exit 0; }
 
+# Stamp only once we're online and have fetched: a transient offline failure at
+# startup then retries on the next shell instead of being throttled out for 6h.
 if ! git fetch --quiet origin "$branch" 2>>"$LOG_FILE"; then
     log "skip: fetch failed (offline?)"
     exit 0
 fi
+
+mkdir -p "$(dirname "$STAMP_FILE")"
+date +%s >"$STAMP_FILE"
 
 # Fast-forward only; a diverged branch is left alone for manual resolution.
 if git merge-base --is-ancestor HEAD "origin/$branch" 2>/dev/null; then
