@@ -20,5 +20,8 @@ return {
   end,
   init = function()
     if vim.fn.executable("npx") == 1 then vim.g.mkdp_filetypes = { "markdown" } end
+    -- Custom preview stylesheet. mkdp_markdown_css REPLACES the default markdown
+    -- CSS, so mkdp.css restyles the whole document (GitHub-dark, wide column).
+    vim.g.mkdp_markdown_css = vim.fn.stdpath("config") .. "/mkdp.css"
   end,
 }
