@@ -27,6 +27,7 @@ brackets, tags — all still available).
 | `iF` / `aF` | function definition inner / around |
 | `iC` / `aC` | class inner / around |
 | `io` / `ao` | conditional (`if`) **or** loop inner / around |
+| `ij` / `aj` | JSON key-value pair inner / around |
 
 mini.ai's own defaults still work alongside these: `i"`/`a"`, `i(`/`a(`,
 `if` (function call), `ia` (argument), `it` (tag), etc.

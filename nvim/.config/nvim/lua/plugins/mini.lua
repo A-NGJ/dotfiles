@@ -16,6 +16,7 @@ return {
                     a = { '@conditional.outer', '@loop.outer' },
                     i = { '@conditional.inner', '@loop.inner' },
                 }),
+                j = ts_spec({ a = '@pair.outer', i = '@pair.inner' }),
             },
         })
         require('mini.surround').setup()
