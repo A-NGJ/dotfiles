@@ -52,7 +52,13 @@ while `<leader>s` is reserved for Spectre.
 `agents/.agents` is the single source of truth for shared skills and custom agents.
 Consumer-specific directories link back to it: Claude Code uses
 `claude/.claude/skills`, Pi uses `pi/.pi/agent/skills` and
-`pi/.pi/agent/agents`, and OpenCode can discover `~/.agents` directly.
+`pi/.pi/agent/agents`, and OpenCode can discover `~/.agents` directly. Pi also
+uses the global `claude/.claude/CLAUDE.md` through `pi/.pi/agent/CLAUDE.md`;
+a future `pi/.pi/agent/AGENTS.md` will take precedence as Pi's global context.
+Pi's MCP adapter imports Claude Code's global `~/.claude.json`, so Claude's
+user-scoped `mcpServers` is the single source of truth. Project-scoped servers
+remain local to Claude projects; use a shared project `.mcp.json` when both
+clients should load one.
 
 ```bash
 stow -t "$HOME" agents claude pi
