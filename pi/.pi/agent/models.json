@@ -1,0 +1,14 @@
+{
+  "providers": {
+    "ai-marketpace": {
+      "baseUrl": "https://api.marketplace.novo-genai.com/v1",
+      "api": "openai-completions",
+      "apiKey": "${ANTHROPIC_AUTH_TOKEN}",
+      "models": [
+        { "id": "openai_gpt_latest", "contextWindow": 200000 },
+        { "id": "openai_gpt_mini_latest", "contextWindow": 200000 },
+        { "id": "openai_gpt_nano_latest", "contextWindow": 200000 }
+      ]
+    }
+  }
+}
