@@ -47,18 +47,21 @@ while `<leader>s` is reserved for Spectre.
 | `<leader>sw` | Open Spectre with the word or selection |
 | `<leader>sf` | Open Spectre for the current file |
 
-## Agent skills setup
+## Agent setup
 
-Skills live in the `agents` package (`agents/.agents/skills`), and `claude/.claude/skills`
-holds symlinks to them so Claude Code picks them up.
+`agents/.agents` is the single source of truth for shared skills and custom agents.
+Consumer-specific directories link back to it: Claude Code uses
+`claude/.claude/skills`, Pi uses `pi/.pi/agent/skills` and
+`pi/.pi/agent/agents`, and OpenCode can discover `~/.agents` directly.
 
 ```bash
-stow -t "$HOME" agents claude
+stow -t "$HOME" agents claude pi
 ```
 
-The `skills` CLI writes its symlinks relative to `~/.claude/skills`, but that path is a
-symlink into this repo, so links for newly added skills resolve from the wrong directory
-and end up broken. `skills-relink` (in the `bin` package) repairs them:
+The `skills` CLI writes its Claude symlinks relative to `~/.claude/skills`, but that
+path is itself a symlink into this repo, so links for newly added skills resolve from
+the wrong directory and end up broken. `skills-relink` (in the `bin` package) repairs
+them:
 
 ```bash
 # Add a skill collection, then repair the new links
