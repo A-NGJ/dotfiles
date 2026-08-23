@@ -60,3 +60,6 @@ pi/.pi/agent/models-store.json
 pi/.pi/agent/settings.json
 pi/.pi/agent/bin/
 pi/.pi/agent/npm/
+
+# nvim
+lazy-lock.json
