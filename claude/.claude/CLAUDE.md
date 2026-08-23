@@ -33,3 +33,7 @@ Commit every finished task. Be proactive. If the current tas is touching the sam
 When using /wayfinder, /grill-with-docs, or skills a repo calls Matt Pocock's
 skills: consult ~/.claude/MATT_SKILLS.md first (skip silently if absent; never
 create it).
+
+# Personal glossary
+
+@/Users/alen/.config/ai-glossary/glossary.md
