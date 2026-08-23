@@ -53,3 +53,10 @@ claude/.claude/MATT_SKILLS.md
 
 # Snapshots
 *snapshot*
+
+# pi
+auth.json
+pi/.pi/agent/models-store.json
+pi/.pi/agent/settings.json
+pi/.pi/agent/bin/
+pi/.pi/agent/npm/
