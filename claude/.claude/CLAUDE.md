@@ -36,4 +36,4 @@ create it).
 
 # Personal glossary
 
-@/Users/alen/.config/ai-glossary/glossary.md
+@~/.config/ai-glossary/glossary.md
