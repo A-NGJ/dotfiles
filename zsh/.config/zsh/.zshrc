@@ -130,3 +130,6 @@ export BUDGET_TRACKER_TRANSACTIONS_FILE="$HOME/Library/Mobile Documents/com~appl
 export BUDGET_TRACKER_CATEGORIES_FILE="$HOME/Library/Mobile Documents/com~apple~CloudDocs/budget-tracker/categories.yaml"
 export BUDGET_TRACKER_CATEGORY_MAPPINGS_FILE="$HOME/Library/Mobile Documents/com~apple~CloudDocs/budget-tracker/category_mappings.yaml"
 export BUDGET_TRACKER_BANKS_DIR="$HOME/Library/Mobile Documents/com~apple~CloudDocs/budget-tracker/banks"
+
+# Apple keychain ssh-agent
+ssh-add --apple-load-keychain
