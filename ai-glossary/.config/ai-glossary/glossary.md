@@ -59,3 +59,5 @@ Examples of good entries:
 - **wayfinding** — breaking a foggy goal into decisions and resolving them one at a time until the route to build is clear.
 - **worktree** — an isolated git checkout letting a parallel session change the repo without touching yours.
 - **yolo mode** — running actions without asking for permission first (e.g. an agent with permission prompts disabled). *(not: autonomous mode)*
+- **issue** — a work item recorded in a ticketing system such as GitHub Issues or Jira. *(not: ticket)*
+
