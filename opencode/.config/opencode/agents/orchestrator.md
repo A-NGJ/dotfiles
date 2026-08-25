@@ -1,6 +1,6 @@
 ---
 description: Coordinates an issue dependency graph by maintaining tracker state, dispatching specialists and fresh reviewers, integrating conflict-free commits, and escalating operator decisions. Use for running an evidence-driven issue workflow; never use it to implement product changes.
-mode: subagent
+mode: primary
 color: secondary
 permission:
   task:
