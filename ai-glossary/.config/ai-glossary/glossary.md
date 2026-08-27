@@ -50,10 +50,12 @@ Examples of good entries:
 - **hard iteration cap** — a fixed maximum number of loop iterations, enforced outside the model.
 - **HITL** — human in the loop: work that only resolves through live exchange with a human; the agent never stands in for them.
 - **hook** — code fired deterministically when an event occurs, not invoked by choice (agent-harness hooks, git hooks, webhooks).
+- **issue** — a work item recorded in a ticketing system such as GitHub Issues or Jira. *(not: ticket)*
 - **issue tracker** — the tool hosting a repo's issues (GitHub Issues, Linear, local markdown). *(not: backlog, backlog manager)*
 - **llm-wiki** — the operator's generated knowledge base in their Obsidian vault.
 - **operator** — the human driving an agent session. *(not: user)*
 - **orchestrator** — the agent that coordinates narrow specialist assignments, reconciles their results, and communicates with the operator.
+- **pilot** — a limited real-world use intended to reveal problems before broader adoption. *(not: dogfood)*
 - **scratchpad** — a session-local directory for temporary files that never belong in the repo.
 - **seed** — the hand-picked first content that bootstraps a system.
 - **session capture** — folding what a session learned into a durable artifact before the session ends.
@@ -62,5 +64,4 @@ Examples of good entries:
 - **wayfinding** — breaking a foggy goal into decisions and resolving them one at a time until the route to build is clear.
 - **worktree** — an isolated git checkout letting a parallel session change the repo without touching yours.
 - **yolo mode** — running actions without asking for permission first (e.g. an agent with permission prompts disabled). *(not: autonomous mode)*
-- **issue** — a work item recorded in a ticketing system such as GitHub Issues or Jira. *(not: ticket)*
 
