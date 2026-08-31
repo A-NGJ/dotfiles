@@ -17,6 +17,17 @@
           "limit": {
             "context": 200000,
             "output": 128000
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         },
         "openai_gpt_mini_latest": {
@@ -24,6 +35,17 @@
           "limit": {
             "context": 200000,
             "output": 128000
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         },
         "openai_gpt_nano_latest": {
@@ -31,6 +53,81 @@
           "limit": {
             "context": 200000,
             "output": 128000
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
+          }
+        }
+      }
+    },
+    "netlight-gateway": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Netlight gateway",
+      "options": {
+        "baseURL": "https://llm.netlight.ai/",
+        "apiKey": "{env:NETLIGHT_AI_GATEWAY_API_KEY}"
+      },
+      "models": {
+        "gpt-5.6-sol": {
+          "name": "Openai GPT 5.6 Sol",
+          "limit": {
+            "context": 200000,
+            "output": 128000
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
+          }
+        },
+        "gpt-5.6-terra": {
+          "name": "Openai GPT 5.6 Terra",
+          "limit": {
+            "context": 200000,
+            "output": 128000
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
+          }
+        },
+        "gpt-5.6-luna": {
+          "name": "Openai GPT 5.6 Luna",
+          "limit": {
+            "context": 200000,
+            "output": 128000
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
           }
         }
       }
