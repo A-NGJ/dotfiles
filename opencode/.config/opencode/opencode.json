@@ -132,5 +132,12 @@
         }
       }
     }
+  },
+  "mcp": {
+    "nl-web-search": {
+      "type": "remote",
+      "url": "https://mcp.netlight.ai/websearch",
+      "enabled": false
+    }
   }
 }
