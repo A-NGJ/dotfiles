@@ -46,6 +46,7 @@ Free notes have no imposed scheme — match the folder you're writing into.
 - Add frontmatter.
 - Daily notes live in `Daily notes/` as `YYYY-MM-DD.md`
 - Attachments go in `attachments/` beside the note (`attachmentFolderPath`)
+- Format tables using standard Markdown table syntax (`| Col | ... |`), never ASCII or Unicode box-drawing character art.
 
 ## Linking
 
