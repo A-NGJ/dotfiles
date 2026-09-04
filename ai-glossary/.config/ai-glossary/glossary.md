@@ -39,6 +39,7 @@ Examples of good entries:
 - **agentic harness** — the agent runtime a tool plugs into. *(not: IDE, editor)*
 - **alias** — an accepted alternative name for a term, mapped to the canonical one. *(locked; aka: aka)*
 - **anti-term** — a word deliberately avoided in favor of a canonical term. *(locked)*
+- **assignment** — a bounded piece of work entrusted to one responsible party, with defined inputs, authority, and an exit criterion.
 - **context hygiene** — actively curating the context window during a run instead of letting it silt up. *(aka: context pruning)*
 - **context rot** — the decay of reasoning quality as stale or irrelevant content accumulates in the context window.
 - **DAM** — digital asset management: a system for storing, cataloguing, and governing rich media assets. *(aka: digital asset manager)*
@@ -67,4 +68,3 @@ Examples of good entries:
 - **wayfinding** — breaking a foggy goal into decisions and resolving them one at a time until the route to build is clear.
 - **worktree** — an isolated git checkout letting a parallel session change the repo without touching yours.
 - **yolo mode** — running actions without asking for permission first (e.g. an agent with permission prompts disabled). *(not: autonomous mode)*
-
