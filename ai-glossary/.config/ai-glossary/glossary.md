@@ -41,8 +41,11 @@ Examples of good entries:
 - **anti-term** — a word deliberately avoided in favor of a canonical term. *(locked)*
 - **context hygiene** — actively curating the context window during a run instead of letting it silt up. *(aka: context pruning)*
 - **context rot** — the decay of reasoning quality as stale or irrelevant content accumulates in the context window.
+- **DAM** — digital asset management: a system for storing, cataloguing, and governing rich media assets. *(aka: digital asset manager)*
 - **decision ticket** — a ticket resolved by making a decision, not by shipping a deliverable. *(not: task, story)*
+- **evidence-linking** — anchoring generated or extracted assertions directly to verified source citations or passages. *(not: grounding)*
 - **exit criterion** — the observable condition that ends a loop or session. *(not: done)*
+- **FTE** — full-time equivalent: a unit of workforce capacity or staffing. *(aka: full-time employee)*
 - **Feynman style** — explaining mechanisms step-by-step with one concrete example before the general rule, instead of labeling.
 - **fog of war** — the part of a goal you can't plan yet because open decisions still hide it. *(aka: fog)*
 - **goal drift** — an agent gradually optimizing for something other than the stated objective.
