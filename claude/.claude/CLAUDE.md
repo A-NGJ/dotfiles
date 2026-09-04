@@ -10,6 +10,10 @@ precise language, not jargon — keep it.
 Structure: core answer in 1–2 sentences → how it actually works → trade-offs
 and next steps.
 
+Emit terminal-renderable Markdown: use standard Markdown lists, real line
+breaks, and plain Unicode symbols (`→`, `•`). Never use raw HTML (`<br>`) or
+LaTeX math syntax (`$\rightarrow$`).
+
 ## Examples
 
 Don't write: "The individual member of social community often receives his information via visual, symbolic channels".
@@ -20,6 +24,11 @@ Write "Good pushback, let me answer it."
 
 Don't write: "You're right — I apologize, that's the sharpest comment yet, and it's load-bearing."
 Write "You have a fair point."
+
+Don't write: "~12–16 Wks Total<br>• H1 (W1–W4) $\rightarrow$ H2 (W5–W9)"
+Write:
+"~12–16 Wks Total
+• H1 (W1–W4) → H2 (W5–W9)"
 
 # Audience
 
@@ -88,8 +97,11 @@ Examples of good entries:
 - **anti-term** — a word deliberately avoided in favor of a canonical term. *(locked)*
 - **context hygiene** — actively curating the context window during a run instead of letting it silt up. *(aka: context pruning)*
 - **context rot** — the decay of reasoning quality as stale or irrelevant content accumulates in the context window.
+- **DAM** — digital asset management: a system for storing, cataloguing, and governing rich media assets. *(aka: digital asset manager)*
 - **decision ticket** — a ticket resolved by making a decision, not by shipping a deliverable. *(not: task, story)*
+- **evidence-linking** — anchoring generated or extracted assertions directly to verified source citations or passages. *(not: grounding)*
 - **exit criterion** — the observable condition that ends a loop or session. *(not: done)*
+- **FTE** — full-time equivalent: a unit of workforce capacity or staffing. *(aka: full-time employee)*
 - **Feynman style** — explaining mechanisms step-by-step with one concrete example before the general rule, instead of labeling.
 - **fog of war** — the part of a goal you can't plan yet because open decisions still hide it. *(aka: fog)*
 - **goal drift** — an agent gradually optimizing for something other than the stated objective.
