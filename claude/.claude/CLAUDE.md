@@ -1,14 +1,6 @@
-# Communication: Feynman style
+# Communication style
 
-Explain mechanisms, not names — show what is pushing, pulling, or failing
-step-by-step instead of labeling it ("market forces", "synergy"). Ground
-abstractions in one concrete example walked end-to-end before the general rule.
-Plain language first; define a niche or newly coined term in parentheses on
-first use. Established domain vocabulary (bounded context, team glossary) is
-precise language, not jargon — keep it.
-
-Structure: core answer in 1–2 sentences → how it actually works → trade-offs
-and next steps.
+Communicate using `/unslop` and `/feynmann-explain`.
 
 Emit terminal-renderable Markdown: use standard Markdown lists, real line
 breaks, and plain Unicode symbols (`→`, `•`). Never use raw HTML (`<br>`) or
@@ -46,12 +38,12 @@ create it).
 <!-- ai-glossary:managed:start -->
 ## Canonical glossary workflow
 
-<!-- ai-glossary:curation {"canonical_glossary":"/Users/awnj/.config/ai-glossary/glossary.md","sync_command":"/opt/homebrew/opt/python@3.14/bin/python3.14 /Users/awnj/dotfiles/agents/.agents/skills/ai-glossary-setup/manage.py setup --data-home /Users/awnj/.config/ai-glossary --claude-file /Users/awnj/dotfiles/claude/.claude/CLAUDE.md --agents-file /Users/awnj/.codex/AGENTS.md"} -->
+<!-- ai-glossary:curation {"canonical_glossary":"/Users/alen/.config/ai-glossary/glossary.md","sync_command":"/opt/homebrew/opt/python@3.14/bin/python3.14 /Users/alen/dotfiles/agents/.agents/skills/ai-glossary-setup/manage.py setup --data-home /Users/alen/.config/ai-glossary --claude-file /Users/alen/dotfiles/claude/.claude/CLAUDE.md --agents-file /Users/alen/.codex/AGENTS.md"} -->
 
-The canonical editable file is `$XDG_CONFIG_HOME/ai-glossary/glossary.md`, falling back to `~/.config/ai-glossary/glossary.md` when `XDG_CONFIG_HOME` is unset or empty. For this installation, edit `/Users/awnj/.config/ai-glossary/glossary.md` to curate terms. This managed block in `/Users/awnj/dotfiles/claude/.claude/CLAUDE.md` and its peer in `/Users/awnj/.codex/AGENTS.md` are generated copies; never edit either block directly. After every canonical edit, immediately synchronize both generated copies by running:
+The canonical editable file is `$XDG_CONFIG_HOME/ai-glossary/glossary.md`, falling back to `~/.config/ai-glossary/glossary.md` when `XDG_CONFIG_HOME` is unset or empty. For this installation, edit `/Users/alen/.config/ai-glossary/glossary.md` to curate terms. This managed block in `/Users/alen/dotfiles/claude/.claude/CLAUDE.md` and its peer in `/Users/alen/.codex/AGENTS.md` are generated copies; never edit either block directly. After every canonical edit, immediately synchronize both generated copies by running:
 
 ```sh
-/opt/homebrew/opt/python@3.14/bin/python3.14 /Users/awnj/dotfiles/agents/.agents/skills/ai-glossary-setup/manage.py setup --data-home /Users/awnj/.config/ai-glossary --claude-file /Users/awnj/dotfiles/claude/.claude/CLAUDE.md --agents-file /Users/awnj/.codex/AGENTS.md
+/opt/homebrew/opt/python@3.14/bin/python3.14 /Users/alen/dotfiles/agents/.agents/skills/ai-glossary-setup/manage.py setup --data-home /Users/alen/.config/ai-glossary --claude-file /Users/alen/dotfiles/claude/.claude/CLAUDE.md --agents-file /Users/alen/.codex/AGENTS.md
 ```
 
 # Personal Glossary
@@ -95,6 +87,7 @@ Examples of good entries:
 - **agentic harness** — the agent runtime a tool plugs into. *(not: IDE, editor)*
 - **alias** — an accepted alternative name for a term, mapped to the canonical one. *(locked; aka: aka)*
 - **anti-term** — a word deliberately avoided in favor of a canonical term. *(locked)*
+- **assignment** — a bounded piece of work entrusted to one responsible party, with defined inputs, authority, and an exit criterion.
 - **context hygiene** — actively curating the context window during a run instead of letting it silt up. *(aka: context pruning)*
 - **context rot** — the decay of reasoning quality as stale or irrelevant content accumulates in the context window.
 - **DAM** — digital asset management: a system for storing, cataloguing, and governing rich media assets. *(aka: digital asset manager)*
@@ -123,5 +116,4 @@ Examples of good entries:
 - **wayfinding** — breaking a foggy goal into decisions and resolving them one at a time until the route to build is clear.
 - **worktree** — an isolated git checkout letting a parallel session change the repo without touching yours.
 - **yolo mode** — running actions without asking for permission first (e.g. an agent with permission prompts disabled). *(not: autonomous mode)*
-
 <!-- ai-glossary:managed:end -->
