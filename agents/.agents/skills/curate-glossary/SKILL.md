@@ -8,8 +8,9 @@ disable-model-invocation: true
 
 Review the operator's messages visible before this skill was invoked. Find
 portable vocabulary worth persisting, then interview the operator one candidate
-at a time. This is a review surface: every change requires approval even though
-agents may curate directly during ordinary work.
+at a time. Before ending a session that surfaced distinctive vocabulary, invoke
+this skill to capture uncaptured terms. Also invoke it whenever the operator
+wants an explicit, approval-based pass over the current conversation.
 
 Before reading a glossary, inspect the current global `CLAUDE.md` and
 `AGENTS.md` managed blocks. Prefer the `ai-glossary:curation` JSON comment's

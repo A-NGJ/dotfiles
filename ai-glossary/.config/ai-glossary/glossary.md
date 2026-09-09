@@ -9,11 +9,13 @@ term; don't just avoid the anti-term in your own reply.
 
 Curation: you maintain this file. Add explicit terminology corrections
 immediately. Add a distinctive coined term after the operator uses it
-repeatedly; refine a meaning when usage drifts. Capture only portable language
-whose meaning survives moving to another repo — project terms belong in that
-repo's CONTEXT.md. Mention every change in passing. Ask before deleting an
-entry. An entry marked `locked` (or a leading 🔒) keeps its wording unless the
-operator consents to change it.
+repeatedly; refine a meaning when usage drifts. Before ending a session that
+surfaced distinctive vocabulary, invoke the curate-glossary skill to capture
+uncaptured terms. Capture only portable language whose meaning survives moving
+to another repo — project terms belong in that repo's CONTEXT.md. Mention
+every change in passing. Ask before deleting an entry. An entry marked
+`locked` (or a leading 🔒) keeps its wording unless the operator consents to
+change it.
 
 Entry grammar — one line per term, flat and alphabetized:
 `- **term** — one-line meaning. *(locked; not: anti-term, …; aka: alias, …)*`
@@ -42,13 +44,15 @@ Examples of good entries:
 - **assignment** — a bounded piece of work entrusted to one responsible party, with defined inputs, authority, and an exit criterion.
 - **context hygiene** — actively curating the context window during a run instead of letting it silt up. *(aka: context pruning)*
 - **context rot** — the decay of reasoning quality as stale or irrelevant content accumulates in the context window.
+- **counterfeit record** — a record an agent wrote in a plausible-looking dialect its system can't parse, so it passes human inspection and carries no authority.
 - **DAM** — digital asset management: a system for storing, cataloguing, and governing rich media assets. *(aka: digital asset manager)*
 - **decision ticket** — a ticket resolved by making a decision, not by shipping a deliverable. *(not: task, story)*
 - **evidence-linking** — anchoring generated or extracted assertions directly to verified source citations or passages. *(not: grounding)*
 - **exit criterion** — the observable condition that ends a loop or session. *(not: done)*
-- **FTE** — full-time equivalent: a unit of workforce capacity or staffing. *(aka: full-time employee)*
 - **Feynman style** — explaining mechanisms step-by-step with one concrete example before the general rule, instead of labeling.
+- **FTE** — full-time equivalent: a unit of workforce capacity or staffing. *(aka: full-time employee)*
 - **fog of war** — the part of a goal you can't plan yet because open decisions still hide it. *(aka: fog)*
+- **foundational** — serving as an essential basis or core support in an abstract or figurative context. *(not: load-bearing)*
 - **goal drift** — an agent gradually optimizing for something other than the stated objective.
 - **grilling** — a structured interview that stress-tests a plan or decision. *(aka: interrogation)*
 - **hard iteration cap** — a fixed maximum number of loop iterations, enforced outside the model.
@@ -59,6 +63,7 @@ Examples of good entries:
 - **llm-wiki** — the operator's generated knowledge base in their Obsidian vault.
 - **operator** — the human driving an agent session. *(not: user)*
 - **orchestrator** — the agent that coordinates narrow specialist assignments, reconciles their results, and communicates with the operator.
+- **paper gate** — a specified guarantee that never actually executes, so it reads as protection while providing none.
 - **pilot** — a limited real-world use intended to reveal problems before broader adoption. *(not: dogfood)*
 - **scratchpad** — a session-local directory for temporary files that never belong in the repo.
 - **seed** — the hand-picked first content that bootstraps a system.
