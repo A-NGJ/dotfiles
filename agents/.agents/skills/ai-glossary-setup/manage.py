@@ -4,20 +4,28 @@
 from __future__ import annotations
 
 import argparse
-import json
+import errno
 import os
 import re
-import shlex
 import sys
 import tempfile
 from pathlib import Path
+from typing import Optional
 
 START = "<!-- ai-glossary:managed:start -->"
 END = "<!-- ai-glossary:managed:end -->"
 LEGACY_IMPORT = re.compile(
     r"^\s*@[^\r\n]*[\\/]ai-glossary[\\/]glossary\.md\s*$"
 )
-
+ENTRIES_SEPARATOR = "---"
+DEFAULT_TERM = "operator"
+TERM_SLOT = re.compile(r"\boperator\b")
+TERM_SLOT_CAPITALIZED = re.compile(r"\bOperator\b")
+# Every header this tool seeds or migrates renders the template's
+# definitional sentence with the installed term in it, so that sentence is
+# what installed_term() reads the term back from. Keep it in step with the
+# template's wording.
+INSTALLED_TERM_ANCHOR = re.compile(r"these terms are how the (.+?) names things")
 
 def default_data_home() -> Path:
     base = os.environ.get("XDG_CONFIG_HOME")
@@ -75,50 +83,23 @@ def unmanaged_text(text: str) -> str:
     return remove_legacy_imports(remove_managed_blocks(text))
 
 
-def synchronization_guidance(
-    data_home: Path, claude_file: Path, agents_file: Path
-) -> str:
-    glossary_file = data_home / "glossary.md"
-    command_args = (
-        sys.executable,
-        str(Path(__file__).resolve()),
-        "setup",
-        "--data-home",
-        str(data_home),
-        "--claude-file",
-        str(claude_file),
-        "--agents-file",
-        str(agents_file),
-    )
-    command = shlex.join(command_args)
-    curation = json.dumps(
-        {"canonical_glossary": str(glossary_file), "sync_command": command},
-        separators=(",", ":"),
-    )
-    return (
-        "## Canonical glossary workflow\n\n"
-        f"<!-- ai-glossary:curation {curation} -->\n\n"
-        "The canonical editable file is "
-        "`$XDG_CONFIG_HOME/ai-glossary/glossary.md`, falling back to "
-        "`~/.config/ai-glossary/glossary.md` when `XDG_CONFIG_HOME` is unset or "
-        "empty. For this installation, "
-        f"edit `{glossary_file}` to curate terms. "
-        f"This managed block in `{claude_file}` and its peer in `{agents_file}` are "
-        "generated copies; never edit either block directly. After every canonical "
-        "edit, immediately synchronize both generated copies by running:\n\n"
-        f"```sh\n{command}\n```\n\n"
-    )
-
-
-def managed_block(glossary: str, guidance: str = "") -> str:
+def managed_block(glossary: str) -> str:
     if START in glossary or END in glossary:
         raise ValueError("glossary contains reserved managed-block markers")
-    content = glossary if glossary.endswith("\n") else glossary + "\n"
-    return f"{START}\n{guidance}{content}{END}\n"
+    # Terminate the embedded glossary with its own dominant line ending so the
+    # end marker starts on a new line without splicing a foreign ending onto
+    # the content. LF-only and CRLF-only glossaries already end in a line
+    # ending and are unchanged; a classic-Mac CR-only glossary ends in a lone
+    # CR and must not gain an LF (which would form a CRLF tail). Only a
+    # glossary with no trailing ending gets one appended.
+    content = glossary
+    if not content.endswith(("\n", "\r")):
+        content += _dominant_newline(content)
+    return f"{START}\n{content}{END}\n"
 
 
-def setup_target(text: str, glossary: str, guidance: str = "") -> str:
-    return unmanaged_text(text) + managed_block(glossary, guidance)
+def setup_target(text: str, glossary: str) -> str:
+    return unmanaged_text(text) + managed_block(glossary)
 
 
 def atomic_write(path: Path, content: str) -> None:
@@ -154,12 +135,194 @@ def write_if_changed(path: Path, content: str) -> bool:
     return True
 
 
+def canonical_glossary_path(glossary_file: Path) -> Path:
+    """Return the file setup should write when updating the canonical glossary.
+
+    An operator may symlink ``<data home>/glossary.md`` into a dotfiles repo.
+    ``atomic_write`` replaces its target path atomically, which would swap the
+    symlink for a regular file and silently detach the real glossary. Writing
+    through the resolved symlink target keeps the link intact and edits the file
+    it points at. Non-symlink paths are returned unchanged, and a dangling
+    symlink still resolves to the target the operator named.
+
+    A symlink that points at itself, or a loop of symlinks, names no real
+    target. On Python 3.14 ``Path.resolve()`` returns the link path itself
+    instead of raising, so writing "through" it would still replace the link.
+    Detect that case by resolving strictly: a missing target raises
+    ``FileNotFoundError`` (a dangling link we can still seed), while a loop
+    raises ``OSError`` with ``ELOOP`` on Python 3.13+ or ``RuntimeError`` on
+    earlier versions. Any other resolution failure -- for example ``ENOTDIR``
+    when the link points through a regular file -- is a different error and is
+    reported with its underlying cause rather than mislabelled as a loop.
+    Refuse every failure rather than detach the link, so the pathological state
+    is reported instead of silently replaced.
+    """
+    if not glossary_file.is_symlink():
+        return glossary_file
+    try:
+        return glossary_file.resolve(strict=True)
+    except FileNotFoundError:
+        return glossary_file.resolve()
+    except (OSError, RuntimeError) as error:
+        # Only ELOOP (or the pre-3.13 RuntimeError signalling it) means the
+        # link loops. Every other OSError -- ENOTDIR, EACCES, ... -- has a
+        # different cause and must not be reported as a symlink loop.
+        is_loop = isinstance(error, RuntimeError) or getattr(
+            error, "errno", None
+        ) == errno.ELOOP
+        if is_loop:
+            raise ValueError(
+                f"{glossary_file} is a self-referential or looping symlink "
+                "with no real target; refusing to replace it with a regular "
+                "file"
+            ) from error
+        raise ValueError(
+            f"{glossary_file} cannot be resolved to a real target: {error}; "
+            "refusing to replace it with a regular file"
+        ) from error
+
+
+def _normalize_newlines(text: str) -> str:
+    return text.replace("\r\n", "\n").replace("\r", "\n")
+
+
+def _dominant_newline(text: str) -> str:
+    """Return the line ending that terminates most lines in ``text``.
+
+    A file with a single ending style always yields that style, so LF-only and
+    CRLF-only glossaries keep their existing behavior. Evenly mixed files keep
+    the earlier CRLF-first preference, then lone CR, then LF.
+    """
+    crlf = text.count("\r\n")
+    lone_cr = text.count("\r") - crlf
+    lone_lf = text.count("\n") - crlf
+    if crlf > 0 and crlf >= lone_cr and crlf >= lone_lf:
+        return "\r\n"
+    if lone_cr > 0 and lone_cr >= lone_lf:
+        return "\r"
+    return "\n"
+
+
+def validate_term(term: str) -> str:
+    """Normalize a ``--term`` value and refuse one that cannot seed a header.
+
+    The term is spliced into single lines of the header, so a value carrying a
+    line break would corrupt the file structure; an empty one would leave the
+    slot blank. Whitespace padding is trimmed rather than preserved.
+    """
+    normalized = term.strip()
+    if not normalized:
+        raise ValueError("--term must name a word for the human in the loop")
+    if "\n" in normalized or "\r" in normalized:
+        raise ValueError("--term must be a single-line word or phrase")
+    return normalized
+
+
+def substitute_term(text: str, term: str) -> str:
+    """Render ``text`` with ``term`` in place of the template's word for the human in the loop.
+
+    The template names that human once capitalized (``Operator``, starting the
+    meta-language sentence) and twice lowercase (``operator``) mid-sentence.
+    Every occurrence is replaced so the rendered text reads naturally with the
+    chosen word: lowercase slots carry ``term.lower()`` and the sentence-initial
+    slot carries that word with its first character uppercased. Both forms are
+    pure functions of ``term.lower()``, so ``installed_term`` recovers exactly
+    the word a rendered header was written with and re-running setup stays
+    byte-stable.
+    """
+    lowered = term.lower()
+    capitalized = lowered[:1].upper() + lowered[1:]
+    text = TERM_SLOT.sub(lambda _match: lowered, text)
+    return TERM_SLOT_CAPITALIZED.sub(lambda _match: capitalized, text)
+
+
+def split_glossary_header(text: str) -> Optional[tuple[str, str]]:
+    """Split a glossary into its tool-owned header region and operator body.
+
+    The header region runs from the start of the file through the first line
+    whose content is exactly ``---`` (the entries separator), inclusive. The
+    body is everything after it. Returns ``None`` when the file carries no
+    entries separator, so a file that is not a seeded glossary is never
+    rewritten.
+    """
+    offset = 0
+    for line in text.splitlines(keepends=True):
+        if line.rstrip("\r\n") == ENTRIES_SEPARATOR:
+            end = offset + len(line)
+            return text[:end], text[end:]
+        offset += len(line)
+    return None
+
+
+def installed_term(text: str) -> Optional[str]:
+    """Recover the term a glossary's tool-owned header was rendered with.
+
+    The term is read back from the header's definitional sentence, so the
+    glossary file itself stays the single source of truth for the installed
+    term — no sidecar state to fall out of step, and the term travels with the
+    file across dotfiles restores, symlinks, and uninstall. Returns ``None``
+    when the file has no entries separator (no tool-owned header to read) or
+    the sentence does not match (a hand-written or unrecognized header);
+    callers fall back to ``DEFAULT_TERM``, which reproduces the pre-choice
+    behavior for existing ``operator`` installations.
+    """
+    split = split_glossary_header(text)
+    if split is None:
+        return None
+    header, _body = split
+    match = INSTALLED_TERM_ANCHOR.search(_normalize_newlines(header))
+    if match is None:
+        return None
+    term = match.group(1).strip()
+    return term or None
+
+
+def migrate_glossary_header(text: str, template: str, term: str) -> Optional[str]:
+    """Replace a stale tool-owned header region with the template's.
+
+    The template header is rendered with ``term`` first, so a glossary
+    installed with a non-default term is compared against — and migrated to —
+    that term's header, never reverted to the default. The term must be passed
+    explicitly: defaulting it here would silently revert a chosen term.
+
+    Returns ``None`` when there is nothing to do: the file has no entries
+    separator (so it cannot be confidently identified as a seeded glossary),
+    or its header already matches the rendered template modulo line endings.
+    Operator entries after the separator are preserved byte-for-byte.
+    """
+    canonical = split_glossary_header(text)
+    current = split_glossary_header(template)
+    if canonical is None or current is None:
+        return None
+    canonical_header, body = canonical
+    template_header, _ = current
+    target_header = substitute_term(template_header, term)
+    if _normalize_newlines(canonical_header) == _normalize_newlines(target_header):
+        return None
+    # Match the canonical file's own dominant line-ending style so the
+    # migrated header does not introduce a foreign ending. A CR-only
+    # (classic-Mac) glossary therefore gets a CR-only header, not an LF one
+    # spliced onto its CR body.
+    newline = _dominant_newline(text)
+    migrated_header = _normalize_newlines(target_header).replace("\n", newline)
+    return migrated_header + body
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=("setup", "uninstall"))
     parser.add_argument("--data-home", type=Path, default=default_data_home())
-    parser.add_argument("--claude-file", type=Path, default=default_claude_file())
-    parser.add_argument("--agents-file", type=Path, default=default_agents_file())
+    parser.add_argument("--claude-file", type=Path, default=None)
+    parser.add_argument("--agents-file", type=Path, default=None)
+    parser.add_argument(
+        "--term",
+        default=None,
+        help=(
+            "word for the human in the loop used in the glossary header "
+            f"(default: {DEFAULT_TERM} when seeding; an existing glossary "
+            "keeps its installed word)"
+        ),
+    )
     return parser.parse_args()
 
 
@@ -168,23 +331,61 @@ def main() -> int:
     data_home = args.data_home.expanduser().resolve()
     glossary_file = data_home / "glossary.md"
     template = Path(__file__).resolve().parent / "templates" / "glossary.md"
-    targets = tuple(
-        path.expanduser().resolve() for path in (args.claude_file, args.agents_file)
-    )
-
+    claude_explicit = args.claude_file is not None
+    agents_explicit = args.agents_file is not None
+    claude_file = (
+        args.claude_file if claude_explicit else default_claude_file()
+    ).expanduser().resolve()
+    agents_file = (
+        args.agents_file if agents_explicit else default_agents_file()
+    ).expanduser().resolve()
+    targets = (claude_file, agents_file)
     try:
         changes: list[str] = []
         if args.action == "setup":
+            # Validate the term before touching any file so a bad value is
+            # refused with the standard error path and nothing is written.
+            term = validate_term(args.term) if args.term is not None else None
+            # Write through a symlinked canonical glossary (often pointing into
+            # a dotfiles repo) instead of replacing the link with a regular
+            # file. A symlink that cannot be resolved to a real target -- a
+            # loop or any other resolution failure -- raises ValueError here,
+            # which the handler below reports.
+            glossary_write_path = canonical_glossary_path(glossary_file)
             data_home.mkdir(parents=True, exist_ok=True)
+            template_text = template.read_text(encoding="utf-8")
             if not glossary_file.exists():
-                atomic_write(glossary_file, template.read_text(encoding="utf-8"))
+                atomic_write(
+                    glossary_write_path,
+                    substitute_term(template_text, term or DEFAULT_TERM),
+                )
                 changes.append(f"created {glossary_file}")
-            glossary = glossary_file.read_text(encoding="utf-8")
-            guidance = synchronization_guidance(data_home, *targets)
-            updates = {
-                target: setup_target(read_target(target), glossary, guidance)
-                for target in targets
-            }
+            glossary = read_target(glossary_file)
+            if term is None:
+                # No term was requested, so keep the one the glossary already
+                # carries; an unrecognized header falls back to the default.
+                term = installed_term(glossary) or DEFAULT_TERM
+            migrated = migrate_glossary_header(glossary, template_text, term)
+            if migrated is not None:
+                atomic_write(glossary_write_path, migrated)
+                glossary = migrated
+                changes.append(
+                    f"migrated {glossary_file} header to current template"
+                )
+            active_targets = tuple(
+                target
+                for target, is_explicit in (
+                    (claude_file, claude_explicit),
+                    (agents_file, agents_explicit),
+                )
+                if is_explicit or target.exists()
+            )
+            updates = {}
+            if active_targets:
+                updates = {
+                    target: setup_target(read_target(target), glossary)
+                    for target in active_targets
+                }
             for target, updated in updates.items():
                 if write_if_changed(target, updated):
                     changes.append(f"synchronized {target}")
@@ -196,7 +397,6 @@ def main() -> int:
             for target, updated in updates.items():
                 if write_if_changed(target, updated):
                     changes.append(f"removed managed glossary from {target}")
-
         if changes:
             print("\n".join(changes))
         elif args.action == "setup":

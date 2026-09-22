@@ -8,10 +8,18 @@ description: Install, repair, or uninstall the personal AI glossary — canonica
 Run this skill's `manage.py`; it performs the file transformation rather than
 asking the harness to interpret an import. The canonical vocabulary remains in
 `<data home>/glossary.md`. Setup and repair copy its complete current content
-between managed markers in both global instruction files:
+between managed markers in each installed global instruction file:
 
 - Claude Code: `${CLAUDE_CONFIG_DIR:-~/.claude}/CLAUDE.md`
 - AGENTS.md-based Codex harnesses: `${CODEX_HOME:-~/.codex}/AGENTS.md`
+
+By default (no `--claude-file` or `--agents-file`), a target that does not
+already exist on disk names a harness that is not installed, so it is left
+alone and never created; only targets that already exist are synchronized.
+Passing a path explicitly always writes it, creating any missing parent
+directories and the file itself. This keeps a Codex-only or Claude-only
+installation from gaining an unused config file. Only active targets receive a
+generated managed block.
 
 The **data home** is `$XDG_CONFIG_HOME/ai-glossary/`, falling back to
 `~/.config/ai-glossary/` when `XDG_CONFIG_HOME` is unset or empty. The script
@@ -26,11 +34,47 @@ Run:
 python3 <skill folder>/manage.py setup
 ```
 
-The command creates missing parent directories and files. It seeds a missing
-canonical glossary from `templates/glossary.md`, but never replaces an existing
-canonical glossary. For each global instruction file, it removes legacy
-`@.../ai-glossary/glossary.md` lines and all prior managed blocks, preserves
-other content, then writes exactly one current block delimited by:
+The command creates missing parent directories and files for active targets. It
+seeds a missing canonical glossary from `templates/glossary.md`. If
+`<data home>/glossary.md` is a symlink — for example into a dotfiles repo —
+setup writes through it to the linked file and leaves the symlink in place, so
+the real glossary is updated where the symlink points rather than being
+detached. A self-referential or looping symlink names no real target, and so
+does any other symlink that cannot be resolved to one (for example, a link that
+points through a regular file). Setup refuses each with an error that names the
+cause and a non-zero exit instead of replacing the link with a regular file.
+
+When the canonical glossary does not exist yet — a first installation — offer
+the choice of the word the glossary uses for the human in the loop before
+running setup, and pass it as `--term`: `operator` (the default), `user`, or
+`developer` are the natural choices. Setup substitutes the chosen word for
+every `operator` occurrence in the seeded header, capitalizing the
+sentence-initial one, so the header reads naturally with that word. When the
+canonical glossary already exists, setup keeps its installed word: the word is
+read back from the glossary's own header, so header migration and managed-block
+sync never revert a chosen word to `operator`. Passing `--term` explicitly
+overrides the installed word and migrates the header to it — the way to change
+the word later.
+
+In the canonical glossary, the **header region** — everything from the start of
+the file through the first line whose content is exactly `---` — is tool-owned
+and mirrors `templates/glossary.md` rendered with the glossary's installed
+word. Setup brings a stale header up to the current template with that word:
+when that region differs, it replaces only the header region and prints
+`migrated <path> header to current template`. Everything after the
+`---` separator — every term entry — is preserved byte-for-byte, and
+migration runs before the managed blocks are generated so both carry the
+migrated header in the same run. The migrated header reuses the canonical
+file's dominant line-ending style — CRLF for a CRLF file, lone CR for a
+classic-Mac CR-only file — so migration never splices a foreign ending onto the
+body. When the header already matches, setup makes no change. A canonical file
+with no `---` separator is never rewritten, so a hand-written glossary cannot
+be clobbered.
+
+For each active global instruction
+file, it removes legacy `@.../ai-glossary/glossary.md` lines and all prior
+managed blocks, preserves other content, then writes exactly one current block
+delimited by:
 
 ```text
 <!-- ai-glossary:managed:start -->
@@ -38,14 +82,35 @@ other content, then writes exactly one current block delimited by:
 <!-- ai-glossary:managed:end -->
 ```
 
-Each generated block also identifies the canonical file, forbids direct block
-edits, and embeds the exact command and resolved canonical/target paths needed
-to synchronize that installation. A rerun therefore synchronizes canonical
-edits and does not duplicate blocks. Report each path printed by the command;
-`setup already complete` means no bytes needed changing.
+The block markers themselves stay LF-delimited. The embedded glossary keeps
+the canonical file's dominant line-ending style — CRLF for a CRLF file, lone CR
+for a classic-Mac CR-only file — so generating a block never appends a foreign
+ending before the end marker. A glossary with no trailing line ending is still
+separated from the end marker by one in its own dominant style.
 
-Done when the command exits zero, the canonical glossary exists, and both
-global files contain exactly one managed block with its complete content.
+Each generated block carries only the glossary content between its markers; it
+does not name the canonical file or embed a synchronization command. Resolution
+of the canonical path and sync command lives in this skill and in
+`curate-glossary`. After every canonical edit, immediately rerun setup to
+resynchronize the managed blocks; a rerun does not duplicate blocks. Report each
+path printed by the command; `setup already complete` means no bytes needed
+changing.
+
+When a setup run changes at least one file — it creates the glossary, migrates
+its header, or synchronizes a target — it prints those change lines instead of
+`setup already complete`. In that case print this message to the operator,
+verbatim:
+
+> Restart this agent session to load the updated glossary.
+
+A newly written managed block is not in the running session's context until a
+new agent session starts, so the operator has to restart for the update to take
+effect. Do not print the message for a run that reports `setup already
+complete`, and never attempt to reload the harness yourself.
+
+Done when the command exits zero, the canonical glossary exists, each active
+global file contains exactly one managed block with its complete content, and —
+when the run changed a file — the operator has been told to restart the session.
 
 ## Uninstall
 
@@ -56,8 +121,8 @@ python3 <skill folder>/manage.py uninstall
 ```
 
 The command removes every managed block and legacy glossary import line from
-both global instruction files while preserving all other content. It leaves the
-data home and canonical glossary in place and prints that retained path.
+both global instruction files while preserving all other content. It leaves
+the data home and canonical glossary in place and prints that retained path.
 
 Done when the command exits zero and its retained glossary path has been
 reported to the operator.
@@ -74,5 +139,8 @@ python3 <skill folder>/manage.py setup \
   --agents-file /absolute/AGENTS.md
 ```
 
-Use the same options with `uninstall`. Relative override paths are accepted but
-absolute paths make the changed targets unambiguous.
+`--term` combines with every form above. Use the same options with
+`uninstall`. Relative override paths are accepted but
+absolute paths make the changed targets unambiguous. An explicitly passed
+target is always written, even when it does not yet exist, so this is the way to
+install the glossary into a harness that is not yet on disk.
