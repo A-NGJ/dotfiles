@@ -2,7 +2,7 @@
   "$schema": "https://opencode.ai/config.json",
   "instructions": ["~/.config/ai-glossary/glossary.md"],
   "subagent_depth": 2,
-  "model": "aimarketplace/gemini_3_7_flash",
+  "model": "aimarketplace/gemini_3_8_flash",
   "provider": {
     "aimarketplace": {
       "npm": "@ai-sdk/openai-compatible",
@@ -12,8 +12,8 @@
         "apiKey": "{env:ANTHROPIC_AUTH_TOKEN}"
       },
       "models": {
-        "gemini_3_7_flash": {
-          "name": "Gemini 3.7 Flash",
+        "anthropic_claude_opus_5_5": {
+          "name": "Claude Opus 5.5",
           "limit": {
             "context": 200000,
             "output": 128000
@@ -30,8 +30,46 @@
             }
           }
         },
-        "openai_gpt_latest": {
-          "name": "Openai GPT 5.6 Sol",
+        "anthropic_claude_sonnet_5": {
+          "name": "Claude Sonnet 5",
+          "limit": {
+            "context": 200000,
+            "output": 128000
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
+          }
+        },
+        "gemini_3_8_flash": {
+          "name": "Gemini 3.8 Flash",
+          "limit": {
+            "context": 200000,
+            "output": 128000
+          },
+          "variants": {
+            "low": {
+              "reasoningEffort": "low"
+            },
+            "medium": {
+              "reasoningEffort": "medium"
+            },
+            "high": {
+              "reasoningEffort": "high"
+            }
+          }
+        },
+        "openai_gpt6_sol": {
+          "name": "Openai GPT 6 Sol",
+          "provider": { "npm": "@ai-sdk/openai" },
+          "reasoning": true,
           "limit": {
             "context": 200000,
             "output": 128000
@@ -50,6 +88,8 @@
         },
         "openai_gpt_mini_latest": {
           "name": "Openai GPT 5.6 Terra",
+          "provider": { "npm": "@ai-sdk/openai" },
+          "reasoning": true,
           "limit": {
             "context": 200000,
             "output": 128000
@@ -66,8 +106,10 @@
             }
           }
         },
-        "openai_gpt_nano_latest": {
-          "name": "Openai GPT 5.6 Luna",
+        "openai_gpt6_luna": {
+          "name": "Openai GPT 6 Luna",
+          "provider": { "npm": "@ai-sdk/openai" },
+          "reasoning": true,
           "limit": {
             "context": 200000,
             "output": 128000
