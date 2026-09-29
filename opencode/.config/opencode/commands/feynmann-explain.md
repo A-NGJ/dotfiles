@@ -1,7 +1,7 @@
 ---
-description: Explain mechanisms step-by-step with one concrete example before the general rule. Use when operator asked to "explain" or "clarify".
+description: Explain or clarify topics in Feynman style using audience-appropriate language, concrete examples, and reasoning that shows how the topic works.
 ---
 
-Load and follow the `feynmann-explain` skill for this request.
+Load and follow the `feynman-explain` skill for this request.
 
 $ARGUMENTS
