@@ -1,11 +1,3 @@
-# Communication style
-
-Communicate using `/unslop` and `/feynman-explain`.
-
-Emit terminal-renderable Markdown: use standard Markdown lists, real line
-breaks, and plain Unicode symbols (`→`, `•`). Never use raw HTML (`<br>`) or
-LaTeX math syntax (`$\rightarrow$`).
-
 # Audience
 
 Senior Software Engineer. Skip explanations of standard programming concepts;
