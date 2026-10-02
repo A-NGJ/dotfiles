@@ -27,6 +27,10 @@ Judge each assignment by what the task observably needs, not by how hard it soun
 
 If two tiers fit, take the higher one. Decide per assignment: parallel assignments from one request may land on different tiers.
 
+## Reviewer rule
+
+A `reviewer` never runs on the same model as the `implementation-specialist` whose work it reviews. Compare the `model` in both variants' frontmatter. On a match, take the nearest tier above the routed one whose model differs; when none above differs, take the nearest one below.
+
 ## Dispatch
 
 Dispatch the agent name for the chosen tier. If that variant does not exist, dispatch `<agent>`: an agent without variants runs on its own fixed model at every tier.

@@ -27,6 +27,17 @@ When set to `yes`, PRs run through the same labels and states as issues, using t
 
 GitHub shares one number space across issues and PRs, so a bare `#42` may be either: resolve with `gh pr view 42` and fall back to `gh issue view 42`.
 
+## Workflow state
+
+_(Used by `/orchestrating`. Keep one of the two state options and delete the other.)_
+
+- **State (board):** GitHub Project `<name or URL>`; in progress = column `<In Progress>`. Move the card with `gh project item-edit`. Done is the board's automation on issue close.
+- **State (labels):** `todo`, `in-progress`. Swap with `gh issue edit <number> --add-label in-progress --remove-label todo`. A closed issue is done; there is no `done` label.
+- **Branch naming:** `<type>/<issue-id>-<slug>`, type `feature` | `bugfix` | `hotfix`.
+- **Create and link a branch:** `gh issue develop <number> --name <branch> --base <default-branch>`. Find a linked branch with `gh issue develop <number> --list`.
+- **Pull request:** `gh pr create --base <default-branch> --head <branch> --title "..." --body-file <file>`, with `Closes #<number>` in the body.
+- **On pull request open:** board, leave the card; labels, remove `in-progress`.
+
 ## When a skill says "publish to the issue tracker"
 
 Create a GitHub issue.

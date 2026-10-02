@@ -27,6 +27,7 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `.scratch/`: a sign that a local-markdown issue tracker convention is already in use
 - Existing tracker labels (`gh label list` / `glab label list`, or ask if neither CLI is available): do labels beyond the five triage roles already exist — a bug/enhancement/decision-style category split, or a priority scale? Their presence decides whether Section B offers those extra tiers.
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether Section B runs at all.
+- Is the `orchestrating` skill installed? This decides whether Section D runs. If it is, also check for a GitHub Project linked to the repo (`gh project list --owner <owner>`), existing `todo` / `in-progress` labels, and any documented branch naming convention (`CONTRIBUTING.md`, `AGENTS.md`, `CLAUDE.md`).
 
 ### 2. Present findings and ask
 
@@ -46,7 +47,7 @@ Default posture: these skills were designed for GitHub. Read the hostname in the
 - **Local markdown**: issues live as files under `.scratch/<feature>/` in this repo (good for solo projects or repos without a remote)
 - **Other** (Jira, Linear, etc.): ask the user to describe the workflow in one paragraph; the skill will record it as freeform prose
 
-Record the choice in `docs/agents/issue-tracker.md`. The GitHub and GitLab templates carry a "PRs as a request surface" flag, defaulted **off**. Leave it off and don't raise it: a user who wants external PRs in the triage queue can flip the flag in the file later.
+Record the choice in `docs/agents/issue-tracker.md`. The GitHub and GitLab templates carry a "PRs as a request surface" flag, defaulted **off**. Leave it off and don't raise it: a user who wants external PRs in the triage queue can flip the flag in the file later. Each template also carries a **Workflow state** section: keep it only when Section D runs, and delete it otherwise.
 
 **Section B: Label vocabulary.** Skip this section entirely if the `triage` skill isn't installed (exploration told you), since an uninstalled skill needs no labels.
 
@@ -64,6 +65,11 @@ Then, only if exploration found labels beyond the five roles, offer to document 
 If neither tier's labels exist in the tracker, skip both silently — don't create labels the repo doesn't use.
 
 **Section C: Domain docs.** Single-context only: one `CONTEXT.md` + `docs/adr/` at the repo root. Write it without asking — this variant of the skill has no multi-context or map layout to offer.
+
+**Section D: Workflow state.** Skip this section entirely if the `orchestrating` skill isn't installed. It fills the **Workflow state** section of `docs/agents/issue-tracker.md`, which `orchestrating` requires before it starts.
+
+- **State.** If exploration found a project board, propose recording it: its name or URL and its in-progress column. Otherwise propose the fallback labels `todo` and `in-progress`; a closed issue counts as done, so there is no `done` label. Create any missing fallback labels once the user confirms.
+- **Branch naming.** If exploration found a documented convention, propose recording it. Otherwise propose the fallback `<type>/<issue-id>-<slug>`, where type is `feature`, `bugfix`, or `hotfix`.
 
 ### 3. Confirm and edit
 

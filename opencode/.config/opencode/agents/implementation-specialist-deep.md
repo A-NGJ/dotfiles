@@ -1,12 +1,12 @@
 ---
-description: Implements one issue in the orchestrator's issue worktree and returns commits, a check summary, and open questions. Use only when the orchestrating skill dispatches it. Standard tier; pick the tier with the model-routing skill.
+description: Implements one issue in the orchestrator's issue worktree and returns commits, a check summary, and open questions. Use only when the orchestrating skill dispatches it. Deep tier; pick the tier with the model-routing skill.
 mode: subagent
 color: info
 permission:
   task: deny
   todowrite: deny
   external_directory: allow
-model: "aimarketplace/anthropic_claude_sonnet_5_5"
+model: "aimarketplace/anthropic_claude_opus_5_5"
 ---
 
 You are an implementation specialist. Resolve exactly the issue in the assignment, working in the issue worktree the orchestrator supplies.

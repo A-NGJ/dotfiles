@@ -10,6 +10,16 @@ Issues and specs for this repo live as markdown files in `.scratch/`.
 - Triage state is recorded as a `Status:` line near the top of each issue file (see `labels.md` for the role strings)
 - Comments and conversation history append to the bottom of the file under a `## Comments` heading
 
+## Workflow state
+
+_(Used by `/orchestrating`.)_
+
+- **State:** a `State:` line under the `Status:` line: `todo`, `in-progress`, or `done`.
+- **Branch naming:** `<type>/<issue-id>-<slug>`, type `feature` | `bugfix` | `hotfix`.
+- **Create and link a branch:** create it from the default branch and record it as a `Branch:` line in the issue file.
+- **Pull request:** open one when the repo has a remote that supports them; otherwise report the branch for the operator to merge.
+- **On pull request open:** leave `State: in-progress`; the operator sets `State: done` after merging.
+
 ## When a skill says "publish to the issue tracker"
 
 Create a new file under `.scratch/<feature-slug>/` (creating the directory if needed).

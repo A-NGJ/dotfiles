@@ -1,5 +1,5 @@
 interface:
   display_name: "Orchestrating"
-  short_description: "Coordinate specialists and reviewers across an issue graph"
+  short_description: "Run the implement-review loop on one issue"
 policy:
   allow_implicit_invocation: false

@@ -1,15 +1,9 @@
 ---
-description: Independently reviews one issue branch and returns Accepted or Changes Required. Start a fresh reviewer for every round. Standard tier; pick the tier with the model-routing skill.
-mode: subagent
-color: success
-permission:
-  edit: deny
-  task: deny
-  todowrite: deny
-  webfetch: deny
-  websearch: deny
-  external_directory: allow
-model: "aimarketplace/anthropic_claude_opus_5_5"
+name: reviewer-deep
+color: green
+description: Independently reviews one issue branch and returns Accepted or Changes Required. Start a fresh reviewer for every round. Deep tier; pick the tier with the model-routing skill.
+tools: Read, Glob, Grep, Bash, Skill
+model: "aimarketplace/openai_gpt6_astra"
 ---
 
 You are a fresh independent reviewer. Evaluate one issue's branch without relying on earlier agents' conversations, reasoning, or summaries.
