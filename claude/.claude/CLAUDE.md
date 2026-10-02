@@ -20,16 +20,6 @@ skills: consult ~/.claude/MATT_SKILLS.md first (skip silently if absent; never
 create it).
 
 <!-- ai-glossary:managed:start -->
-## Canonical glossary workflow
-
-<!-- ai-glossary:curation {"canonical_glossary":"/Users/alen/.config/ai-glossary/glossary.md","sync_command":"/opt/homebrew/opt/python@3.14/bin/python3.14 /Users/alen/dotfiles/agents/.agents/skills/ai-glossary-setup/manage.py setup --data-home /Users/alen/.config/ai-glossary --claude-file /Users/alen/dotfiles/claude/.claude/CLAUDE.md --agents-file /Users/alen/.codex/AGENTS.md"} -->
-
-The canonical editable file is `$XDG_CONFIG_HOME/ai-glossary/glossary.md`, falling back to `~/.config/ai-glossary/glossary.md` when `XDG_CONFIG_HOME` is unset or empty. For this installation, edit `/Users/alen/.config/ai-glossary/glossary.md` to curate terms. This managed block in `/Users/alen/dotfiles/claude/.claude/CLAUDE.md` and its peer in `/Users/alen/.codex/AGENTS.md` are generated copies; never edit either block directly. After every canonical edit, immediately synchronize both generated copies by running:
-
-```sh
-/opt/homebrew/opt/python@3.14/bin/python3.14 /Users/alen/dotfiles/agents/.agents/skills/ai-glossary-setup/manage.py setup --data-home /Users/alen/.config/ai-glossary --claude-file /Users/alen/dotfiles/claude/.claude/CLAUDE.md --agents-file /Users/alen/.codex/AGENTS.md
-```
-
 # Personal Glossary
 
 Operator meta-language — these terms are how the operator names things; use
@@ -39,40 +29,13 @@ Use terms naturally — never announce or narrate that you are applying the
 glossary. When the operator uses an anti-term, gently point to the canonical
 term; don't just avoid the anti-term in your own reply.
 
-Curation: you maintain this file. Add explicit terminology corrections
-immediately. Add a distinctive coined term after the operator uses it
-repeatedly; refine a meaning when usage drifts. Before ending a session that
-surfaced distinctive vocabulary, invoke the curate-glossary skill to capture
-uncaptured terms. Capture only portable language whose meaning survives moving
-to another repo — project terms belong in that repo's CONTEXT.md. Mention
-every change in passing. Ask before deleting an entry. An entry marked
-`locked` (or a leading 🔒) keeps its wording unless the operator consents to
-change it.
-
-Entry grammar — one line per term, flat and alphabetized:
-`- **term** — one-line meaning. *(locked; not: anti-term, …; aka: alias, …)*`
-(italic group optional; parts in that order)
-
-What makes a good term: broad enough to apply beyond one tool or project,
-yet still definable in one line; a word the operator genuinely uses; never a
-common word narrowed to one niche sense — qualify it instead (**session
-compaction**, not *compaction*; **fog of war**, not *fog*; **agent
-trajectory**, not *trajectory*). Mechanics of this file — locks, the
-one-line limit — belong in this header, never as entries.
-
-Examples of good entries:
-
-- **ubiquitous language** — one shared vocabulary used identically in conversation, docs, and code. *(locked)*
-- **session compaction** — summarizing older conversation history so a session fits its context window. *(not: compaction)*
-- **hook** — code fired deterministically when an event occurs, not invoked by choice (agent-harness hooks, git hooks, webhooks).
-
 ---
 
 - **AFK ticket** — a ticket the agent resolves alone, without a human in the loop. *(not: automated task)*
 - **agent trajectory** — the full recorded sequence of an agent run: prompts, tool calls, outputs.
 - **agentic harness** — the agent runtime a tool plugs into. *(not: IDE, editor)*
-- **alias** — an accepted alternative name for a term, mapped to the canonical one. *(locked; aka: aka)*
-- **anti-term** — a word deliberately avoided in favor of a canonical term. *(locked)*
+- **alias** — an accepted alternative name for a term, mapped to the canonical one. *(aka: aka)*
+- **anti-term** — a word deliberately avoided in favor of a canonical term.
 - **assignment** — a bounded piece of work entrusted to one responsible party, with defined inputs, authority, and an exit criterion.
 - **context hygiene** — actively curating the context window during a run instead of letting it silt up. *(aka: context pruning)*
 - **context rot** — the decay of reasoning quality as stale or irrelevant content accumulates in the context window.
@@ -101,7 +64,7 @@ Examples of good entries:
 - **seed** — the hand-picked first content that bootstraps a system.
 - **session capture** — folding what a session learned into a durable artifact before the session ends.
 - **session compaction** — summarizing older conversation history so a session fits its context window. *(not: compaction)*
-- **ubiquitous language** — one shared vocabulary used identically in conversation, docs, and code. *(locked)*
+- **ubiquitous language** — one shared vocabulary used identically in conversation, docs, and code.
 - **wayfinding** — breaking a foggy goal into decisions and resolving them one at a time until the route to build is clear.
 - **worktree** — an isolated git checkout letting a parallel session change the repo without touching yours.
 - **yolo mode** — running actions without asking for permission first (e.g. an agent with permission prompts disabled). *(not: autonomous mode)*
