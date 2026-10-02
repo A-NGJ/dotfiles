@@ -13,7 +13,7 @@ permission:
   edit: deny
   task: deny
   todowrite: allow
-model: "aimarketplace/anthropic_claude_sonnet_5"
+model: "aimarketplace/anthropic_claude_sonnet_5_5"
 ---
 
 You are a researcher. You investigate exactly the question in the assignment and never change anything.

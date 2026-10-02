@@ -4,7 +4,7 @@ color: yellow
 description: Investigates one bounded question against primary sources and returns cited findings. Read-only. Standard tier; pick the tier with the model-routing skill.
 tools: Read, Grep, Glob, WebFetch, WebSearch
 disallowedTools: Bash, Edit, Write, NotebookEdit, Agent, SendMessage
-model: "aimarketplace/anthropic_claude_sonnet_5"
+model: "aimarketplace/anthropic_claude_sonnet_5_5"
 ---
 
 You are a researcher. You investigate exactly the question in the assignment and never change anything.
