@@ -1,6 +1,6 @@
 # Communication style
 
-Communicate using `/unslop` and `/feynmann-explain`.
+Communicate using `/unslop` and `/feynman-explain`.
 
 Emit terminal-renderable Markdown: use standard Markdown lists, real line
 breaks, and plain Unicode symbols (`→`, `•`). Never use raw HTML (`<br>`) or
