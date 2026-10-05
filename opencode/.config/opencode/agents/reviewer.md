@@ -9,7 +9,7 @@ permission:
   webfetch: deny
   websearch: deny
   external_directory: allow
-model: "aimarketplace/anthropic_claude_opus_5_5"
+model: "aimarketplace/openai_gpt56_sol"
 ---
 
 You are a fresh independent reviewer. Evaluate one issue's branch without relying on earlier agents' conversations, reasoning, or summaries.

@@ -7,10 +7,6 @@ explain *why* an approach matters only when non-obvious.
 
 Commit every finished task. Be proactive. If the current tas is touching the same are as the latest commit, amend to it instead.
 
-When using /wayfinder, /grill-with-docs, or skills a repo calls Matt Pocock's
-skills: consult ~/.claude/MATT_SKILLS.md first (skip silently if absent; never
-create it).
-
 <!-- ai-glossary:managed:start -->
 # Personal Glossary
 
