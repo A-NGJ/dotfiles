@@ -9,7 +9,7 @@
       "name": "Novo AI Marketplace",
       "options": {
         "baseURL": "https://api.marketplace.novo-genai.com/v1",
-        "apiKey": "{env:ANTHROPIC_AUTH_TOKEN}"
+        "apiKey": "{env:AI_MARKETPLACE_API_KEY}"
       },
       "models": {
         "anthropic_claude_opus_5_5": {
