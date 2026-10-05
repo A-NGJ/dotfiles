@@ -21,6 +21,15 @@ Use this template for writing the PR body:
 - **Before:** <screenshot/output/failing test run>
   **After:** <screenshot/output/passing test run>
 
+## Manual Testing
+
+<only for user-facing changes; omit the heading otherwise>
+
+**Setup:** <branch, env, seed data, flags, URL>
+
+1. <action>. **Expect:** <observable result>
+2. ...
+
 ## Merge Danger
 
 **Undo:** <`git revert` is enough | needs cleanup | permanent>
@@ -163,6 +172,27 @@ Screenshots are S-tier - when the environment is set up for it and the change is
 
 Execution-based evidence is A-tier. Test results, console output. Show the exact test that now fails and passes, using pseudocode.
 
+When the change is visual but you can't capture a screenshot, the Manual Testing steps are how the reviewer collects that evidence.
+
+### Manual Testing
+
+Include this section when a person can see or touch the change: UI, CLI output, user-visible errors, emails, copy. Omit the heading entirely for refactors, internal APIs, and changes automated tests fully prove.
+
+**Setup** lists only what the reviewer can't guess: the flag to enable, the data to seed, the role to log in as, the viewport or browser.
+
+Each step is one action and the result the reviewer should observe. Name the exact route, button label, and input value, so the reviewer never has to hunt:
+
+```markdown
+**Setup:** `pnpm dev`, log in as `admin@example.com`
+
+1. Open `/settings/profile` and change **Display name** to `Ada`. **Expect:** the **Save** button enables.
+2. Click **Save**. **Expect:** a "Profile updated" toast, and the header shows `Ada`.
+3. Clear **Display name** and click **Save**. **Expect:** inline error "Name is required", no request sent.
+4. Resize to 375px wide. **Expect:** the form stacks into one column with no horizontal scroll.
+```
+
+Order the steps happy path first, then the edge cases your Blast Radius names: empty states, error paths, narrow viewports, keyboard navigation. Leave out anything a test in Evidence already covers. Past about 8 steps, split into separate flows, each under its own bold title.
+
 ### Merge Danger
 
 State how hard the change is to undo after merge.
@@ -173,4 +203,4 @@ State how hard the change is to undo after merge.
 
 When it isn't `git revert`, name what the revert leaves behind.
 
-The blast radius is the potential impact or scope of the changes introduced by this PR. Consider all possibilities. Examples are layout shift, breakages for consumers, mobile responsiveness, etc.
+The blast radius is the potential impact or scope of the changes introduced by this PR. Consider all possibilities. Examples are layout shift, breakages for consumers, mobile responsiveness, etc. When a reviewer can check a blast-radius risk by hand, add it as a Manual Testing step.
