@@ -42,7 +42,7 @@ The parent is an **index**, not a second store of detailed answers. Put resoluti
 
 Once the parent exists, before working its decisions or prerequisites, find the branch already linked or assigned to it. Reuse it; otherwise create a branch for that issue using repository conventions and associate it with the issue where the tracker supports this. A parent created from a loose idea also gets a branch. If multiple branches could be the issue's branch, ask which one to use. Even a decision-only effort has a branch. Keep useful scripts and substantial evidence on it; do not create research or child-specific branches. Parallelize read-only agents, but coordinate writes to the shared branch one at a time.
 
-Inspect existing repository labels. Apply a suitable existing label if useful; leave an issue unlabeled when none fits. Never create labels for wayfinding or require `wayfinder:*` labels. Treat any tracker-specific wayfinding recipe that prescribes a new map, fixed labels, or separate research branches as superseded by this skill; use its mechanics for sub-issue links, dependency edges, claims, and comments where applicable. If no tracker is configured, use the local-markdown tracker described by `/setup-matt-pocock-skills`.
+Inspect existing repository labels. Apply a suitable existing label if useful; leave an issue unlabeled when none fits. Treat any tracker-specific wayfinding recipe that prescribes a new map, fixed labels, or separate research branches as superseded by this skill; use its mechanics for sub-issue links, dependency edges, claims, and comments where applicable. If no tracker is configured, use the local-markdown tracker described by `/setup-engineering-skills`.
 
 ## Prerequisites and frontier
 
