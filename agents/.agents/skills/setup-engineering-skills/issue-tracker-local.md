@@ -20,6 +20,12 @@ _(Used by `/orchestrating`.)_
 - **Pull request:** open one when the repo has a remote that supports them; otherwise report the branch for the operator to merge.
 - **On pull request open:** leave `State: in-progress`; the operator sets `State: done` after merging.
 
+## Roadmap data
+
+_(Used by `/roadmap`. Read-only.)_
+
+There are no milestones and no dates. Propose each `.scratch/<feature-slug>/` directory as a milestone, named from its `spec.md` title. Take the date the earliest issue file was added as the start suggestion: `git log --diff-filter=A --format=%as -- <file> | tail -1`, or the file's modification date when `.scratch/` is untracked. Have the operator confirm the grouping and supply every finish date.
+
 ## When a skill says "publish to the issue tracker"
 
 Create a new file under `.scratch/<feature-slug>/` (creating the directory if needed).
