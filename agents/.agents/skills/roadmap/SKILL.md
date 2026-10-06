@@ -65,8 +65,8 @@ Suggested values the operator accepts unchanged stay marked as estimates. GitHub
 When the operator has a brand guideline, such as a PDF, but no `.pptx` template:
 
 1. Extract the primary palette and the typeface. Read the PDF directly, or use `pdftotext` for hex codes and font names and `pdftoppm -png` for pages that show them only as swatches.
-2. Map the colours to theme slots: `dk1` for body text, `lt1` for the page background, `accent1` for the primary brand colour, `accent2` for a secondary colour. Show the mapping as a table.
-3. Build the template:
+2. Map the colours to theme slots: `dk1` for body text, `lt1` for the page background, `accent1` for the primary brand colour, `accent2` for a secondary colour. Show the mapping as a table, with the typeface, and wait for the operator's answer. Done when the operator has confirmed or corrected every slot and the typeface. Build nothing before that.
+3. Build the template from the confirmed mapping:
 
    ```sh
    uv run <skill folder>/render.py --make-template brand.pptx --colors accent1=RRGGBB,accent2=RRGGBB,dk1=RRGGBB --font "Typeface"
@@ -75,7 +75,7 @@ When the operator has a brand guideline, such as a PDF, but no `.pptx` template:
    Slots you leave out keep the python-pptx default theme.
 4. Render with `--template brand.pptx`, show the preview, and confirm with the operator.
 
-Done when the operator has confirmed the slot mapping and a preview rendered with the built template.
+Done when the operator has confirmed a preview rendered with the built template.
 
 ## Data file
 
