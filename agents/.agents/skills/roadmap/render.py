@@ -176,6 +176,46 @@ def theme_colors(prs=None) -> dict[str, str]:
     return colors
 
 
+FONT_FALLBACK = 'system-ui,-apple-system,"Segoe UI",sans-serif'
+
+
+def theme_fonts(prs=None) -> dict[str, str]:
+    """Major (headings) and minor (body) Latin typeface names, read from the first master theme.
+
+    A typeface that names the other slot (+mj-lt, +mn-lt) resolves to it; an empty or
+    unresolvable one is dropped, so the HTML falls back to the system stack.
+    """
+    if prs is None:
+        return {}
+    from lxml import etree
+    from pptx.opc.constants import RELATIONSHIP_TYPE as RT
+
+    try:
+        theme = etree.fromstring(prs.slide_masters[0].part.part_related_by(RT.THEME).blob)
+    except (KeyError, IndexError, etree.XMLSyntaxError):
+        return {}
+    ns = {"a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
+    raw = {}
+    for kind, key in (("majorFont", "major"), ("minorFont", "minor")):
+        el = theme.find(f".//a:fontScheme/a:{kind}/a:latin", ns)
+        raw[key] = (el.get("typeface") or "").strip() if el is not None else ""
+    refs = {"+mj-lt": "major", "+mn-lt": "minor"}
+    fonts = {}
+    for key, value in raw.items():
+        value = raw.get(refs[value], "") if value in refs else value
+        if value and not value.startswith("+"):
+            fonts[key] = value
+    return fonts
+
+
+def css_font_stack(name: str | None) -> str:
+    """A CSS font-family list: the theme typeface, quoted, ahead of the system fallback."""
+    if not name:
+        return FONT_FALLBACK
+    clean = re.sub(r'[\\"<>;{}]', "", name)
+    return f'"{clean}",{FONT_FALLBACK}'
+
+
 def _luminance(hex_: str) -> float:
     def channel(c: float) -> float:
         return c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4
@@ -281,9 +321,9 @@ CSS = """
 :root{--grid:color-mix(in srgb,var(--accent) 11%,var(--paper));--band:color-mix(in srgb,var(--accent) 4%,var(--paper));
   --strong:color-mix(in srgb,var(--accent) 32%,var(--paper));--muted:color-mix(in srgb,var(--ink) 65%,var(--paper))}
 *{box-sizing:border-box}
-body{font:14px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;margin:0;color:var(--ink);background:var(--paper)}
+body{font:14px/1.3 var(--font-body);margin:0;color:var(--ink);background:var(--paper)}
 header{position:relative;padding:26px 48px 22px}
-h1{margin:0 0 6px;font-size:30px;font-weight:400;padding-right:150px} h2{font-size:16px;margin:24px 0 8px}
+h1{margin:0 0 6px;font-family:var(--font-heading);font-size:30px;font-weight:400;padding-right:150px} h2{font-size:16px;margin:24px 0 8px}
 .sub{font-size:14px;color:var(--muted)}
 .band header{background:var(--accent);color:var(--on-accent)} .band .sub{color:inherit}
 .band header::after{content:"";position:absolute;left:48px;bottom:0;width:64px;height:4px;background:var(--stripe)}
@@ -308,7 +348,7 @@ main{padding:24px 48px 16px}
 .bar b{font-size:12.5px;line-height:1.2} .bar span{font-size:10.5px}
 .bar.est{background:var(--paper);color:var(--accent-ink);border:1.5px dashed var(--accent)}
 .today{position:absolute;top:var(--head);bottom:0;width:2px;margin-left:-1px;background:var(--accent);z-index:2}
-.today i{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);font:600 10px/1 system-ui,sans-serif;
+.today i{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);font:600 10px/1 var(--font-body);
   padding:3px 7px;border-radius:9px;background:var(--accent);color:var(--on-accent);font-style:normal}
 .legend{display:flex;gap:18px;font-size:11px;margin-top:40px;color:var(--accent-ink)}
 .legend s{display:inline-block;width:22px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px;
@@ -328,7 +368,8 @@ def _logo_html(r: Roadmap, logo: Path | None) -> str:
     return f'<div class="logo">{LOGO_SLOT_TEXT[0]}<br>{LOGO_SLOT_TEXT[1]}</div>'
 
 
-def render_html(r: Roadmap, colors: dict[str, str], logo: Path | None = None) -> str:
+def render_html(r: Roadmap, colors: dict[str, str], logo: Path | None = None,
+                fonts: dict[str, str] | None = None) -> str:
     e = html.escape
     n = len(r.weeks)
     role = roles(colors)
@@ -342,7 +383,10 @@ def render_html(r: Roadmap, colors: dict[str, str], logo: Path | None = None) ->
         "--lane-rule": mix(colors["lt1"], colors["accent1"], LABEL_RULE) if band
         else mix(colors["accent1"], colors["lt1"], STRONG),
     }
+    fonts = fonts or {}
     root = ";".join(f"{k}:#{v}" for k, v in css_vars.items())
+    root += f";--font-heading:{css_font_stack(fonts.get('major') or fonts.get('minor'))}"
+    root += f";--font-body:{css_font_stack(fonts.get('minor') or fonts.get('major'))}"
     grid = [f'<div class="sl" style="--n:{n};--head:24px">', '<div class="sl-h"></div>']
     grid += [f'<div class="sl-h">{short(w)}</div>' for w in r.weeks]
     lanes = r.lanes()
@@ -734,13 +778,14 @@ def main(argv=None) -> int:
         written.append(args.out / f"{stem}.md")
         written[-1].write_text(render_md(r))
     if "html" in formats:
-        colors = DEFAULT_THEME
+        colors, fonts = DEFAULT_THEME, {}
         if args.template:
             from pptx import Presentation
 
-            colors = theme_colors(Presentation(str(args.template)))
+            deck = Presentation(str(args.template))
+            colors, fonts = theme_colors(deck), theme_fonts(deck)
         written.append(args.out / f"{stem}.html")
-        written[-1].write_text(render_html(r, colors, logo))
+        written[-1].write_text(render_html(r, colors, logo, fonts))
     if "pptx" in formats:
         written.append(args.out / f"{stem}.pptx")
         for warning in render_pptx(r, written[-1], args.template, logo):
