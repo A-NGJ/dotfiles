@@ -21,6 +21,7 @@ import base64
 import datetime as dt
 import html
 import json
+import math
 import mimetypes
 import re
 import sys
@@ -439,7 +440,8 @@ def render_html(r: Roadmap, colors: dict[str, str], logo: Path | None = None,
 
 # Geometry in a 1280x720 px design space scaled to the slide width (1 px = 9525 EMU on 13.333 in).
 LEFT, RIGHT, LANE_W, HEAD_H, HEADER_H, CHART_TOP = 48, 1232, 180, 22, 128, 168
-RULE = 1.34  # px; 1 pt, the thinnest rule every viewer draws
+RULE = 1.34  # px; 1 pt on a 13.333 in slide. Rules never go below MIN_LINE on smaller slides.
+MIN_LINE = 12700  # EMU; 1 pt, the thinnest line QuickLook still draws
 NAME_PX, DATES_PX, LANE_PX = (12.5, 11.5), 10.5, 15  # a bar name shrinks one step before it warns
 BAR_PAD = (9, 3, 9, 3)  # left, top, right, bottom text margins inside a bar
 LANE_PAD = (14, 0, 10, 0)
@@ -468,13 +470,23 @@ def render_pptx(r: Roadmap, path: Path, template: Path | None, logo: Path | None
     role = roles(colors)
     band = r.layout == "band"
     unit = prs.slide_width / 1280
+    # Text scales with the slide; rounded so a nominal 13.333 in template keeps exact sizes.
+    text_scale = round(unit / 9525, 3)
     warnings: list[str] = []
 
     def px(v: float) -> Emu:
         return Emu(int(round(v * unit)))
 
-    def fpt(v: float) -> Pt:  # design px to points, at 1280 px = 13.333 in
-        return Pt(v * 0.75)
+    def fpt(v: float) -> Pt:
+        """Design px to points. Text scales with the slide like the geometry, so text fitting
+        in design px holds for any slide width."""
+        return Pt(v * 0.75 * text_scale)
+
+    def thin(v: float) -> float:
+        """A rule thickness in design px, raised so it lands at MIN_LINE EMU or more."""
+        return max(v, math.ceil(MIN_LINE / unit * 1000) / 1000)
+
+    rule = thin(RULE)
 
     def paint(fmt, slot: str, alpha: float | None = None, brightness: float = 0.0):
         """Theme colour, optionally lightened (brightness) or made translucent (alpha)."""
@@ -504,7 +516,7 @@ def render_pptx(r: Roadmap, path: Path, template: Path | None, logo: Path | None
         # A theme reference, like every other colour. QuickLook draws theme-coloured lines black
         # (PowerPoint draws them right), so a line that must show on a dark fill also gets a tint.
         paint(s.line.color, slot)
-        s.line.width = fpt(max(width, RULE))
+        s.line.width = Emu(max(MIN_LINE, px(width)))
         if dashed:
             s.line.dash_style = MSO_LINE_DASH_STYLE.DASH
 
@@ -606,23 +618,24 @@ def render_pptx(r: Roadmap, path: Path, template: Path | None, logo: Path | None
 
     for ly, h, rows in spans:  # rules between rows inside a lane
         for j in range(1, len(rows)):
-            shape(slide, grid_x, ly + row_h * j - RULE / 2, grid_w, RULE, "accent1", GRID)
+            shape(slide, grid_x, ly + row_h * j - rule / 2, grid_w, rule, "accent1", GRID)
     for i in range(n + 1):  # a rule at every week boundary, including the right edge
-        x = grid_x + col_w * i - (RULE if i == n else 0)
-        shape(slide, x, body_top, RULE, body_bottom - body_top, "accent1", GRID)
+        x = grid_x + col_w * i - (rule if i == n else 0)
+        shape(slide, x, body_top, rule, body_bottom - body_top, "accent1", GRID)
     for k, (ly, h, _) in enumerate(spans):  # stronger rules between lanes, across the label column
-        edge = ly + h - (RULE if k == len(spans) - 1 else RULE / 2)
-        shape(slide, grid_x, edge, grid_w, RULE, "accent1", STRONG)
+        edge = ly + h - (rule if k == len(spans) - 1 else rule / 2)
+        shape(slide, grid_x, edge, grid_w, rule, "accent1", STRONG)
         if k < len(spans) - 1:
             if band:
-                shape(slide, LEFT, edge, LANE_W, RULE, "lt1", LABEL_RULE)
+                shape(slide, LEFT, edge, LANE_W, rule, "lt1", LABEL_RULE)
             else:
-                shape(slide, LEFT, edge, LANE_W, RULE, "accent1", STRONG)
+                shape(slide, LEFT, edge, LANE_W, rule, "accent1", STRONG)
 
     offset = r.today_offset()  # drawn before the bars so it sits behind them
     if offset is not None:
         tx = grid_x + grid_w * offset
-        shape(slide, tx - 1, body_top, 2, body_bottom - body_top, "accent1")
+        today_w = thin(2)
+        shape(slide, tx - today_w / 2, body_top, today_w, body_bottom - body_top, "accent1")
 
     for ly, _, rows in spans:
         for j, row in enumerate(rows):
