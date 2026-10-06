@@ -27,7 +27,7 @@ When the operator leaves the issue blocked, post one tracker comment with the bl
 
 ## Finish
 
-1. Push the branch and open a ready pull request containing `Closes #<issue>`. Fill the repo's pull request template; without one, use [pr-template.md](pr-template.md).
+1. Push the branch and open a ready pull request. Title it with the issue title, or with a `type(scope): subject` line following the `commit` skill. Call the Skill tool with "pr" and write the body with it, starting with `Closes #<issue>`. When the repo has its own pull request template, fill that template's sections with the `pr` skill's content. Done when the pull request is open and its body has every section the `pr` skill requires for this change.
 2. Apply the pull-request-open state change recorded in **Workflow state**. Merging closes the issue, and a closed issue is done.
 3. Remove the worktree.
 
