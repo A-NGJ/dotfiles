@@ -29,7 +29,7 @@ After about six rounds, offer to pause with a progress summary; the operator may
 Write the running summary before dispatching research or a prototype, after a session compaction, and at session end:
 
 - **Issue:** one summary comment, created at the first checkpoint and edited in place after that, so the issue carries a single current summary.
-- **Loose idea:** overwrite `/tmp/wayfinding-<slug>.md` and name the path in chat.
+- **Loose idea:** overwrite `${XDG_STATE_HOME:-~/.local/state}/wayfinding/<slug>.md` and name the path in chat. It survives reboots, and the operator deletes it once the summary has been handed off.
 
 After a session compaction, re-read the checkpoint before continuing; it is the record, and your memory of the session is a lossy copy of it.
 
