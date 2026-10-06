@@ -400,12 +400,12 @@ NAME_PX, DATES_PX, LANE_PX = (12.5, 11.5), 10.5, 15  # a bar name shrinks one st
 BAR_PAD = (9, 3, 9, 3)  # left, top, right, bottom text margins inside a bar
 LANE_PAD = (14, 0, 10, 0)
 LOGO_BOX = (1112, 34, 120, 40)
+LOGO_TINT = 0.12  # slot fill, so the slot shows where a viewer drops the dashed line
 
 
 def render_pptx(r: Roadmap, path: Path, template: Path | None, logo: Path | None = None) -> list[str]:
     """Write the slides; return one overflow warning per lane label or bar that won't fit."""
     from pptx import Presentation
-    from pptx.dml.color import RGBColor
     from pptx.enum.dml import MSO_LINE_DASH_STYLE, MSO_THEME_COLOR
     from pptx.enum.shapes import MSO_SHAPE
     from pptx.enum.text import MSO_ANCHOR, PP_ALIGN
@@ -457,8 +457,9 @@ def render_pptx(r: Roadmap, path: Path, template: Path | None, logo: Path | None
         return s
 
     def outline(s, slot, width=1.5, dashed=True):
-        # QuickLook draws theme-coloured lines black, so lines take the slot's resolved RGB.
-        s.line.color.rgb = RGBColor.from_string(colors[slot])
+        # A theme reference, like every other colour. QuickLook draws theme-coloured lines black
+        # (PowerPoint draws them right), so a line that must show on a dark fill also gets a tint.
+        paint(s.line.color, slot)
         s.line.width = fpt(max(width, RULE))
         if dashed:
             s.line.dash_style = MSO_LINE_DASH_STYLE.DASH
@@ -525,8 +526,8 @@ def render_pptx(r: Roadmap, path: Path, template: Path | None, logo: Path | None
             pic.width, pic.height = int(pic.width * scale), int(pic.height * scale)
             pic.left, pic.top = px(x + w) - pic.width, px(y)
             return
-        slot = shape(slide, x, y, w, h)
         ink = role["on_accent"] if band else "accent1"
+        slot = shape(slide, x, y, w, h, ink, LOGO_TINT)
         outline(slot, ink, RULE)
         write(slot, [(line, 10, False, ink) for line in LOGO_SLOT_TEXT], anchor=MSO_ANCHOR.MIDDLE, align=PP_ALIGN.CENTER)
 
