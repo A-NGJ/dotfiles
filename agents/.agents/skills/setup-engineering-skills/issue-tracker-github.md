@@ -38,6 +38,16 @@ _(Used by `/orchestrating`. Keep one of the two state options and delete the oth
 - **Pull request:** `gh pr create --base <default-branch> --head <branch> --title "..." --body-file <file>`, with `Closes #<number>` in the body.
 - **On pull request open:** board, leave the card; labels, remove `in-progress`.
 
+## Roadmap data
+
+_(Used by `/roadmap`. Read-only.)_
+
+Use `gh api`: `gh issue list` can't read milestone metadata or parent issues. `{owner}/{repo}` fill in from the current clone.
+
+- **Milestones:** `gh api --paginate "repos/{owner}/{repo}/milestones?state=all&per_page=100" --jq '.[] | {number, title, description, state, due_on, closed_at}'`. Milestones have no start date. `due_on` is a UTC timestamp, so take its date part.
+- **Issues in a milestone:** `gh api --paginate "repos/{owner}/{repo}/issues?milestone=<number>&state=all&per_page=100" --jq '.[] | select(.pull_request == null) | {number, title, state, created_at, labels: [.labels[].name]}'`. The issues endpoint also returns pull requests, which the `select` drops.
+- **Issues with no milestone:** the same call with `milestone=none&state=open`, adding `parent: (.parent_issue_url // null | if . then split("/") | last | tonumber else null end)` to group them by parent issue. GitHub Enterprise Server older than 3.16 has no sub-issues, so `parent` is always null there.
+
 ## When a skill says "publish to the issue tracker"
 
 Create a GitHub issue.

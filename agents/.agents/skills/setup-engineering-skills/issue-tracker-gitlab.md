@@ -37,6 +37,16 @@ _(Used by `/orchestrating`. Keep one of the two state options and delete the oth
 - **Merge request:** `glab mr create --source-branch <branch> --description "..."`, with `Closes #<number>` in the description.
 - **On merge request open:** board, leave the card; labels, remove `in-progress`.
 
+## Roadmap data
+
+_(Used by `/roadmap`. Read-only.)_
+
+Use `glab api`: `glab milestone list` and `glab issue list` don't page through every result. `:fullpath` fills in from the current clone. For a self-hosted instance, set `GITLAB_HOST=<host>` or pass `--hostname <host>`.
+
+- **Milestones:** `glab api --paginate "projects/:fullpath/milestones?include_ancestors=true"`. This returns active and closed milestones, including group milestones, each with `title`, `description`, `state`, `start_date`, and `due_date`.
+- **Issues in a milestone:** `glab api --paginate "projects/:fullpath/milestones/<id>/issues"`. Each issue carries `labels` and `created_at`.
+- **Issues with no milestone:** `glab api --paginate "projects/:fullpath/issues?milestone_id=None&state=opened"`. On Premium and Ultimate, group them by the issue's `epic`. On Free, use linked issues: `glab api "projects/:fullpath/issues/<iid>/links"`.
+
 ## When a skill says "publish to the issue tracker"
 
 Create a GitLab issue.
